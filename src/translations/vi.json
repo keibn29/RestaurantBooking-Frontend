@@ -1,0 +1,17 @@
+{
+  "system": {
+    "header": {
+      "welcome": "Xin chào",
+      "user": "Người dùng",
+      "manage-user": "Quản lý người dùng",
+      "restaurant": "Nhà hàng",
+      "food": "Món ăn",
+      "handbook": "Bài đăng"
+    },
+    "admin": {
+      "user": {},
+      "restaurant": {},
+      "food": {}
+    }
+  }
+}

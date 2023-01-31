@@ -1,0 +1,10 @@
+{
+    "system": {
+        "admin": {
+            "user": {
+                "user": "User",
+                "manage-user": "Manage User"
+            }
+        }
+    }
+}

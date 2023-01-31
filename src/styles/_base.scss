@@ -1,0 +1,47 @@
+/*
+ * General styles
+ */
+body,
+html {
+  font-family: $fontmain;
+  font-size  : $base-size;
+  height     : 100vh;
+  overflow   : hidden;
+}
+
+.image-center-cover {
+  background-position: center;
+  background-size    : cover;
+  background-repeat  : no-repeat;
+}
+
+.title {
+  text-align    : center;
+  text-transform: uppercase;
+  font-weight   : bold;
+  font-size     : $base-size + 4px;
+  margin-top    : 15px;
+  color         : $colormain;
+}
+
+.container {
+  padding: 0 !important;
+}
+
+.content {
+  margin            : 15px 30px;
+  box-shadow        : 2px 2px 4px 0 $box-shadow-color;
+  -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
+}
+
+.flex-center {
+  display        : flex !important;
+  justify-content: center !important;
+  align-items    : center !important;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin            : 0;
+}
