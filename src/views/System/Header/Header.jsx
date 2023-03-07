@@ -30,7 +30,7 @@ class Header extends Component {
       let role = userInfo.roleId;
       if (role === USER_ROLE.ADMIN) {
         menu = adminMenu;
-      } else if (role === USER_ROLE.DOCTOR) {
+      } else if (role === USER_ROLE.RESTAURANT_MANAGER) {
         menu = "";
       }
     }
@@ -89,7 +89,7 @@ class Header extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.user.isLoggedIn,
+    isLoggedInSystem: state.user.isLoggedInSystem,
     userInfo: state.user.userInfo,
     language: state.app.language,
   };

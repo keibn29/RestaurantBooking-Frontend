@@ -1,19 +1,24 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import ManageUser from "../views/System/Admin/User/ManageUser";
+import ManageUser from "../views/System/Admin/ManageUser";
+import ManageRestaurant from "../views/System/Admin/ManageRestaurant";
 import Header from "../views/System/Header/Header";
 
 class System extends Component {
   render() {
-    const { systemMenuPath, isLoggedIn } = this.props;
+    const { systemMenuPath, isLoggedInSystem } = this.props;
     return (
       <>
-        {isLoggedIn && <Header />}
+        {isLoggedInSystem && <Header />}
         <div className="system-container">
           <div className="system-list">
             <Switch>
               <Route path="/system/manage-user" component={ManageUser} />
+              <Route
+                path="/system/manage-restaurant"
+                component={ManageRestaurant}
+              />
 
               <Route
                 component={() => {
@@ -31,7 +36,7 @@ class System extends Component {
 const mapStateToProps = (state) => {
   return {
     systemMenuPath: state.app.systemMenuPath,
-    isLoggedIn: state.user.isLoggedIn,
+    isLoggedInSystem: state.user.isLoggedInSystem,
   };
 };
 

@@ -1,0 +1,63 @@
+.restaurant-schedule-container {
+    display       : flex;
+    flex-direction: column;
+    gap           : 30px;
+
+    .restaurant-schedule-infor {
+        display        : flex;
+        justify-content: space-between;
+
+        &.people,
+        &.date {
+            cursor     : pointer;
+            font-weight: 600;
+
+            span {
+                color: #FF6571;
+            }
+
+            .drop-down {
+                font-size: inherit;
+            }
+        }
+
+        &.time {
+            cursor: default;
+
+            .list-schedule {
+                margin-top: 15px;
+
+                .schedule-content {
+                    border       : 1px solid #ddd;
+                    box-shadow   : 1px 1px 2px #3333331a;
+                    text-align   : center;
+                    padding      : 7px;
+                    border-radius: 5px;
+                    cursor       : pointer;
+
+                    &:hover {
+                        background-color: #f7f8fa;
+                    }
+
+                    &.time-active {
+                        background-color: #FF6571;
+                        color           : white;
+                    }
+                }
+            }
+        }
+    }
+
+    .restaurant-schedule-book {
+        text-align      : center;
+        background-color: #FF6571;
+        color           : white;
+        padding         : 10px;
+        cursor          : pointer;
+        border-radius   : 5px;
+
+        &:hover {
+            background-color: #f94251;
+        }
+    }
+}

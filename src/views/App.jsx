@@ -14,6 +14,11 @@ import SystemLogin from "./System/Auth/SystemLogin";
 import System from "../routes/System";
 import CustomScrollbars from "../components/CustomScrollbars";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+// import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import Homepage from "./Customer/Homepage/Homepage";
+import DetailRestaurant from "./Customer/Restaurant/DetailRestaurant";
+import RestaurantPhoto from "./Customer/Restaurant/RestaurantPhoto";
 
 const muiTheme = createMuiTheme({
   palette: {
@@ -55,6 +60,7 @@ class App extends Component {
                 <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
                   <Switch>
                     <Route path={PATH.HOME} exact component={Home} />
+                    <Route path={PATH.HOMEPAGE} component={Homepage} />
                     <Route
                       path={PATH.SYSTEM_LOGIN}
                       component={userIsNotAuthenticated(SystemLogin)}
@@ -62,6 +68,10 @@ class App extends Component {
                     <Route
                       path={PATH.SYSTEM}
                       component={userIsAuthenticated(System)}
+                    />
+                    <Route
+                      path={PATH.DETAIL_RESTAURANT}
+                      component={DetailRestaurant}
                     />
                   </Switch>
                 </CustomScrollbars>
@@ -89,7 +99,7 @@ class App extends Component {
 const mapStateToProps = (state) => {
   return {
     started: state.app.started,
-    isLoggedIn: state.user.isLoggedIn,
+    isLoggedInSystem: state.user.isLoggedInSystem,
   };
 };
 

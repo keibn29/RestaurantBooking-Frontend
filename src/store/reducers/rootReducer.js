@@ -8,6 +8,7 @@ import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
 import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import allCodeReducer from "./allCodeReducer";
+import restaurantReducer from "./restaurantReducer";
 
 const persistCommonConfig = {
   storage: storage,
@@ -17,7 +18,7 @@ const persistCommonConfig = {
 const userPersistConfig = {
   ...persistCommonConfig,
   key: "user",
-  whitelist: ["isLoggedIn", "userInfo"],
+  whitelist: ["isLoggedInSystem", "userInfo"],
 };
 
 const appPersistConfig = {
@@ -32,6 +33,7 @@ const rootReducer = (history) =>
     user: persistReducer(userPersistConfig, userReducer),
     app: persistReducer(appPersistConfig, appReducer),
     allCode: allCodeReducer,
+    restaurant: restaurantReducer,
   });
 
 export default rootReducer;

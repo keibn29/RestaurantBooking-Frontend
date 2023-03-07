@@ -3,7 +3,12 @@ import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
 // import "./MaterialTableData.scss";
 import * as actions from "../../../store/actions";
-import { LANGUAGES, TABLE_ITEMS } from "../../../utils";
+import {
+  LANGUAGES,
+  TABLE_ITEMS,
+  emitter,
+  EMITTER_EVENTS,
+} from "../../../utils";
 import {
   Grid,
   IconButton,
@@ -25,21 +30,42 @@ class MaterialTableData extends Component {
       listItem: [],
       pageSize: 10,
       pageIndex: 0,
-      totalUser: "",
+      totalItem: "",
     };
+
+    this.listenEmitterEvent();
   }
+
+  listenEmitterEvent = () => {
+    emitter.on(EMITTER_EVENTS.UPDATE_TABLE_DATA, () => {
+      this.updateTableData();
+    });
+  };
 
   componentDidMount() {
     this.updateTableData();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    let { itemName, listUser, totalUser } = this.props;
+    let { itemName, listUser, totalUser, listRestaurant, totalRestaurant } =
+      this.props;
     if (itemName === TABLE_ITEMS.USER && prevProps.listUser !== listUser) {
       this.setState({
         listItem: listUser,
-        totalUser: totalUser,
+        totalItem: totalUser,
       });
+    }
+    if (
+      itemName === TABLE_ITEMS.RESTAURANT &&
+      prevProps.listRestaurant !== listRestaurant
+    ) {
+      this.setState({
+        listItem: listRestaurant,
+        totalItem: totalRestaurant,
+      });
+    }
+    if (prevProps.language !== this.props.language) {
+      this.updateTableData();
     }
   }
 
@@ -84,8 +110,9 @@ class MaterialTableData extends Component {
   };
 
   render() {
-    let { listItem, pageSize, pageIndex, totalUser } = this.state;
+    let { listItem, pageSize, pageIndex, totalItem } = this.state;
     let { columns } = this.props;
+    // console.log(">>>list user: ", listItem);
 
     return (
       <>
@@ -126,7 +153,7 @@ class MaterialTableData extends Component {
             },
           }}
           rowsPerPageOptions={[1, 2, 5, 10, 25, 50]}
-          count={totalUser}
+          count={totalItem}
           rowsPerPage={pageSize}
           page={pageIndex}
           onChangeRowsPerPage={this.handleChangePageSize}
@@ -142,6 +169,8 @@ const mapStateToProps = (state) => {
     language: state.app.language,
     listUser: state.user.listUser,
     totalUser: state.user.totalUser,
+    listRestaurant: state.restaurant.listRestaurant,
+    totalRestaurant: state.restaurant.totalRestaurant,
   };
 };
 

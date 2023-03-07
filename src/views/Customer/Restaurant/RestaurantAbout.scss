@@ -1,0 +1,100 @@
+@import "../../../styles/variables";
+
+.restaurant-about-container {
+    .restaurant-about-about {
+        .restaurant-about-about-top {
+            margin-top: 20px;
+            text-align: justify;
+        }
+
+        .restaurant-about-about-center {
+            margin-top: 15px;
+
+            .restaurant-about-about-center-left {
+                display       : flex;
+                flex-direction: column;
+                gap           : 10px;
+            }
+
+            .restaurant-about-about-center-right {
+                .restaurant-about-about-center-right-header {
+                    color      : #FF6571;
+                    font-weight: 600;
+                }
+
+                display       : flex;
+                flex-direction: column;
+                gap           : 10px;
+                border-left   : 1px solid #ddd;
+                padding       : 0 30px;
+            }
+        }
+
+        .restaurant-about-about-bottom {
+            border-radius   : 5px;
+            margin-top      : 20px;
+            height          : 200px;
+            background-image: url("../../../assets/images/google-map.png");
+        }
+    }
+
+    .restaurant-about-menu {
+        .restaurant-about-menu-see-more {
+            color     : $colorhome;
+            text-align: center;
+            margin-top: 10px;
+
+            span {
+                cursor: pointer;
+
+                &:hover {
+                    color: #FF6571;
+                }
+            }
+        }
+    }
+
+    .restaurant-about-photo {
+        .restaurant-about-photo-list-photo {
+            margin-top : 25px;
+            display    : flex;
+            align-items: center;
+            gap        : 15px;
+
+            .photo-content {
+                border-radius   : 5px;
+                width           : 175px;
+                height          : 150px;
+                background-image: url("../../../assets/images/restaurant5.jpg");
+            }
+
+            .see-more-photo {
+                color: $colorhome;
+
+                span {
+                    cursor: pointer;
+
+                    &:hover {
+                        color: #FF6571;
+                    }
+                }
+            }
+        }
+    }
+
+    .restaurant-about-review {
+        .restaurant-about-review-see-more {
+            margin-top: 20px;
+            color     : $colorhome;
+            text-align: center;
+
+            span {
+                cursor: pointer;
+
+                &:hover {
+                    color: #FF6571;
+                }
+            }
+        }
+    }
+}

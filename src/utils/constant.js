@@ -4,6 +4,8 @@ export const PATH = {
   SYSTEM_LOGIN: "/system/login",
   LOG_OUT: "/logout",
   SYSTEM: "/system",
+  DETAIL_RESTAURANT: "/restaurant/:restaurantId",
+
   DOCTOR: "/doctor",
   DOCTOR_INFO: "/doctor-info/:id",
   VERIFY_EMAIL_BOOKING: "/verify-booking",
@@ -13,8 +15,18 @@ export const PATH = {
   MORE_INFOR: "/more",
 };
 
+export const NUMBER_ITEM_SLIDE_HOMEPAGE = 6;
+
+export const NAV_DETAIL_RESTAURANT = {
+  ABOUT: "about",
+  MENU: "menu",
+  PHOTOS: "photos",
+  REVIEWS: "reviews",
+};
+
 export const TABLE_ITEMS = {
   USER: "user",
+  RESTAURANT: "restaurant",
 };
 
 export const ALLCODES = {
@@ -25,6 +37,16 @@ export const ALLCODES = {
 export const LANGUAGES = {
   VI: "vi",
   EN: "en",
+};
+
+export const USER_ROLE = {
+  ADMIN: "R1",
+  RESTAURANT_MANAGER: "R2",
+  CUSTOMER: "R3",
+};
+
+export const EMITTER_EVENTS = {
+  UPDATE_TABLE_DATA: "UPDATE_TABLE_DATA",
 };
 
 export const CRUD_ACTIONS = {
@@ -41,10 +63,4 @@ export const dateFormat = {
 export const YesNoObj = {
   YES: "Y",
   NO: "N",
-};
-
-export const USER_ROLE = {
-  ADMIN: "R1",
-  DOCTOR: "R2",
-  PATIENT: "R3",
 };

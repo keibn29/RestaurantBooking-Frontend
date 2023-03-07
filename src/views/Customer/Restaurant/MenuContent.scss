@@ -1,0 +1,50 @@
+.menu-content-container {
+    .list-food {
+        margin-top    : 25px;
+        display       : flex;
+        flex-direction: column;
+        gap           : 15px;
+
+        .food-content {
+            display        : flex;
+            justify-content: space-between;
+            align-items    : center;
+
+            .food-content-left {
+                .food-avatar {
+                    cursor          : pointer;
+                    height          : 75px;
+                    width           : 75px;
+                    background-image: url("../../../assets/images/food1.jpg");
+                }
+
+                .food-information {
+                    cursor: pointer;
+
+                    .food-name {
+                        font-size  : 20px;
+                        font-weight: 600;
+                    }
+
+                    .food-price,
+                    .food-country {
+                        font-size: 15px;
+                        color    : #6e6e6e;
+                    }
+                }
+            }
+
+            .food-content-right {
+                .btn-order {
+                    width: 100px;
+
+                    &:hover {
+                        color           : white;
+                        background-color: #FF6571;
+                        border          : none;
+                    }
+                }
+            }
+        }
+    }
+}

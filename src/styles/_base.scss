@@ -9,7 +9,7 @@ html {
   overflow   : hidden;
 }
 
-.image-center-cover {
+.background-image-center-cover {
   background-position: center;
   background-size    : cover;
   background-repeat  : no-repeat;
@@ -28,11 +28,11 @@ html {
   padding: 0 !important;
 }
 
-.content {
-  margin            : 15px 30px;
-  box-shadow        : 2px 2px 4px 0 $box-shadow-color;
-  -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-}
+// .content {
+//   margin            : 15px 30px;
+//   box-shadow        : 2px 2px 4px 0 $box-shadow-color;
+//   -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
+// }
 
 .flex-center {
   display        : flex !important;
@@ -40,8 +40,16 @@ html {
   align-items    : center !important;
 }
 
+button {
+  text-transform: capitalize !important;
+}
+
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin            : 0;
+}
+
+.ck-editor__editable {
+  min-height: 250px;
 }

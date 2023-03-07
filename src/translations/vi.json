@@ -5,13 +5,9 @@
       "user": "Người dùng",
       "manage-user": "Quản lý người dùng",
       "restaurant": "Nhà hàng",
+      "manage-restaurant": "Quản lý nhà hàng",
       "food": "Món ăn",
       "handbook": "Bài đăng"
-    },
-    "admin": {
-      "user": {},
-      "restaurant": {},
-      "food": {}
     }
   }
 }

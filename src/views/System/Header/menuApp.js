@@ -12,6 +12,12 @@ export const adminMenu = [
   {
     //nhà hàng
     name: "system.header.restaurant",
+    menus: [
+      {
+        name: "system.header.manage-restaurant",
+        link: "/system/manage-restaurant",
+      },
+    ],
   },
   {
     //món ăn

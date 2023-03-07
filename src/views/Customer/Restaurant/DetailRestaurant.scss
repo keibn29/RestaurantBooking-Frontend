@@ -1,0 +1,61 @@
+@import "../../../styles/variables";
+
+.restaurant-container {
+    background-color: #f7f8fa;
+    min-height      : 100vh;
+
+    .restaurant-nav {
+        position: -webkit-sticky;
+        position: sticky;
+        top     : 75px;
+        z-index : 100;
+
+        .restaurant-nav-container {
+            background-color: white;
+            border-radius   : 0 0 5px 5px;
+            border-bottom   : 1px solid #ddd;
+            box-shadow      : 0 1px 2px #3333331a;
+            padding         : 10px 20px;
+            font-size       : 17px;
+            display         : flex;
+            justify-content : space-evenly;
+            font-weight     : 600;
+
+            .nav-item {
+                cursor: pointer;
+
+                &.nav-active {
+                    color: $colorhome;
+                }
+            }
+        }
+    }
+
+    .restaurant-content {
+        background-color: white;
+        border-radius   : 5px;
+        padding         : 20px;
+
+        .restaurant-content-title {
+            font-size  : 18px;
+            font-weight: 600;
+        }
+
+        &.restaurant-general {
+            padding      : 15px 20px 5px;
+            border-radius: 5px 5px 0 0;
+        }
+
+        &.restaurant-schedule {
+            position: -webkit-sticky;
+            position: sticky;
+            top     : calc(75px + 1.5rem);
+
+        }
+    }
+}
+
+
+.material-icon {
+    margin: 0 10px 5px 0;
+}

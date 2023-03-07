@@ -1,0 +1,85 @@
+@import "../../../styles/variables";
+
+.avatar-label,
+.photo-label {
+    padding      : 0 10px;
+    height       : 40px;
+    border       : 1px solid #bbb;
+    border-radius: 4px;
+    gap          : 10px;
+    cursor       : pointer;
+
+    &:hover {
+        background-color: $colormain;
+        color           : white;
+    }
+}
+
+.avatar-preview-grid {
+    position: relative;
+
+    .avatar-preview {
+        position        : absolute;
+        border-radius   : 4px;
+        // float        : right;
+        right           : 9px;
+        cursor          : pointer;
+        border          : 1px solid #bbb;
+
+        &.user {
+            width : 120px;
+            height: 120px;
+        }
+
+        &.restaurant {
+            width : 350px;
+            height: 200px;
+        }
+    }
+}
+
+.photo-container {
+    height: 170px;
+
+    .photo-label {
+        padding: 0 10px;
+    }
+
+    .photo-number {
+        // width           : 120px;
+        height          : 40px;
+        padding         : 0 10px;
+        cursor          : pointer;
+        border          : 1px solid #bbb;
+        border-radius   : 4px;
+        display         : flex;
+        background-color: #e8e8e8;
+
+        &:hover {
+            .number {
+                display: none;
+            }
+
+            .text {
+                display: block;
+            }
+        }
+
+        span {
+            margin   : auto;
+            // color : white;
+
+            &.number {
+                // font-size: 50px;
+            }
+
+            &.text {
+                display: none;
+            }
+        }
+    }
+}
+
+.material-table {
+    margin-top: 100px !important;
+}

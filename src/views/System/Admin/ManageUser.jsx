@@ -1,22 +1,23 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import "./ManageUser.scss";
-import * as actions from "../../../../store/actions";
-import { CRUD_ACTIONS, LANGUAGES, ALLCODES } from "../../../../utils";
+import "./Manage.scss";
+import * as actions from "../../../store/actions";
+import {
+  CRUD_ACTIONS,
+  LANGUAGES,
+  ALLCODES,
+  emitter,
+  EMITTER_EVENTS,
+  isExistArrayAndNotEmpty,
+} from "../../../utils";
 import {
   Grid,
-  IconButton,
-  Icon,
   Button,
-  InputAdornment,
-  Input,
-  TablePagination,
   MenuItem,
   TextField,
   InputLabel,
-  Box,
-  FormControl,
+  Container,
 } from "@material-ui/core";
 import {
   ValidatorForm,
@@ -24,11 +25,16 @@ import {
   SelectValidator,
 } from "react-material-ui-form-validator";
 import { toast } from "react-toastify";
-import MaterialTableAction from "../../../../components/MaterialTableAction";
-import MaterialTableData from "../MaterialTableData";
+import MaterialTableAction from "../../../components/MaterialTableAction";
+import MaterialTableData from "./MaterialTableData";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import { addNewUser } from "../../../../services/userService";
+import {
+  addNewUser,
+  deleteUserById,
+  editUserById,
+} from "../../../services/userService";
+import ConfirmationDialog from "../../../components/ConfirmationDialog";
 
 class ManageUser extends Component {
   constructor(props) {
@@ -46,6 +52,8 @@ class ManageUser extends Component {
       isOpenLightbox: false,
       avatarPreviewURL: "",
       avatar: null,
+      userId: "",
+      isOpenConfirmationDialog: false,
     };
   }
 
@@ -70,11 +78,14 @@ class ManageUser extends Component {
     ValidatorForm.addValidationRule("isPhone", (value) => {
       let firstDigitStr = String(value)[0];
       if (value.length !== 10 || Number(firstDigitStr) !== 0) {
+        if (value.length === 0) {
+          return true;
+        }
         return false;
       }
       return true;
     });
-    ValidatorForm.addValidationRule("isPassword", (value) => {
+    ValidatorForm.addValidationRule("isMatchPassword", (value) => {
       if (value !== this.state.password) {
         return false;
       }
@@ -82,7 +93,7 @@ class ManageUser extends Component {
     });
   };
 
-  handleFormSubmit = async () => {
+  handleSubmitForm = async () => {
     let {
       firstName,
       lastName,
@@ -92,9 +103,10 @@ class ManageUser extends Component {
       address,
       roleId,
       avatar,
+      userId,
     } = this.state;
 
-    let res = await addNewUser({
+    let data = {
       firstName,
       lastName,
       phone,
@@ -103,12 +115,26 @@ class ManageUser extends Component {
       address,
       roleId,
       avatar,
-    });
-    if (res && res.errCode === 0) {
-      toast.success("Thêm mới người dùng thành công");
-      this.handleClearForm();
+    };
+
+    if (!userId) {
+      let res = await addNewUser(data);
+      if (res && res.errCode === 0) {
+        toast.success("Thêm mới người dùng thành công");
+        this.handleClearForm();
+        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+      } else {
+        toast.error(res.errMessage);
+      }
     } else {
-      toast.error(res.errMessage);
+      let res = await editUserById(userId, data);
+      if (res && res.errCode === 0) {
+        toast.success("Thay đổi thông tin người dùng thành công");
+        this.handleClearForm();
+        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+      } else {
+        toast.error(res.errMessage);
+      }
     }
   };
 
@@ -125,6 +151,7 @@ class ManageUser extends Component {
       isOpenLightbox: false,
       avatarPreviewURL: "",
       avatar: null,
+      userId: "",
     });
     // window.location.reload(false);
   };
@@ -149,10 +176,8 @@ class ManageUser extends Component {
   };
 
   handleAvatarPreview = (action) => {
-    if (action === "open") {
-      if (!this.state.avatarPreviewURL) {
-        return;
-      }
+    if (action === "open" && !this.state.avatarPreviewURL) {
+      return;
     }
     this.setState({
       isOpenLightbox: !this.state.isOpenLightbox,
@@ -160,11 +185,44 @@ class ManageUser extends Component {
   };
 
   handleEditUser = (userData) => {
-    console.log(userData);
+    this.setState({
+      firstName: userData.firstName,
+      lastName: userData.lastName,
+      phone: userData.phone,
+      email: userData.email,
+      password: "hardcode",
+      repeatPassword: "hardcode",
+      address: userData.address,
+      roleId: userData.roleId,
+      avatarPreviewURL: process.env.REACT_APP_BACKEND_URL + userData.avatar,
+      avatar: null,
+      userId: userData.id,
+    });
   };
 
-  handleDeleteUser = (userId) => {
-    console.log(userId);
+  handleCloseConfirmationDialog = () => {
+    this.setState({
+      isOpenConfirmationDialog: false,
+    });
+  };
+
+  handleDeleteUser = async (userId) => {
+    this.setState({
+      isOpenConfirmationDialog: true,
+      userId: userId,
+    });
+  };
+
+  handleConfirmDelete = async () => {
+    this.setState({
+      isOpenConfirmationDialog: false,
+    });
+    let res = await deleteUserById(this.state.userId);
+    if (res && res.errCode === 0) {
+      toast.success("Xóa người dùng thành công");
+    } else {
+      toast.error(res.errMessage);
+    }
   };
 
   render() {
@@ -178,11 +236,11 @@ class ManageUser extends Component {
       address,
       listRole,
       roleId,
-      avatar,
+      userId,
       avatarPreviewURL,
       isOpenLightbox,
+      isOpenConfirmationDialog,
     } = this.state;
-    console.log(avatarPreviewURL);
     let { language } = this.props;
     let columns = [
       {
@@ -238,13 +296,13 @@ class ManageUser extends Component {
     ];
     return (
       <>
-        <div className="container mt-3">
+        <Container className="mt-3">
           <Grid container>
             <Grid item xs={12} className="title mb-3">
               Quản lý người dùng
             </Grid>
             <Grid item xs={12}>
-              <ValidatorForm ref="form" onSubmit={this.handleFormSubmit}>
+              <ValidatorForm ref="form" onSubmit={this.handleSubmitForm}>
                 <Grid container spacing={2}>
                   <Grid item xs={4}>
                     <TextValidator
@@ -252,19 +310,70 @@ class ManageUser extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Họ
+                          Email
                         </span>
                       }
                       onChange={(event) => {
                         this.handleChangeInput(event);
                       }}
-                      type="text"
-                      name="lastName"
-                      value={lastName}
-                      validators={["required"]}
-                      errorMessages={["Vui lòng nhập họ"]}
+                      type="email"
+                      name="email"
+                      value={email}
+                      validators={["required", "isEmail"]}
+                      errorMessages={[
+                        "Vui lòng nhập email",
+                        "Vui lòng nhập đúng định dạng email",
+                      ]}
                       variant="outlined"
                       size="small"
+                      disabled={userId ? true : false}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextValidator
+                      className="w-100"
+                      label={
+                        <span>
+                          <span className="red-color"> * </span>
+                          Password
+                        </span>
+                      }
+                      onChange={(event) => {
+                        this.handleChangeInput(event);
+                      }}
+                      type="password"
+                      name="password"
+                      value={password}
+                      validators={["required"]}
+                      errorMessages={["Vui lòng nhập password"]}
+                      variant="outlined"
+                      size="small"
+                      disabled={userId ? true : false}
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextValidator
+                      className="w-100"
+                      label={
+                        <span>
+                          <span className="red-color"> * </span>
+                          Repeat Password
+                        </span>
+                      }
+                      onChange={(event) => {
+                        this.handleChangeInput(event);
+                      }}
+                      type="password"
+                      name="repeatPassword"
+                      value={repeatPassword}
+                      validators={["required", "isMatchPassword"]}
+                      errorMessages={[
+                        "Vui lòng nhập repeatPassword",
+                        "Mật khẩu không trùng khớp",
+                      ]}
+                      variant="outlined"
+                      size="small"
+                      disabled={userId ? true : false}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -294,6 +403,27 @@ class ManageUser extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
+                          Họ
+                        </span>
+                      }
+                      onChange={(event) => {
+                        this.handleChangeInput(event);
+                      }}
+                      type="text"
+                      name="lastName"
+                      value={lastName}
+                      validators={["required"]}
+                      errorMessages={["Vui lòng nhập họ"]}
+                      variant="outlined"
+                      size="small"
+                    />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <TextValidator
+                      className="w-100"
+                      label={
+                        <span>
+                          <span className="red-color"> * </span>
                           Số điện thoại
                         </span>
                       }
@@ -307,75 +437,6 @@ class ManageUser extends Component {
                       errorMessages={[
                         "Vui lòng nhập số điện thoại",
                         "Vui lòng nhập số điện thoại hợp lệ",
-                      ]}
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextValidator
-                      className="w-100"
-                      label={
-                        <span>
-                          <span className="red-color"> * </span>
-                          Email
-                        </span>
-                      }
-                      onChange={(event) => {
-                        this.handleChangeInput(event);
-                      }}
-                      type="email"
-                      name="email"
-                      value={email}
-                      validators={["required", "isEmail"]}
-                      errorMessages={[
-                        "Vui lòng nhập email",
-                        "Vui lòng nhập đúng định dạng email",
-                      ]}
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextValidator
-                      className="w-100"
-                      label={
-                        <span>
-                          <span className="red-color"> * </span>
-                          Password
-                        </span>
-                      }
-                      onChange={(event) => {
-                        this.handleChangeInput(event);
-                      }}
-                      type="password"
-                      name="password"
-                      value={password}
-                      validators={["required"]}
-                      errorMessages={["Vui lòng nhập password"]}
-                      variant="outlined"
-                      size="small"
-                    />
-                  </Grid>
-                  <Grid item xs={4}>
-                    <TextValidator
-                      className="w-100"
-                      label={
-                        <span>
-                          <span className="red-color"> * </span>
-                          Repeat Password
-                        </span>
-                      }
-                      onChange={(event) => {
-                        this.handleChangeInput(event);
-                      }}
-                      type="password"
-                      name="repeatPassword"
-                      value={repeatPassword}
-                      validators={["required", "isPassword"]}
-                      errorMessages={[
-                        "Vui lòng nhập repeatPassword",
-                        "Mật khẩu không trùng khớp",
                       ]}
                       variant="outlined"
                       size="small"
@@ -421,8 +482,7 @@ class ManageUser extends Component {
                       variant="outlined"
                       size="small"
                     >
-                      {listRole &&
-                        listRole.length > 0 &&
+                      {isExistArrayAndNotEmpty(listRole) &&
                         listRole.map((item) => {
                           return (
                             <MenuItem key={item.id} value={item.keyMap}>
@@ -454,23 +514,16 @@ class ManageUser extends Component {
                     </InputLabel>
                   </Grid>
                   <Grid item xs={2} className="avatar-preview-grid">
-                    <Box
-                      className="avatar-preview image-center-cover"
+                    <Grid
+                      className="user avatar-preview background-image-center-cover"
                       style={{ backgroundImage: `url(${avatarPreviewURL})` }}
                       onClick={() => {
                         this.handleAvatarPreview("open");
                       }}
-                    ></Box>
+                    ></Grid>
                   </Grid>
                 </Grid>
-                <Grid
-                  item
-                  xs={12}
-                  container
-                  // justifyContent="center"
-                  spacing={1}
-                  className="mt-4"
-                >
+                <Grid item xs={12} container spacing={1} className="mt-4">
                   <Grid item>
                     <Button
                       className="text-capitalize"
@@ -478,7 +531,7 @@ class ManageUser extends Component {
                       color="primary"
                       type="submit"
                     >
-                      Save
+                      {!userId ? "Thêm" : "Sửa"}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -496,6 +549,19 @@ class ManageUser extends Component {
                 </Grid>
               </ValidatorForm>
             </Grid>
+            <Grid item xs={12}>
+              {isOpenConfirmationDialog && (
+                <ConfirmationDialog
+                  title={"Xác nhận"}
+                  text={"Bạn chắc chắn muốn xóa người dùng này?"}
+                  isOpen={isOpenConfirmationDialog}
+                  onCancelClick={this.handleCloseConfirmationDialog}
+                  onConfirmClick={this.handleConfirmDelete}
+                  confirm={"Xác nhận"}
+                  cancel={"Hủy"}
+                />
+              )}
+            </Grid>
             <Grid item xs={12} className="material-table">
               <MaterialTableData
                 itemName="user"
@@ -504,7 +570,7 @@ class ManageUser extends Component {
               />
             </Grid>
           </Grid>
-        </div>
+        </Container>
         {isOpenLightbox && (
           <Lightbox
             mainSrc={avatarPreviewURL}

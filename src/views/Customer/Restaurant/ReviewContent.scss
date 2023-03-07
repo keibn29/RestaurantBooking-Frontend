@@ -1,0 +1,87 @@
+.review-content-container {
+    .review-content-top {
+        margin-top     : 25px;
+        display        : flex;
+        justify-content: space-evenly;
+
+        .review-content-top-left {
+            display       : flex;
+            flex-direction: column;
+            align-items   : center;
+
+            .review-content-top-left-up {
+                font-size: 75px;
+            }
+        }
+    }
+
+    .review-content-bottom {
+        margin-top: 20px;
+
+        .review-content-bottom-up {}
+
+        .review-content-bottom-down {
+            .list-review {
+                // display          : flex;
+                // flex-direction   : column;
+                // gap           : 15px;
+
+                .content {
+                    border-bottom: 1px solid #ddd;
+                    padding      : 10px 0;
+
+                    &:first-child {
+                        border-top: 1px solid #ddd;
+                    }
+
+                    .customer-information-and-score {
+                        display        : flex;
+                        justify-content: space-between;
+                        align-items    : start;
+
+                        .customer-information {
+                            display: flex;
+                            gap    : 15px;
+
+                            .customer-information-left {
+                                background-image: url("../../../assets/images/restaurant5.jpg");
+                                width           : 50px;
+                                height          : 50px;
+                                border-radius   : 50%;
+                            }
+
+                            .customer-information-right {
+                                .customer-name {
+                                    font-weight: 600;
+                                }
+
+                                .customer-date {
+                                    font-size: 15px;
+                                    color    : #6e6e6e;
+                                }
+                            }
+                        }
+
+                        .review-score {
+                            color              : white;
+                            background-color   : #3FAF6C;
+                            // font-weight     : 600;
+                            padding            : 5px;
+                            border-radius      : 20px;
+                            width              : 55px;
+                            text-align         : center;
+
+                            span {
+                                font-size: 12px;
+                            }
+                        }
+                    }
+
+                    .review-text {
+                        margin-top: 5px;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,32 +1,33 @@
 import * as userActions from "../actions/userActions";
 
 const initialState = {
-  isLoggedIn: false,
-  userInfo: null,
+  isLoggedInSystem: false,
+  userInfo: "",
   listUser: [],
   totalUser: "",
+  listUserByRole: [],
 };
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     //login
-    case userActions.LOGIN_SUCCESS:
+    case userActions.SYSTEM_LOGIN_SUCCESS:
       return {
         ...state,
-        isLoggedIn: true,
+        isLoggedInSystem: true,
         userInfo: action.userInfo,
       };
-    case userActions.LOGIN_FAILED:
+    case userActions.SYSTEM_LOGIN_FAILED:
       return {
         ...state,
-        isLoggedIn: false,
-        userInfo: null,
+        isLoggedInSystem: false,
+        userInfo: "",
       };
-    case userActions.PROCESS_LOGOUT:
+    case userActions.SYSTEM_LOGOUT_FAILED:
       return {
         ...state,
-        isLoggedIn: false,
-        userInfo: null,
+        isLoggedInSystem: false,
+        userInfo: "",
       };
 
     //get-list-user
@@ -41,6 +42,18 @@ const userReducer = (state = initialState, action) => {
         ...state,
         listUser: [],
         totalUser: "",
+      };
+
+    //get-all-user-by-role
+    case userActions.GET_ALL_USER_BY_ROLE_SUCCESS:
+      return {
+        ...state,
+        listUserByRole: action.listUser,
+      };
+    case userActions.GET_ALL_USER_BY_ROLE_FAILED:
+      return {
+        ...state,
+        listUserByRole: [],
       };
 
     default:

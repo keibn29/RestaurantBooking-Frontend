@@ -28,9 +28,23 @@ function* getListUserSaga(payload) {
   }
 }
 
+function* getAllUserByRoleSaga(payload) {
+  try {
+    const res = yield call(userService.getAllUserByRole, payload.role);
+    if (res && res.errCode === 0) {
+      yield put(userActions.getAllUserByRoleSuccess(res.listUser));
+    } else {
+      yield put(userActions.getAllUserByRoleFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(userActions.getAllUserByRoleFailed(e));
+  }
+}
+
 function* userSaga() {
-  yield takeLatest(userActions.LOGIN, loginSaga);
+  yield takeLatest(userActions.SYSTEM_LOGIN, loginSaga);
   yield takeLatest(userActions.GET_LIST_USER, getListUserSaga);
+  yield takeLatest(userActions.GET_ALL_USER_BY_ROLE, getAllUserByRoleSaga);
 }
 
 export default userSaga;

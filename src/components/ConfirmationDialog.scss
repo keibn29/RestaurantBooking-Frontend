@@ -1,0 +1,14 @@
+.dialog-title {
+    font-weight: bold;
+}
+
+.dialog-action {
+    display        : flex;
+    justify-content: flex-end;
+    padding-right  : 10px;
+    gap            : 7px;
+
+    .dialog-button {
+        text-transform: capitalize;
+    }
+}

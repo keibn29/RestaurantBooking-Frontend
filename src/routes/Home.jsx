@@ -1,11 +1,16 @@
 import React, { Component } from "react";
 import { Redirect } from "react-router-dom";
 import { connect } from "react-redux";
+import { PATH } from "../utils";
 
 class Home extends Component {
   render() {
-    const { isLoggedIn } = this.props;
-    let linkToRedirect = isLoggedIn ? "/system/manage-user" : "/home";
+    const { isLoggedInSystem } = this.props;
+    let linkToRedirect = isLoggedInSystem
+      ? "/system/manage-user"
+      : PATH.HOMEPAGE;
+
+    // let linkToRedirect = PATH.HOMEPAGE;
 
     return <Redirect to={linkToRedirect} />;
   }
@@ -13,7 +18,7 @@ class Home extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    isLoggedIn: state.user.isLoggedIn,
+    isLoggedInSystem: state.user.isLoggedInSystem,
   };
 };
 

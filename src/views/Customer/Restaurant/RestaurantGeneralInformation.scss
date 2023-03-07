@@ -1,0 +1,68 @@
+@import "../../../styles/variables";
+
+.restaurant-general-container {
+    .restaurant-general-top {
+        display        : flex;
+        justify-content: space-between;
+
+        .restaurant-general-top-left {
+            .restaurant-name {
+                font-size  : 30px;
+                font-weight: 600;
+            }
+
+            .restaurant-province-country,
+            .restaurant-average-price {
+                font-size: 14px;
+                color    : #6e6e6e;
+            }
+        }
+
+        .restaurant-general-top-right {
+            padding-top: 10px;
+
+            .score {
+                margin          : 0 auto;
+                color           : white;
+                background-color: #3FAF6C;
+                font-weight     : 600;
+                padding         : 5px;
+                border-radius   : 20px;
+                width           : 55px;
+                text-align      : center;
+
+                span {
+                    font-size: 12px;
+                }
+            }
+
+            .number-review {
+                font-size: 14px;
+                color    : #6e6e6e;
+            }
+        }
+    }
+
+    .restaurant-general-center {
+        border-radius   : 5px;
+        margin-top      : 15px;
+        height          : 450px;
+        background-image: url("../../../assets/images/restaurant5.jpg");
+    }
+
+    .restaurant-general-bottom {
+        margin-top     : 15px;
+        font-size      : 17px;
+        display        : flex;
+        justify-content: space-evenly;
+        font-weight    : 600;
+
+        .nav-item {
+            cursor: pointer;
+
+            &.nav-active {
+                color: $colorhome;
+            }
+        }
+    }
+}
