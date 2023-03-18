@@ -4,6 +4,8 @@ import { Route, Switch } from "react-router-dom";
 import { ConnectedRouter as Router } from "connected-react-router";
 import { history } from "../redux";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import "../styles/styles.scss";
 import {
   userIsAuthenticated,
   userIsNotAuthenticated,
@@ -14,11 +16,9 @@ import SystemLogin from "./System/Auth/SystemLogin";
 import System from "../routes/System";
 import CustomScrollbars from "../components/CustomScrollbars";
 import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-// import { createTheme, ThemeProvider } from '@mui/material/styles';
-
+import ScrollToTop from "../components/ScrollToTop";
 import Homepage from "./Customer/Homepage/Homepage";
 import DetailRestaurant from "./Customer/Restaurant/DetailRestaurant";
-import RestaurantPhoto from "./Customer/Restaurant/RestaurantPhoto";
 
 const muiTheme = createMuiTheme({
   palette: {
@@ -34,7 +34,7 @@ const muiTheme = createMuiTheme({
 class App extends Component {
   handlePersistorState = () => {
     const { persistor } = this.props;
-    let { bootstrapped } = persistor.getState();
+    const { bootstrapped } = persistor.getState();
     if (bootstrapped) {
       if (this.props.onBeforeLift) {
         Promise.resolve(this.props.onBeforeLift())
@@ -55,6 +55,7 @@ class App extends Component {
       <Fragment>
         <MuiThemeProvider theme={muiTheme}>
           <Router history={history}>
+            {/* <ScrollToTop /> */}
             <div className="main-container">
               <div className="content-container">
                 <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
@@ -76,10 +77,9 @@ class App extends Component {
                   </Switch>
                 </CustomScrollbars>
               </div>
-
               <ToastContainer
                 position="top-right"
-                autoClose={2000}
+                autoClose={3000}
                 hideProgressBar
                 newestOnTop={false}
                 closeOnClick
@@ -87,6 +87,7 @@ class App extends Component {
                 pauseOnFocusLoss
                 draggable
                 pauseOnHover
+                theme="colored"
               />
             </div>
           </Router>

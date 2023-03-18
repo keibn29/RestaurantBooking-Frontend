@@ -1,35 +1,68 @@
 import { toast } from "react-toastify";
 
-//login
+//system-login
 export const SYSTEM_LOGIN = "SYSTEM_LOGIN";
 export const SYSTEM_LOGIN_SUCCESS = "SYSTEM_LOGIN_SUCCESS";
 export const SYSTEM_LOGIN_FAILED = "SYSTEM_LOGIN_FAILED";
-export const SYSTEM_LOGOUT_FAILED = "SYSTEM_LOGOUT_FAILED";
+export const SYSTEM_LOGOUT = "SYSTEM_LOGOUT";
 
-export const login = (data) => {
+export const systemLogin = (data) => {
   return {
     type: SYSTEM_LOGIN,
     data,
   };
 };
 
-export const loginSuccess = (userInfo) => {
+export const systemLoginSuccess = (userInfo) => {
   return {
     type: SYSTEM_LOGIN_SUCCESS,
     userInfo,
   };
 };
 
-export const loginFailed = (err) => {
+export const systemLoginFailed = (err) => {
   toast.error(err);
   return {
     type: SYSTEM_LOGIN_FAILED,
   };
 };
 
-export const processLogout = () => {
+export const systemLogout = () => {
   return {
-    type: SYSTEM_LOGOUT_FAILED,
+    type: SYSTEM_LOGOUT,
+  };
+};
+
+//customer-login
+export const CUSTOMER_LOGIN = "CUSTOMER_LOGIN";
+export const CUSTOMER_LOGIN_SUCCESS = "CUSTOMER_LOGIN_SUCCESS";
+export const CUSTOMER_LOGIN_FAILED = "CUSTOMER_LOGIN_FAILED";
+export const CUSTOMER_LOGOUT = "CUSTOMER_LOGOUT";
+
+export const customerLogin = (data) => {
+  return {
+    type: CUSTOMER_LOGIN,
+    data,
+  };
+};
+
+export const customerLoginSuccess = (customerInfo) => {
+  return {
+    type: CUSTOMER_LOGIN_SUCCESS,
+    customerInfo,
+  };
+};
+
+export const customerLoginFailed = (err) => {
+  toast.error(err);
+  return {
+    type: CUSTOMER_LOGIN_FAILED,
+  };
+};
+
+export const customerLogout = () => {
+  return {
+    type: CUSTOMER_LOGOUT,
   };
 };
 
@@ -83,5 +116,25 @@ export const getAllUserByRoleFailed = (error) => {
   toast.error(error);
   return {
     type: GET_ALL_USER_BY_ROLE_FAILED,
+  };
+};
+
+//add-food-order
+export const ADD_FOOD_ORDER = "ADD_FOOD_ORDER";
+
+export const addFoodOrder = (food) => {
+  return {
+    type: ADD_FOOD_ORDER,
+    food,
+  };
+};
+
+//update-food-order
+export const UPDATE_FOOD_ORDER = "UPDATE_FOOD_ORDER";
+
+export const updateFoodOrder = (foodId) => {
+  return {
+    type: UPDATE_FOOD_ORDER,
+    foodId,
   };
 };

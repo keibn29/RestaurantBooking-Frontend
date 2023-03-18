@@ -1,32 +1,32 @@
-@import "../../../styles/variables";
+@import "../../../../styles/variables";
 
 .restaurant-about-container {
     .restaurant-about-about {
-        .restaurant-about-about-top {
-            margin-top: 20px;
-            text-align: justify;
-        }
-
         .restaurant-about-about-center {
             margin-top: 15px;
 
             .restaurant-about-about-center-left {
                 display       : flex;
                 flex-direction: column;
-                gap           : 10px;
+                gap           : 15px;
             }
 
             .restaurant-about-about-center-right {
-                .restaurant-about-about-center-right-header {
-                    color      : #FF6571;
-                    font-weight: 600;
-                }
-
                 display       : flex;
                 flex-direction: column;
                 gap           : 10px;
                 border-left   : 1px solid #ddd;
                 padding       : 0 30px;
+
+                .restaurant-about-about-center-right-header {
+                    color      : $colorpink;
+                    font-weight: 600;
+                    font-size  : 17px;
+                }
+
+                .day-active {
+                    color: $colorpink;
+                }
             }
         }
 
@@ -34,7 +34,7 @@
             border-radius   : 5px;
             margin-top      : 20px;
             height          : 200px;
-            background-image: url("../../../assets/images/google-map.png");
+            background-image: url("../../../../assets/images/google-map.png");
         }
     }
 
@@ -48,7 +48,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    color: #FF6571;
+                    color: #DA7B00;
                 }
             }
         }
@@ -65,7 +65,7 @@
                 border-radius   : 5px;
                 width           : 175px;
                 height          : 150px;
-                background-image: url("../../../assets/images/restaurant5.jpg");
+                background-image: url("../../../../assets/images/restaurant5.jpg");
             }
 
             .see-more-photo {
@@ -75,7 +75,7 @@
                     cursor: pointer;
 
                     &:hover {
-                        color: #FF6571;
+                        color: #DA7B00;
                     }
                 }
             }
@@ -92,7 +92,7 @@
                 cursor: pointer;
 
                 &:hover {
-                    color: #FF6571;
+                    color: #DA7B00;
                 }
             }
         }

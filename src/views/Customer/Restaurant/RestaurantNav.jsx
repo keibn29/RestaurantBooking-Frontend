@@ -17,43 +17,54 @@ import {
   FormControl,
   Container,
 } from "@material-ui/core";
-import { Language, Phone, PinDropOutlined } from "@material-ui/icons";
-import ReviewContent from "./ReviewContent";
-// import "./RestaurantNav.scss";
-import MenuContent from "./MenuContent";
+import ReviewContent from "./Reviews/ReviewContent";
+import MenuContent from "./Menu/MenuContent";
 
 class RestaurantNav extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      navSelected: NAV_DETAIL_RESTAURANT.ABOUT,
+      navSelected: "",
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getNavSelectedFromParent();
+  }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.navSelected !== this.props.navSelected) {
+      this.setState({
+        navSelected: this.props.navSelected,
+      });
+    }
+  }
+
+  getNavSelectedFromParent = () => {
+    this.setState({
+      navSelected: this.props.navSelected,
+    });
+  };
 
   handleChangeNavSelected = (navSelected) => {
-    this.props.changeNavSelectedFromParent(navSelected);
-    this.setState({
-      navSelected: navSelected,
+    this.props.handleChangeNavSelected(navSelected);
+    const element = document.getElementById("detail-restaurant-top");
+    element.scrollIntoView({
+      behavior: "smooth",
     });
-    const element = document.getElementById("top");
-    // element.scrollIntoView({
-    //   behavior: "smooth",
-    //   block: "end",
-    // });
-    element.scrollTo(0, 500);
   };
 
   render() {
-    let { language } = this.props;
-    let { navSelected } = this.state;
+    const { language } = this.props;
+    const { navSelected } = this.state;
 
     return (
       <>
-        <Grid className="restaurant-nav-container">
+        <Grid
+          container
+          justify="space-evenly"
+          className="restaurant-nav-container"
+        >
           <Grid
             className={
               navSelected === NAV_DETAIL_RESTAURANT.ABOUT
@@ -65,6 +76,7 @@ class RestaurantNav extends Component {
             }}
           >
             About
+            {navSelected === NAV_DETAIL_RESTAURANT.ABOUT && <hr />}
           </Grid>
           <Grid
             className={
@@ -77,6 +89,7 @@ class RestaurantNav extends Component {
             }}
           >
             Menu
+            {navSelected === NAV_DETAIL_RESTAURANT.MENU && <hr />}
           </Grid>
           <Grid
             className={
@@ -89,6 +102,7 @@ class RestaurantNav extends Component {
             }}
           >
             Photos
+            {navSelected === NAV_DETAIL_RESTAURANT.PHOTOS && <hr />}
           </Grid>
           <Grid
             className={
@@ -101,6 +115,7 @@ class RestaurantNav extends Component {
             }}
           >
             Reviews
+            {navSelected === NAV_DETAIL_RESTAURANT.REVIEWS && <hr />}
           </Grid>
         </Grid>
       </>

@@ -1,5 +1,26 @@
 @import "variables";
 
+.background-image-center-cover {
+    background-position: center;
+    background-size    : cover;
+    background-repeat  : no-repeat;
+}
+
+.title {
+    text-align    : center;
+    text-transform: uppercase;
+    font-weight   : bold;
+    font-size     : $base-size + 4px;
+    margin-top    : 15px;
+    color         : $colormain;
+}
+
+.flex-center {
+    display        : flex !important;
+    justify-content: center !important;
+    align-items    : center !important;
+}
+
 .text-center {
     text-align: center !important;
 }

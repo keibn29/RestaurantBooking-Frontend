@@ -51,3 +51,55 @@ export const getAllProvinceFailed = (err) => {
     type: GET_ALL_PROVINCE_FAILED,
   };
 };
+
+//get-country
+export const GET_ALL_COUNTRY = "GET_ALL_COUNTRY";
+export const GET_ALL_COUNTRY_SUCCESS = "GET_ALL_COUNTRY_SUCCESS";
+export const GET_ALL_COUNTRY_FAILED = "GET_ALL_COUNTRY_FAILED";
+
+export const getAllCountry = (code) => {
+  return {
+    type: GET_ALL_COUNTRY,
+    code,
+  };
+};
+
+export const getAllCountrySuccess = (listCode) => {
+  return {
+    type: GET_ALL_COUNTRY_SUCCESS,
+    listCode,
+  };
+};
+
+export const getAllCountryFailed = (err) => {
+  toast.error(err);
+  return {
+    type: GET_ALL_COUNTRY_FAILED,
+  };
+};
+
+//get-time
+export const GET_ALL_TIME = "GET_ALL_TIME";
+export const GET_ALL_TIME_SUCCESS = "GET_ALL_TIME_SUCCESS";
+export const GET_ALL_TIME_FAILED = "GET_ALL_TIME_FAILED";
+
+export const getAllTime = (code) => {
+  return {
+    type: GET_ALL_TIME,
+    code,
+  };
+};
+
+export const getAllTimeSuccess = (listCode) => {
+  return {
+    type: GET_ALL_TIME_SUCCESS,
+    listCode,
+  };
+};
+
+export const getAllTimeFailed = (err) => {
+  toast.error(err);
+  return {
+    type: GET_ALL_TIME_FAILED,
+  };
+};

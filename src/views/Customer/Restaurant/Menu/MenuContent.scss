@@ -1,3 +1,5 @@
+@import "../../../../styles/variables";
+
 .menu-content-container {
     .list-food {
         margin-top    : 25px;
@@ -11,15 +13,15 @@
             align-items    : center;
 
             .food-content-left {
+                cursor : pointer;
+                display: flex;
+
                 .food-avatar {
-                    cursor          : pointer;
-                    height          : 75px;
-                    width           : 75px;
-                    background-image: url("../../../assets/images/food1.jpg");
+                    height: 75px;
+                    width : 75px;
                 }
 
                 .food-information {
-                    cursor: pointer;
 
                     .food-name {
                         font-size  : 20px;
@@ -40,7 +42,7 @@
 
                     &:hover {
                         color           : white;
-                        background-color: #FF6571;
+                        background-color: $colorpink;
                         border          : none;
                     }
                 }

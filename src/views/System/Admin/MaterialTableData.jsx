@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-// import "./MaterialTableData.scss";
 import * as actions from "../../../store/actions";
 import {
   LANGUAGES,
@@ -40,15 +39,27 @@ class MaterialTableData extends Component {
     emitter.on(EMITTER_EVENTS.UPDATE_TABLE_DATA, () => {
       this.updateTableData();
     });
+    emitter.on(EMITTER_EVENTS.FETCH_LIST_FOOD_BY_RESTAURANT, () => {
+      this.updateTableData();
+    });
   };
 
   componentDidMount() {
-    this.updateTableData();
+    if (this.props.itemName !== TABLE_ITEMS.FOOD) {
+      this.updateTableData();
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    let { itemName, listUser, totalUser, listRestaurant, totalRestaurant } =
-      this.props;
+    const {
+      itemName,
+      listUser,
+      totalUser,
+      listRestaurant,
+      totalRestaurant,
+      listFood,
+      totalFood,
+    } = this.props;
     if (itemName === TABLE_ITEMS.USER && prevProps.listUser !== listUser) {
       this.setState({
         listItem: listUser,
@@ -64,13 +75,19 @@ class MaterialTableData extends Component {
         totalItem: totalRestaurant,
       });
     }
+    if (itemName === TABLE_ITEMS.FOOD && prevProps.listFood !== listFood) {
+      this.setState({
+        listItem: listFood,
+        totalItem: totalFood,
+      });
+    }
     if (prevProps.language !== this.props.language) {
       this.updateTableData();
     }
   }
 
   updateTableData = () => {
-    let { pageSize } = this.state;
+    const { pageSize } = this.state;
     let pageOrder = this.state.pageIndex + 1;
     this.props.getListItem({
       pageSize,
@@ -110,9 +127,8 @@ class MaterialTableData extends Component {
   };
 
   render() {
-    let { listItem, pageSize, pageIndex, totalItem } = this.state;
-    let { columns } = this.props;
-    // console.log(">>>list user: ", listItem);
+    const { listItem, pageSize, pageIndex, totalItem } = this.state;
+    const { columns, localization } = this.props;
 
     return (
       <>
@@ -137,7 +153,7 @@ class MaterialTableData extends Component {
           }}
           localization={{
             body: {
-              emptyDataSourceMessage: "Không có bản ghi nào",
+              emptyDataSourceMessage: localization || "Không có bản ghi nào",
             },
           }}
         />
@@ -171,6 +187,8 @@ const mapStateToProps = (state) => {
     totalUser: state.user.totalUser,
     listRestaurant: state.restaurant.listRestaurant,
     totalRestaurant: state.restaurant.totalRestaurant,
+    listFood: state.food.listFood,
+    totalFood: state.food.totalFood,
   };
 };
 

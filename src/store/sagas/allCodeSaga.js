@@ -30,9 +30,39 @@ function* getAllProvinceSaga(payload) {
   }
 }
 
+//country
+function* getAllCountrySaga(payload) {
+  try {
+    const res = yield call(allCodeService.getAllCodeByType, payload.code);
+    if (res && res.errCode === 0) {
+      yield put(allCodeActions.getAllCountrySuccess(res.listCode));
+    } else {
+      yield put(allCodeActions.getAllCountryFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(allCodeActions.getAllCountryFailed(e));
+  }
+}
+
+//time
+function* getAllTimeSaga(payload) {
+  try {
+    const res = yield call(allCodeService.getAllCodeByType, payload.code);
+    if (res && res.errCode === 0) {
+      yield put(allCodeActions.getAllTimeSuccess(res.listCode));
+    } else {
+      yield put(allCodeActions.getAllTimeFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(allCodeActions.getAllTimeFailed(e));
+  }
+}
+
 function* allCodeSaga() {
   yield takeLatest(allCodeActions.GET_ALL_ROLE, getAllRoleSaga);
   yield takeLatest(allCodeActions.GET_ALL_PROVINCE, getAllProvinceSaga);
+  yield takeLatest(allCodeActions.GET_ALL_COUNTRY, getAllCountrySaga);
+  yield takeLatest(allCodeActions.GET_ALL_TIME, getAllTimeSaga);
 }
 
 export default allCodeSaga;

@@ -1,0 +1,93 @@
+@import"../../../../styles/variables";
+
+.review-dialog-container {
+    padding: 20px;
+
+    .review-dialog-header {
+        text-align : center;
+        font-size  : 25px;
+        font-weight: 600;
+        color      : #FC8558;
+        position   : relative;
+
+        .btn-close-dialog {
+            position: absolute;
+            right   : -12px;
+            top     : -5px;
+        }
+    }
+
+    .review-dialog-body {
+        margin-top: 30px;
+
+        .review-dialog-customer-info {
+            display: flex;
+            gap    : 10px;
+
+            .customer-info-left {
+                height          : 50px;
+                width           : 50px;
+                border-radius   : 50%;
+                background-image: url("../../../../assets/images/customer-avatar-default.png");
+            }
+
+            .customer-info-right {
+                .customer-name {
+                    font-weight: 600;
+                    font-size  : 17px;
+                }
+
+                .customer-text {
+                    font-size: 15px;
+                }
+            }
+        }
+
+        .review-dialog-rating {
+            margin-top     : 10px;
+            display        : flex;
+            justify-content: center;
+
+            .rating {
+                font-size: 50px;
+            }
+        }
+
+        .review-dialog-input {
+            margin-top: 15px;
+
+            textarea {
+                resize : none;
+                height : 75px;
+                outline: none;
+            }
+        }
+    }
+
+    .review-dialog-footer {
+        margin-top     : 30px;
+        display        : flex;
+        justify-content: center;
+        gap            : 10px;
+
+        .btn-save {
+            color           : white;
+            background-color: #3FAF6C;
+            border          : none;
+
+            &:hover {
+                background-color: #329d5d;
+            }
+        }
+
+        .btn-cancel {
+            color           : white;
+            background-color: $colorpink;
+            border          : none;
+
+            &:hover {
+                background-color: $colorpink-hover;
+            }
+        }
+    }
+}

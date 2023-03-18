@@ -58,8 +58,8 @@ class RestaurantHighScore extends Component {
   };
 
   render() {
-    let { language, settings } = this.props;
-    let { listRestaurant } = this.state;
+    const { language, settings } = this.props;
+    const { listRestaurant } = this.state;
 
     return (
       <>
@@ -80,7 +80,7 @@ class RestaurantHighScore extends Component {
               {isExistArrayAndNotEmpty(listRestaurant) &&
                 listRestaurant.map((item) => {
                   return (
-                    <Grid className="section-body-outer">
+                    <Grid className="section-body-outer" key={item.id}>
                       <Grid
                         className="content"
                         onClick={() => {
@@ -110,7 +110,8 @@ class RestaurantHighScore extends Component {
                                   : item.provinceData.valueEn}
                               </Grid>
                               <Grid className="restaurant-country">
-                                <i class="icon fas fa-utensils"></i> Nhật Bản
+                                <i className="icon fas fa-utensils"></i> Nhật
+                                Bản
                               </Grid>
                             </Grid>
                             <Grid className="restaurant-score">

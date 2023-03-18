@@ -13,6 +13,14 @@
         background-color: $colormain;
         color           : white;
     }
+
+    &.no-effect {
+        cursor: default;
+
+        &:hover {
+            background-color: white;
+        }
+    }
 }
 
 .avatar-preview-grid {
@@ -26,7 +34,8 @@
         cursor          : pointer;
         border          : 1px solid #bbb;
 
-        &.user {
+        &.user,
+        &.food {
             width : 120px;
             height: 120px;
         }
@@ -40,6 +49,10 @@
 
 .photo-container {
     height: 170px;
+
+    &.food {
+        height: 90px;
+    }
 
     .photo-label {
         padding: 0 10px;
@@ -77,6 +90,14 @@
                 display: none;
             }
         }
+    }
+}
+
+.ckeditor-container {
+    .description-error {
+        font-size  : 13px;
+        color      : #DB2F2F;
+        margin-left: 10px;
     }
 }
 

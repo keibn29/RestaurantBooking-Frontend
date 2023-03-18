@@ -27,7 +27,7 @@ class HaNoiRestaurant extends Component {
   }
 
   render() {
-    let { language, settings } = this.props;
+    const { language, settings } = this.props;
 
     return (
       <>

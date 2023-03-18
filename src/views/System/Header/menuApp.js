@@ -17,11 +17,21 @@ export const adminMenu = [
         name: "system.header.manage-restaurant",
         link: "/system/manage-restaurant",
       },
+      {
+        name: "system.header.manage-schedule",
+        link: "/system/manage-schedule",
+      },
     ],
   },
   {
     //món ăn
     name: "system.header.food",
+    menus: [
+      {
+        name: "system.header.manage-food",
+        link: "/system/manage-food",
+      },
+    ],
   },
   {
     //bài đăng

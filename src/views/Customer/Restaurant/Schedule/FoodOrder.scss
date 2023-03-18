@@ -1,0 +1,86 @@
+@import"../../../../styles/variables";
+
+.food-order-container {
+    padding: 20px;
+
+    .food-order-header {
+        font-size  : 20px;
+        font-weight: 600;
+
+        .btn-close-dialog {
+            position: absolute;
+            right   : 5px;
+            top     : 12px;
+        }
+    }
+
+    .food-order-body {
+        margin-top: 20px;
+
+        .list-food-order {
+
+            .food-order-content {
+                display        : flex;
+                justify-content: space-between;
+                align-items    : center;
+                border-bottom  : 1px solid #ddd;
+                padding        : 10px 0;
+
+                &:first-child {
+                    border-top: 1px solid #ddd;
+                }
+
+                .food-order-content-left {
+                    display: flex;
+                    gap    : 10px;
+
+                    .food-order-avatar {
+                        height       : 70px;
+                        width        : 70px;
+                        border-radius: 5px;
+                    }
+
+                    .food-order-name-price-country {
+                        .food-order-name {
+                            font-weight: 600;
+                            font-size  : 18px;
+                        }
+
+                        .food-order-price,
+                        .food-order-country {
+                            font-size: 14px;
+                            color    : #6e6e6e;
+                        }
+                    }
+                }
+
+                .food-order-content-right {
+                    .btn-remove-food-order {
+                        font-size: 30px;
+                        color    : $colorpink;
+                        cursor   : pointer;
+
+                        &:hover {
+                            color: red;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .food-order-footer {
+        margin-top: 25px;
+        text-align: center;
+
+        .btn-confirm {
+            background-color: $colorpink;
+            color           : white;
+            border          : none;
+
+            &:hover {
+                background-color: $colorpink-hover;
+            }
+        }
+    }
+}

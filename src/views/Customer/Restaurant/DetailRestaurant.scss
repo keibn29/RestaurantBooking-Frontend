@@ -14,21 +14,33 @@
             background-color: white;
             border-radius   : 0 0 5px 5px;
             border-bottom   : 1px solid #ddd;
-            box-shadow      : 0 1px 2px #3333331a;
             padding         : 10px 20px;
             font-size       : 17px;
-            display         : flex;
-            justify-content : space-evenly;
             font-weight     : 600;
 
             .nav-item {
-                cursor: pointer;
+                cursor     : pointer;
+                user-select: none;
 
                 &.nav-active {
-                    color: $colorhome;
+                    position: relative;
+                    color   : $colorhome;
+
+                    hr {
+                        position        : absolute;
+                        top             : 17px;
+                        left            : 0;
+                        right           : 0;
+                        background-color: $colorhome;
+                        height          : 2px;
+                    }
                 }
             }
         }
+    }
+
+    #detail-restaurant-top {
+        scroll-margin-top: calc(75px + 45px);
     }
 
     .restaurant-content {
@@ -36,8 +48,14 @@
         border-radius   : 5px;
         padding         : 20px;
 
+        .grid-mui-icon {
+            display    : flex;
+            align-items: center;
+            gap        : 10px;
+        }
+
         .restaurant-content-title {
-            font-size  : 18px;
+            font-size  : 19px;
             font-weight: 600;
         }
 
@@ -52,10 +70,11 @@
             top     : calc(75px + 1.5rem);
 
         }
+
+        &.restaurant-menu,
+        &.restaurant-photo,
+        &.restaurant-review {
+            min-height: calc(100vh - 75px);
+        }
     }
-}
-
-
-.material-icon {
-    margin: 0 10px 5px 0;
 }

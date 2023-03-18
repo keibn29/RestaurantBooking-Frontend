@@ -23,7 +23,7 @@ class Header extends Component {
 
   //Tạo menu phân quyền người dùng
   componentDidMount() {
-    let { userInfo } = this.props;
+    const { userInfo } = this.props;
     let menu = [];
     if (userInfo && !_.isEmpty(userInfo)) {
       // !_.Empty(A): A không rỗng <lodash>
@@ -40,7 +40,7 @@ class Header extends Component {
   }
 
   render() {
-    const { processLogout, language, userInfo } = this.props;
+    const { systemLogout, language, userInfo } = this.props;
 
     return (
       <div className="header-container">
@@ -74,11 +74,7 @@ class Header extends Component {
             EN
           </span>
           {/* nút logout */}
-          <div
-            className="btn btn-logout"
-            title="Logout"
-            onClick={processLogout}
-          >
+          <div className="btn btn-logout" title="Logout" onClick={systemLogout}>
             <i className="fas fa-sign-out-alt"></i>
           </div>
         </div>
@@ -97,7 +93,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    processLogout: () => dispatch(actions.processLogout()),
+    systemLogout: () => dispatch(actions.systemLogout()),
     changeLanguageAppRedux: (language) =>
       dispatch(actions.changeLanguageApp(language)),
   };

@@ -12,6 +12,13 @@ import DaNangRestaurant from "./HomeSections/DaNangRestaurant";
 import HoChiMinhRestaurant from "./HomeSections/HoChiMinhRestaurant";
 
 class HomePage extends Component {
+  componentDidMount() {
+    // document.getElementById("home-header").scrollIntoView({
+    //   // behavior: "smooth",
+    //   block: "end",
+    // });
+  }
+
   render() {
     const settings = {
       dots: false,

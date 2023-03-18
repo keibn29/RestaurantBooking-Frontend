@@ -24,10 +24,31 @@ function* getListRestaurantSaga(payload) {
   }
 }
 
+function* getScheduleByDateSaga(payload) {
+  try {
+    const res = yield call(
+      restaurantService.getScheduleByDate,
+      payload.restaurantId,
+      payload.date
+    );
+    if (res && res.errCode === 0) {
+      yield put(restaurantActions.getScheduleByDateSuccess(res.listSchedule));
+    } else {
+      yield put(restaurantActions.getScheduleByDateFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(restaurantActions.getScheduleByDateFailed(e));
+  }
+}
+
 function* restaurantSaga() {
   yield takeLatest(
     restaurantActions.GET_LIST_RESTAURANT,
     getListRestaurantSaga
+  );
+  yield takeLatest(
+    restaurantActions.GET_SCHEDULE_BY_DATE,
+    getScheduleByDateSaga
   );
 }
 

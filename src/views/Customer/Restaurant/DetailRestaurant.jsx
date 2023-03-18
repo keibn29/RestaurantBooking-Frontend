@@ -19,12 +19,12 @@ import {
   FormControl,
   Container,
 } from "@material-ui/core";
-import RestaurantGeneralInformation from "./RestaurantGeneralInformation";
-import RestaurantSchedule from "./RestaurantSchedule";
-import RestaurantAbout from "./RestaurantAbout";
-import RestaurantMenu from "./RestaurantMenu";
-import RestaurantPhoto from "./RestaurantPhoto";
-import RestaurantReview from "./RestaurantReview";
+import RestaurantGeneralInformation from "./GeneralInformation/RestaurantGeneralInformation";
+import RestaurantSchedule from "./Schedule/RestaurantSchedule";
+import RestaurantAbout from "./About/RestaurantAbout";
+import RestaurantMenu from "./Menu/RestaurantMenu";
+import RestaurantPhoto from "./Photos/RestaurantPhoto";
+import RestaurantReview from "./Reviews/RestaurantReview";
 import RestaurantNav from "./RestaurantNav";
 
 class DetailRestaurant extends Component {
@@ -32,38 +32,37 @@ class DetailRestaurant extends Component {
     super(props);
     this.state = {
       navSelected: NAV_DETAIL_RESTAURANT.ABOUT,
-      // restaurantId: "",
+      restaurantId: "",
     };
   }
 
   componentDidMount() {
-    // if (
-    //   this.props.match &&
-    //   this.props.match.params &&
-    //   this.props.match.params.restaurantId
-    // ) {
-    //   let restaurantId = this.props.match.params.restaurantId;
-    //   this.setState({
-    //     restaurantId: restaurantId,
-    //   });
-    // }
+    if (
+      this.props.match &&
+      this.props.match.params &&
+      this.props.match.params.restaurantId
+    ) {
+      let restaurantId = this.props.match.params.restaurantId;
+      this.setState({
+        restaurantId: restaurantId,
+      });
+    }
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
 
   handleChangeNavSelected = (navSelected) => {
-    console.log(navSelected);
     this.setState({
       navSelected: navSelected,
     });
   };
 
   render() {
-    let { navSelected } = this.state;
+    const { navSelected, restaurantId } = this.state;
 
     return (
       <>
-        <HomeHeader isShowBanner={false} />
+        <HomeHeader isShowHeaderSearch={true} />
         <Grid className="restaurant-container pt-4">
           <Container>
             <Grid container spacing={3}>
@@ -77,25 +76,29 @@ class DetailRestaurant extends Component {
                 </Grid>
                 <Grid item xs={12} className="restaurant-nav">
                   <RestaurantNav
-                    changeNavSelectedFromParent={this.handleChangeNavSelected}
+                    handleChangeNavSelected={this.handleChangeNavSelected}
+                    navSelected={navSelected}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={12} id="detail-restaurant-top">
                   {navSelected === NAV_DETAIL_RESTAURANT.ABOUT && (
-                    <RestaurantAbout />
+                    <RestaurantAbout
+                      handleChangeNavSelected={this.handleChangeNavSelected}
+                      restaurantId={restaurantId}
+                    />
                   )}
                   {navSelected === NAV_DETAIL_RESTAURANT.MENU && (
-                    <Grid className="restaurant-content mt-4">
-                      <RestaurantMenu />
+                    <Grid className="restaurant-content restaurant-menu mt-4">
+                      <RestaurantMenu restaurantId={restaurantId} />
                     </Grid>
                   )}
                   {navSelected === NAV_DETAIL_RESTAURANT.PHOTOS && (
-                    <Grid className="restaurant-content mt-4">
+                    <Grid className="restaurant-content restaurant-photo mt-4">
                       <RestaurantPhoto />
                     </Grid>
                   )}
                   {navSelected === NAV_DETAIL_RESTAURANT.REVIEWS && (
-                    <Grid className="restaurant-content mt-4">
+                    <Grid className="restaurant-content restaurant-review mt-4">
                       <RestaurantReview />
                     </Grid>
                   )}
@@ -103,7 +106,7 @@ class DetailRestaurant extends Component {
               </Grid>
               <Grid item xs={4}>
                 <Grid className="restaurant-content restaurant-schedule">
-                  <RestaurantSchedule />
+                  <RestaurantSchedule restaurantId={restaurantId} />
                 </Grid>
               </Grid>
             </Grid>

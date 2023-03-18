@@ -1,0 +1,94 @@
+@import "../../../../styles/variables";
+
+.detail-food-container {
+    min-height: 500px;
+
+    .detail-food-left {
+        padding        : 20px;
+        display        : flex;
+        flex-direction : column;
+        justify-content: space-between;
+
+        .detail-food-left-top {
+            .food-name {
+                font-size  : 30px;
+                font-weight: 600;
+            }
+
+            .food-country {}
+
+            .food-description {
+                margin-top   : 15px;
+                // text-align: justify;
+            }
+
+            .food-list-photo {
+                margin-top: 20px;
+                display   : flex;
+                gap       : 5px;
+
+                .food-photo-content {
+                    background-image: url("../../../../assets/images/food1.jpg");
+                    height          : 100px;
+                    width           : 100px;
+                    border-radius   : 5px;
+
+                    &.see-more-food-photo {
+                        background-image: none;
+                        display         : flex;
+                        background-color: rgb(224, 187, 187);
+                        color           : white;
+                        cursor          : pointer;
+
+                        .food-photo-number {
+                            margin   : auto;
+                            font-size: 30px;
+                        }
+
+                        .food-photo-text {
+                            margin    : auto;
+                            text-align: center;
+                            font-size : inherit;
+                            display   : none;
+                        }
+
+                        &:hover {
+                            .food-photo-number {
+                                display: none;
+                            }
+
+                            .food-photo-text {
+                                display: inline;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        .detail-food-left-bottom {
+            display         : flex;
+            gap             : 10px;
+            // margin-bottom: 5px;
+
+            .btn-back {
+                border-color: $colorpink;
+                color       : $colorpink;
+            }
+
+            .btn-order {
+                border          : none;
+                color           : white;
+                background-color: $colorpink;
+
+                &:hover {
+                    background-color: $colorpink-hover;
+                }
+            }
+        }
+    }
+
+    .detail-food-right {
+        background-image: url("../../../../assets/images/food1.jpg");
+    }
+}

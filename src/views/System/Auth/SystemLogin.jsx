@@ -4,6 +4,7 @@ import { push } from "connected-react-router";
 import "./SystemLogin.scss";
 import { FormattedMessage } from "react-intl";
 import * as actions from "../../../store/actions";
+import { PAGE_LOGIN } from "../../../utils";
 
 class SystemLogin extends Component {
   constructor(props) {
@@ -27,13 +28,14 @@ class SystemLogin extends Component {
     });
   };
 
-  handleLogin = () => {
-    let { email, password } = this.state;
+  handleSystemLogin = () => {
+    const { email, password } = this.state;
     let data = {
       email,
       password,
+      pageLogin: PAGE_LOGIN.SYSTEM,
     };
-    this.props.handleLogin(data);
+    this.props.handleSystemLogin(data);
   };
 
   handleShowHidePassword = () => {
@@ -44,7 +46,7 @@ class SystemLogin extends Component {
 
   handleKeyDown = (event) => {
     if (event.key === "Enter" || event.keyCode === 13) {
-      this.handleLogin();
+      this.handleSystemLogin();
     }
   };
 
@@ -53,7 +55,7 @@ class SystemLogin extends Component {
       <div className="login-background">
         <div className="login-container">
           <div className="login-content row">
-            <div className="col-12 login-text">SystemLogin</div>
+            <div className="col-12 login-text">System Login</div>
             <div className="col-12 form-group login-input">
               <label>Username</label>
               <input
@@ -89,8 +91,8 @@ class SystemLogin extends Component {
                   <i
                     className={
                       this.state.isShowPassword
-                        ? "far fa-eye-slash"
-                        : "far fa-eye"
+                        ? "far fa-eye"
+                        : "far fa-eye-slash"
                     }
                   ></i>
                 </span>
@@ -103,17 +105,17 @@ class SystemLogin extends Component {
               <button
                 className="btn-login"
                 onClick={() => {
-                  this.handleLogin();
+                  this.handleSystemLogin();
                 }}
               >
-                SystemLogin
+                Login
               </button>
             </div>
             <div className="col-12 forgot-text">
               <span className="forgot-password">Forgot your password?</span>
             </div>
             <div className="col-12 text-center mt-3">
-              <span className="text-other-login">Or SystemLogin with</span>
+              <span className="text-other-login">Or Login with</span>
             </div>
             <div className="col-12 social-login">
               <i className="fab fa-google google"></i>
@@ -136,7 +138,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     navigate: (path) => dispatch(push(path)),
-    handleLogin: (data) => dispatch(actions.login(data)),
+    handleSystemLogin: (data) => dispatch(actions.systemLogin(data)),
   };
 };
 

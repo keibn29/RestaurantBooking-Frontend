@@ -1,0 +1,147 @@
+@import"../../../styles/variables";
+
+.customer-login-container {
+    padding        : 20px 40px;
+    display        : flex;
+    flex-direction : column;
+    justify-content: space-between;
+
+    &.login {
+        height: 600px;
+    }
+
+    &.signup {
+        height: 675px;
+    }
+
+    .customer-login-header {
+        user-select: none;
+        font-size  : 30px;
+        font-weight: 600;
+        text-align : center;
+        position   : relative;
+        color      : #FC8558;
+
+        .btn-close-dialog {
+            position: absolute;
+            right   : -15px;
+            top     : 0;
+        }
+    }
+
+    .customer-login-body {
+        margin-top: 40px;
+
+        .input-label {
+            position: absolute;
+            top     : -8px;
+            color   : black;
+        }
+
+        .email-input-container {
+            position: relative;
+
+            .user-icon {
+                position : absolute;
+                top      : 12px;
+                font-size: 30px;
+                color    : gray;
+            }
+        }
+
+        .password-input-container {
+            position  : relative;
+            margin-top: 30px;
+
+            .password-icon {
+                position : absolute;
+                top      : 13px;
+                font-size: 27px;
+                color    : gray;
+            }
+
+            .password-show-hide-icon {
+                i {
+                    position : absolute;
+                    top      : 17px;
+                    right    : 0;
+                    font-size: 24px;
+                    z-index  : 100;
+                    cursor   : pointer;
+                    color    : black;
+                }
+            }
+        }
+
+        .forgot-password {
+            text-align : right;
+            margin-top : 5px;
+            font-size  : 15px;
+            color      : #FC8558;
+            cursor     : pointer;
+            user-select: none;
+        }
+
+        .note {
+            text-align: right;
+            margin-top: 5px;
+            font-size : 14px;
+        }
+
+        .submit-button {
+            margin-top: 20px;
+
+            .btn-submit-form {
+                font-size : 17px;
+                color     : white;
+                background: linear-gradient(135deg, $colorpink 0%, $colorhome 100%);
+            }
+        }
+
+        .social-login {
+            margin-top: 20px;
+
+            .social-login-text {
+                text-align: center;
+            }
+
+            .social-login-icon {
+                display        : flex;
+                justify-content: center;
+                margin-top     : 10px;
+
+                i {
+                    font-size      : 30px;
+                    border-radius  : 50%;
+                    width          : 50px;
+                    height         : 50px;
+                    display        : flex;
+                    align-items    : center;
+                    justify-content: center;
+                    color          : white;
+                    margin         : 0 5px;
+                    cursor         : pointer;
+
+                    &.google {
+                        background: rgb(175, 24, 24);
+                    }
+
+                    &.facebook {
+                        background: rgb(83, 113, 231);
+                    }
+                }
+            }
+        }
+    }
+
+    .customer-login-footer {
+        text-align: center;
+        margin-top: 10px;
+
+        span {
+            color      : #FC8558;
+            cursor     : pointer;
+            user-select: none;
+        }
+    }
+}

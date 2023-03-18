@@ -1,0 +1,177 @@
+@import "../../../../styles/variables";
+
+.restaurant-schedule-container {
+    gap: 30px;
+
+    .flex-between-center {
+        display        : flex;
+        justify-content: space-between;
+        align-items    : center;
+    }
+
+    .restaurant-schedule-infor {
+        user-select: none;
+
+        .date-left {
+            width: 100%;
+        }
+
+        .people-show-option {
+            position: relative;
+
+            .people-show-option-bottom {
+                box-shadow      : 0 1px 2px $box-shadow-color;
+                border          : 1px solid #ddd;
+                padding         : 15px;
+                background-color: white;
+                position        : absolute;
+                top             : 30px;
+                left            : 0;
+                right           : 0;
+                display         : flex;
+                justify-content : center;
+                flex-wrap       : wrap;
+                gap             : 10px;
+
+                .option-item {
+                    width          : 40px;
+                    height         : 40px;
+                    font-size      : 14px;
+                    border-radius  : 50%;
+                    display        : flex;
+                    justify-content: center;
+                    align-items    : center;
+                    cursor         : pointer;
+
+                    &:hover {
+                        background-color: $color-hover-mui;
+                    }
+
+                    &.option-active {
+                        background-color: $colorpink;
+                        color           : white;
+                    }
+                }
+            }
+        }
+
+        &.date {
+            display    : flex;
+            align-items: center;
+
+            .date-left {
+
+                .flatpickr-input {
+                    border     : none !important;
+                    width      : calc(100% - 34px - 16px);
+                    padding    : 0 !important;
+                    outline    : none !important;
+                    color      : $colorpink;
+                    font-weight: 600;
+                }
+            }
+        }
+
+        &.people,
+        &.date {
+            cursor     : pointer;
+            font-weight: 600;
+
+            .text {
+                color: $colorpink;
+            }
+
+            .drop-down,
+            .drop-up {
+                font-size: 18px;
+            }
+        }
+
+        &.time {
+            cursor: default;
+
+            .list-schedule {
+                margin-top: 15px;
+
+                .schedule-content {
+                    border       : 1px solid #ddd;
+                    box-shadow   : 0px 1px 2px $box-shadow-color;
+                    text-align   : center;
+                    padding      : 7px;
+                    border-radius: 5px;
+                    cursor       : pointer;
+
+                    &:hover {
+                        background-color: #f7f8fa;
+                    }
+
+                    &.time-active {
+                        background-color: $colorpink;
+                        color           : white;
+                    }
+                }
+            }
+        }
+
+        &.food {
+            .schedule-list-food-order {
+                display   : flex;
+                gap       : 5px;
+                flex-wrap : wrap;
+                margin-top: 10px;
+
+                .schedule-food-order-content {
+                    font-size    : 15px;
+                    border       : 1px solid $colorpink;
+                    box-shadow   : 0px 1px 2px $box-shadow-color;
+                    padding      : 0 30px 0 15px;
+                    border-radius: 15px;
+                    position     : relative;
+
+                    .clear-food-icon {
+                        position        : absolute;
+                        top             : 11%;
+                        right           : 3px;
+                        font-size       : 17px;
+                        padding         : 2px;
+                        border-radius   : 50%;
+                        background-color: $colorpink;
+                        color           : white;
+                        cursor          : pointer;
+
+                        &:hover {
+                            background-color: $colorpink-hover;
+                        }
+                    }
+
+                    &.more {
+                        padding         : 0 10px;
+                        background-color: $colorpink;
+                        color           : white;
+                        cursor          : pointer;
+
+                        &:hover {
+                            background-color: $colorpink-hover;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .restaurant-schedule-book {
+        .btn-book {
+            text-align      : center;
+            background-color: $colorpink;
+            color           : white;
+            padding         : 8px;
+            cursor          : pointer;
+            border-radius   : 5px;
+            font-size       : inherit;
+
+            &:hover {
+                background-color: $colorpink-hover;
+            }
+        }
+    }
+}

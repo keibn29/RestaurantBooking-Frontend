@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import "./Manage.scss";
+import "./Management.scss";
 import * as actions from "../../../store/actions";
 import {
   CRUD_ACTIONS,
@@ -37,20 +37,16 @@ import MaterialTableAction from "../../../components/MaterialTableAction";
 import MaterialTableData from "./MaterialTableData";
 import Lightbox from "react-image-lightbox";
 import "react-image-lightbox/style.css";
-import {
-  addNewUser,
-  deleteUserById,
-  editUserById,
-} from "../../../services/userService";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {
   addNewRestaurant,
   editRestaurantById,
+  deleteRestaurantById,
 } from "../../../services/restaurantService";
 
-class ManageRestaurant extends Component {
+class RestaurantManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,6 +54,8 @@ class ManageRestaurant extends Component {
       nameEn: "",
       descriptionVi: "",
       descriptionEn: "",
+      isDescriptionViError: false,
+      isDescriptionEnError: false,
       addressVi: "",
       addressEn: "",
       listProvince: [],
@@ -96,32 +94,41 @@ class ManageRestaurant extends Component {
   }
 
   fetchListRestaurant = (data) => {
-    let { language } = this.props;
-    console.log(language);
+    const { language } = this.props;
     this.props.getListRestaurant(data, language);
   };
 
-  //   handleAddValidationRule = () => {
-  //     ValidatorForm.addValidationRule("isPhone", (value) => {
-  //       let firstDigitStr = String(value)[0];
-  //       if (value.length !== 10 || Number(firstDigitStr) !== 0) {
-  //         if (value.length === 0) {
-  //           return true;
-  //         }
-  //         return false;
-  //       }
-  //       return true;
-  //     });
-  //     ValidatorForm.addValidationRule("isMatchPassword", (value) => {
-  //       if (value !== this.state.password) {
-  //         return false;
-  //       }
-  //       return true;
-  //     });
-  //   };
+  isValidCkEditor = () => {
+    const { descriptionVi, descriptionEn } = this.state;
+    let isValid = true;
 
-  handleSubmitForm = async () => {
-    let {
+    if (!descriptionVi) {
+      isValid = false;
+      this.setState({
+        isDescriptionViError: true,
+      });
+    } else {
+      this.setState({
+        isDescriptionViError: false,
+      });
+    }
+
+    if (!descriptionEn) {
+      isValid = false;
+      this.setState({
+        isDescriptionEnError: true,
+      });
+    } else {
+      this.setState({
+        isDescriptionEnError: false,
+      });
+    }
+
+    return isValid;
+  };
+
+  handleSubmitForm = () => {
+    const {
       nameVi,
       nameEn,
       descriptionVi,
@@ -150,25 +157,36 @@ class ManageRestaurant extends Component {
       listPhoto,
       restaurantId,
     };
+    let isValidCkEditor = this.isValidCkEditor();
 
-    if (!restaurantId) {
-      let res = await addNewRestaurant(data);
-      if (res && res.errCode === 0) {
-        toast.success("Thêm mới nhà hàng thành công");
-        this.handleClearForm();
-        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+    if (isValidCkEditor) {
+      if (!restaurantId) {
+        this.callApiAddNewRestaurant(data);
       } else {
-        toast.error(res.errMessage);
+        this.callApiEditRestaurantById(restaurantId, data);
       }
+    }
+  };
+
+  callApiAddNewRestaurant = async (data) => {
+    const res = await addNewRestaurant(data);
+    if (res && res.errCode === 0) {
+      toast.success("Thêm mới nhà hàng thành công");
+      this.handleClearForm();
+      emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
     } else {
-      let res = await editRestaurantById(restaurantId, data);
-      if (res && res.errCode === 0) {
-        toast.success("Thay đổi thông tin nhà hàng thành công");
-        this.handleClearForm();
-        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
-      } else {
-        toast.error(res.errMessage);
-      }
+      toast.error(res.errMessage);
+    }
+  };
+
+  callApiEditRestaurantById = async (restaurantId, data) => {
+    const res = await editRestaurantById(restaurantId, data);
+    if (res && res.errCode === 0) {
+      toast.success("Thay đổi thông tin nhà hàng thành công");
+      this.handleClearForm();
+      emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+    } else {
+      toast.error(res.errMessage);
     }
   };
 
@@ -240,7 +258,7 @@ class ManageRestaurant extends Component {
   };
 
   handleShowHidePhotosLightbox = (action) => {
-    let { listPhoto } = this.state;
+    const { listPhoto } = this.state;
     if (action === "open" && listPhoto.length === 0) {
       return;
     }
@@ -257,7 +275,7 @@ class ManageRestaurant extends Component {
     });
   };
 
-  handleEditUser = (restaurantData) => {
+  handleEditRestaurant = (restaurantData) => {
     this.setState({
       ...restaurantData,
       avatarPreviewURL:
@@ -269,39 +287,43 @@ class ManageRestaurant extends Component {
     });
   };
 
-  //   handleCloseConfirmationDialog = () => {
-  //     this.setState({
-  //       isOpenConfirmationDialog: false,
-  //     });
-  //   };
+  handleCloseConfirmationDialog = () => {
+    this.setState({
+      isOpenConfirmationDialog: false,
+    });
+  };
 
-  //   handleDeleteUser = async (restaurantId) => {
-  //     this.setState({
-  //       isOpenConfirmationDialog: true,
-  //       restaurantId: restaurantId,
-  //     });
-  //   };
+  handleDeleteRestaurant = async (restaurantId) => {
+    this.setState({
+      isOpenConfirmationDialog: true,
+      restaurantId: restaurantId,
+    });
+  };
 
-  //   handleConfirmDelete = async () => {
-  //     this.setState({
-  //       isOpenConfirmationDialog: false,
-  //     });
-  //     let res = await deleteUserById(this.state.restaurantId);
-  //     if (res && res.errCode === 0) {
-  //       toast.success("Xóa người dùng thành công");
-  //     } else {
-  //       toast.error(res.errMessage);
-  //     }
-  //   };
+  handleConfirmDelete = async () => {
+    this.setState({
+      isOpenConfirmationDialog: false,
+    });
+    const res = await deleteRestaurantById(this.state.restaurantId);
+    if (res && res.errCode === 0) {
+      toast.success("Xóa nhà hàng thành công");
+      this.handleClearForm();
+      emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+    } else {
+      toast.error(res.errMessage);
+    }
+  };
 
   render() {
-    let {
+    const {
       nameVi,
       nameEn,
       descriptionVi,
       descriptionEn,
       addressVi,
       addressEn,
+      isDescriptionViError,
+      isDescriptionEnError,
       listProvince,
       provinceSelected,
       listManager,
@@ -314,8 +336,9 @@ class ManageRestaurant extends Component {
       listPhotoPreviewURL,
       avatarPreviewURL,
       isOpenAvatarLightbox,
+      isOpenConfirmationDialog,
     } = this.state;
-    let { language } = this.props;
+    const { language } = this.props;
     let columns = [
       {
         title: "STT",
@@ -339,7 +362,6 @@ class ManageRestaurant extends Component {
       },
       {
         title: "Người quản lý",
-        // field: "managerData",
         align: "left",
         render: (rowData) =>
           language === LANGUAGES.VI
@@ -365,26 +387,23 @@ class ManageRestaurant extends Component {
             item={rowData}
             onSelect={(rowData, method) => {
               if (method === CRUD_ACTIONS.EDIT) {
-                this.handleEditUser(rowData);
+                this.handleEditRestaurant(rowData);
               }
               if (method === CRUD_ACTIONS.DELETE) {
-                this.handleDeleteUser(rowData.id);
+                this.handleDeleteRestaurant(rowData.id);
               }
             }}
           />
         ),
       },
     ];
-    console.log(this.state);
 
     return (
       <>
         <Container className="mt-3">
-          <Grid container>
-            <Grid item xs={12} className="title mb-3">
-              Quản lý nhà hàng
-            </Grid>
-            <Grid item xs={12}>
+          <Grid>
+            <Grid className="title mb-3">Quản lý nhà hàng</Grid>
+            <Grid>
               <ValidatorForm ref="form" onSubmit={this.handleSubmitForm}>
                 <Grid container spacing={2}>
                   <Grid item xs={6}>
@@ -473,7 +492,7 @@ class ManageRestaurant extends Component {
                   </Grid>
                   <Grid item xs={3}>
                     <SelectValidator
-                      className="w-100 mb-16"
+                      className="w-100"
                       label={
                         <span>
                           <span className="red-color"> * </span>
@@ -504,7 +523,7 @@ class ManageRestaurant extends Component {
                   </Grid>
                   <Grid item xs={3}>
                     <SelectValidator
-                      className="w-100 mb-16"
+                      className="w-100"
                       label={
                         <span>
                           <span className="red-color"> * </span>
@@ -570,7 +589,7 @@ class ManageRestaurant extends Component {
                       variant="standard"
                     >
                       Avatar
-                      <i class="fas fa-upload"></i>
+                      <i className="fas fa-upload"></i>
                     </InputLabel>
                   </Grid>
                   <Grid item xs={4} className="avatar-preview-grid">
@@ -608,7 +627,7 @@ class ManageRestaurant extends Component {
                         variant="standard"
                       >
                         Photos
-                        <i class="fas fa-upload"></i>
+                        <i className="fas fa-upload"></i>
                       </InputLabel>
                     </Grid>
                     <Grid item>
@@ -625,7 +644,7 @@ class ManageRestaurant extends Component {
                       </Grid>
                     </Grid>
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={6} className="ckeditor-container">
                     <InputLabel htmlFor="descriptionVi">
                       Thông tin nhà hàng (VI)
                     </InputLabel>
@@ -642,8 +661,13 @@ class ManageRestaurant extends Component {
                         );
                       }}
                     />
+                    {isDescriptionViError && (
+                      <span className="description-error">
+                        Vui lòng nhập mô tả nhà hàng
+                      </span>
+                    )}
                   </Grid>
-                  <Grid item xs={6}>
+                  <Grid item xs={6} className="ckeditor-container">
                     <InputLabel htmlFor="descriptionEn">
                       Thông tin nhà hàng (EN)
                     </InputLabel>
@@ -660,15 +684,23 @@ class ManageRestaurant extends Component {
                         );
                       }}
                     />
+                    {isDescriptionEnError && (
+                      <span className="description-error">
+                        Vui lòng nhập mô tả nhà hàng
+                      </span>
+                    )}
                   </Grid>
                 </Grid>
-                <Grid item xs={12} container spacing={1} className="mt-2">
+                <Grid container spacing={1} className="mt-2">
                   <Grid item>
                     <Button
                       className="text-capitalize"
                       variant="contained"
                       color="primary"
                       type="submit"
+                      onClick={() => {
+                        this.isValidCkEditor();
+                      }}
                     >
                       {!restaurantId ? "Thêm" : "Sửa"}
                     </Button>
@@ -688,20 +720,20 @@ class ManageRestaurant extends Component {
                 </Grid>
               </ValidatorForm>
             </Grid>
-            <Grid item xs={12}>
-              {/* {isOpenConfirmationDialog && (
+            <Grid>
+              {isOpenConfirmationDialog && (
                 <ConfirmationDialog
                   title={"Xác nhận"}
-                  text={"Bạn chắc chắn muốn xóa người dùng này?"}
+                  text={"Bạn chắc chắn muốn xóa nhà hàng này?"}
                   isOpen={isOpenConfirmationDialog}
                   onCancelClick={this.handleCloseConfirmationDialog}
                   onConfirmClick={this.handleConfirmDelete}
                   confirm={"Xác nhận"}
                   cancel={"Hủy"}
                 />
-              )} */}
+              )}
             </Grid>
-            <Grid item xs={12} className="material-table">
+            <Grid className="material-table">
               <MaterialTableData
                 itemName="restaurant"
                 columns={columns}
@@ -769,4 +801,7 @@ const mapDispatchToProps = (dispatch) => {
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ManageRestaurant);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(RestaurantManagement);

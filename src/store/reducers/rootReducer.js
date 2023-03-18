@@ -9,22 +9,23 @@ import storage from "redux-persist/lib/storage";
 import { persistReducer } from "redux-persist";
 import allCodeReducer from "./allCodeReducer";
 import restaurantReducer from "./restaurantReducer";
+import foodReducer from "./foodReducer";
 
 const persistCommonConfig = {
   storage: storage,
   stateReconciler: autoMergeLevel2,
 };
 
-const userPersistConfig = {
-  ...persistCommonConfig,
-  key: "user",
-  whitelist: ["isLoggedInSystem", "userInfo"],
-};
-
 const appPersistConfig = {
   ...persistCommonConfig,
   key: "app",
   whitelist: ["language"],
+};
+
+const userPersistConfig = {
+  ...persistCommonConfig,
+  key: "user",
+  whitelist: ["isLoggedInSystem", "userInfo", "customerInfo", "listFoodOrder"],
 };
 
 const rootReducer = (history) =>
@@ -34,6 +35,7 @@ const rootReducer = (history) =>
     app: persistReducer(appPersistConfig, appReducer),
     allCode: allCodeReducer,
     restaurant: restaurantReducer,
+    food: foodReducer,
   });
 
 export default rootReducer;

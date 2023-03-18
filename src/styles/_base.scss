@@ -9,37 +9,6 @@ html {
   overflow   : hidden;
 }
 
-.background-image-center-cover {
-  background-position: center;
-  background-size    : cover;
-  background-repeat  : no-repeat;
-}
-
-.title {
-  text-align    : center;
-  text-transform: uppercase;
-  font-weight   : bold;
-  font-size     : $base-size + 4px;
-  margin-top    : 15px;
-  color         : $colormain;
-}
-
-.container {
-  padding: 0 !important;
-}
-
-// .content {
-//   margin            : 15px 30px;
-//   box-shadow        : 2px 2px 4px 0 $box-shadow-color;
-//   -webkit-box-shadow: 2px 2px 4px 0 $box-shadow-color;
-// }
-
-.flex-center {
-  display        : flex !important;
-  justify-content: center !important;
-  align-items    : center !important;
-}
-
 button {
   text-transform: capitalize !important;
 }
@@ -50,6 +19,56 @@ input::-webkit-inner-spin-button {
   margin            : 0;
 }
 
+//ckeditor
 .ck-editor__editable {
   min-height: 250px;
+}
+
+//flatpickr
+.flatpickr-day {
+  &.selected {
+    background-color: $colorpink !important;
+    border          : none !important;
+  }
+
+  &.startRange,
+  &.endRange {
+    background-color: $colormain !important;
+  }
+}
+
+.flatpickr-day.selected.startRange+.endRange:not(:nth-child(7n+1)),
+.flatpickr-day.startRange.startRange+.endRange:not(:nth-child(7n+1)) {
+  box-shadow: none !important;
+}
+
+.flatpickr-calendar {
+  margin-top   : 10px !important;
+  width        : 349px !important;
+  padding-left : calc((349px - 308px) / 2) !important;
+  border-radius: 0px !important;
+  user-select  : none !important;
+}
+
+.flatpickr-current-month {
+  .cur-month {
+    &:hover {
+      background: white !important;
+    }
+  }
+}
+
+.numInputWrapper {
+  &:hover {
+    background: white !important;
+
+    span {
+      display: none;
+    }
+  }
+}
+
+//react-select
+.react-select {
+  z-index: 9;
 }

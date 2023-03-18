@@ -2,16 +2,29 @@ import { takeLatest, call, put } from "redux-saga/effects";
 import * as userService from "../../services/userService";
 import * as userActions from "../actions/userActions";
 
-function* loginSaga(payload) {
+function* systemLoginSaga(payload) {
   try {
     const res = yield call(userService.handleLogin, payload.data);
     if (res && res.errCode === 0) {
-      yield put(userActions.loginSuccess(res.user));
+      yield put(userActions.systemLoginSuccess(res.user));
     } else {
-      yield put(userActions.loginFailed(res.errMessage));
+      yield put(userActions.systemLoginFailed(res.errMessage));
     }
   } catch (e) {
-    yield put(userActions.loginFailed(e));
+    yield put(userActions.systemLoginFailed(e));
+  }
+}
+
+function* customerLoginSaga(payload) {
+  try {
+    const res = yield call(userService.handleLogin, payload.data);
+    if (res && res.errCode === 0) {
+      yield put(userActions.customerLoginSuccess(res.user));
+    } else {
+      yield put(userActions.customerLoginFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(userActions.customerLoginFailed(e));
   }
 }
 
@@ -42,7 +55,8 @@ function* getAllUserByRoleSaga(payload) {
 }
 
 function* userSaga() {
-  yield takeLatest(userActions.SYSTEM_LOGIN, loginSaga);
+  yield takeLatest(userActions.SYSTEM_LOGIN, systemLoginSaga);
+  yield takeLatest(userActions.CUSTOMER_LOGIN, customerLoginSaga);
   yield takeLatest(userActions.GET_LIST_USER, getListUserSaga);
   yield takeLatest(userActions.GET_ALL_USER_BY_ROLE, getAllUserByRoleSaga);
 }

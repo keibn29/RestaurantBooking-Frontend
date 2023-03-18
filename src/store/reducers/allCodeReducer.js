@@ -3,6 +3,8 @@ import * as allCodeActions from "../actions/allCodeActions";
 const initialState = {
   listRole: [],
   listProvince: [],
+  listCountry: [],
+  listTime: [],
 };
 
 const allCodeReducer = (state = initialState, action) => {
@@ -29,6 +31,30 @@ const allCodeReducer = (state = initialState, action) => {
       return {
         ...state,
         listProvince: [],
+      };
+
+    //get-country
+    case allCodeActions.GET_ALL_COUNTRY_SUCCESS:
+      return {
+        ...state,
+        listCountry: action.listCode,
+      };
+    case allCodeActions.GET_ALL_COUNTRY_FAILED:
+      return {
+        ...state,
+        listCountry: [],
+      };
+
+    //get-time
+    case allCodeActions.GET_ALL_TIME_SUCCESS:
+      return {
+        ...state,
+        listTime: action.listCode,
+      };
+    case allCodeActions.GET_ALL_TIME_FAILED:
+      return {
+        ...state,
+        listTime: [],
       };
 
     default:

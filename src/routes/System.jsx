@@ -1,9 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect, Route, Switch } from "react-router-dom";
-import ManageUser from "../views/System/Admin/ManageUser";
-import ManageRestaurant from "../views/System/Admin/ManageRestaurant";
+import UserManagement from "../views/System/Admin/UserManagement";
+import RestaurantManagement from "../views/System/Admin/RestaurantManagement";
 import Header from "../views/System/Header/Header";
+import FoodManagement from "../views/System/Admin/FoodManagement";
+import ScheduleManagement from "../views/System/RestaurantManager/ScheduleManagement";
 
 class System extends Component {
   render() {
@@ -14,10 +16,15 @@ class System extends Component {
         <div className="system-container">
           <div className="system-list">
             <Switch>
-              <Route path="/system/manage-user" component={ManageUser} />
+              <Route path="/system/manage-user" component={UserManagement} />
               <Route
                 path="/system/manage-restaurant"
-                component={ManageRestaurant}
+                component={RestaurantManagement}
+              />
+              <Route path="/system/manage-food" component={FoodManagement} />
+              <Route
+                path="/system/manage-schedule"
+                component={ScheduleManagement}
               />
 
               <Route
