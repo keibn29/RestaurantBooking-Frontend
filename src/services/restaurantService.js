@@ -31,3 +31,7 @@ export const bulkCreateNewSchedule = (data) => {
 export const getScheduleByDate = (restaurantId, date) => {
   return axios.get(`/api/schedules?restaurantId=${restaurantId}&date=${date}`);
 };
+
+export const getListTableBooking = (data) => {
+  return axios.post(`/api/bookings/search`, data);
+};

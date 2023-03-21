@@ -8,7 +8,7 @@ const initialState = {
   listUser: [],
   totalUser: "",
   listUserByRole: [],
-  listFoodOrder: [],
+  listDishOrder: [],
 };
 
 const userReducer = (state = initialState, action) => {
@@ -50,7 +50,7 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         customerInfo: "",
-        listFoodOrder: [],
+        listDishOrder: [],
       };
 
     //get-list-user
@@ -79,25 +79,32 @@ const userReducer = (state = initialState, action) => {
         listUserByRole: [],
       };
 
-    //add-food-order
-    case userActions.ADD_FOOD_ORDER:
-      let foodExist = state.listFoodOrder.find(
-        (item) => item.id === action.food.id
+    //add-dish-order
+    case userActions.ADD_DISH_ORDER:
+      let dishExist = state.listDishOrder.find(
+        (item) => item.id === action.dish.id
       );
       return {
         ...state,
-        listFoodOrder: !foodExist
-          ? [action.food, ...state.listFoodOrder]
-          : [...state.listFoodOrder],
+        listDishOrder: !dishExist
+          ? [action.dish, ...state.listDishOrder]
+          : [...state.listDishOrder],
       };
 
-    //update-food-order
-    case userActions.UPDATE_FOOD_ORDER:
+    //update-dish-order
+    case userActions.UPDATE_DISH_ORDER:
       return {
         ...state,
-        listFoodOrder: state.listFoodOrder.filter(
-          (item) => item.id !== action.foodId
+        listDishOrder: state.listDishOrder.filter(
+          (item) => item.id !== action.dishId
         ),
+      };
+
+    //clear-dish-order
+    case userActions.CLEAR_DISH_ORDER:
+      return {
+        ...state,
+        listDishOrder: [],
       };
 
     default:

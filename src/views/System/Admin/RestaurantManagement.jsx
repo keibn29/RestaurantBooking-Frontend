@@ -339,7 +339,7 @@ class RestaurantManagement extends Component {
       isOpenConfirmationDialog,
     } = this.state;
     const { language } = this.props;
-    let columns = [
+    const columns = [
       {
         title: "STT",
         align: "left",

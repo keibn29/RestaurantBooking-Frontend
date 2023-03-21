@@ -1,25 +1,25 @@
 @import"../../../../styles/variables";
 
-.food-order-container {
-    padding: 20px;
+.dish-order-container {
+    padding: 20px 20px 10px;
 
-    .food-order-header {
+    .dish-order-header {
         font-size  : 20px;
         font-weight: 600;
 
         .btn-close-dialog {
             position: absolute;
-            right   : 5px;
+            right   : 10px;
             top     : 12px;
         }
     }
 
-    .food-order-body {
+    .dish-order-body {
         margin-top: 20px;
 
-        .list-food-order {
+        .list-dish-order {
 
-            .food-order-content {
+            .dish-order-content {
                 display        : flex;
                 justify-content: space-between;
                 align-items    : center;
@@ -30,32 +30,32 @@
                     border-top: 1px solid #ddd;
                 }
 
-                .food-order-content-left {
+                .dish-order-content-left {
                     display: flex;
                     gap    : 10px;
 
-                    .food-order-avatar {
+                    .dish-order-avatar {
                         height       : 70px;
                         width        : 70px;
                         border-radius: 5px;
                     }
 
-                    .food-order-name-price-country {
-                        .food-order-name {
+                    .dish-order-name-price-country {
+                        .dish-order-name {
                             font-weight: 600;
                             font-size  : 18px;
                         }
 
-                        .food-order-price,
-                        .food-order-country {
+                        .dish-order-price,
+                        .dish-order-country {
                             font-size: 14px;
                             color    : #6e6e6e;
                         }
                     }
                 }
 
-                .food-order-content-right {
-                    .btn-remove-food-order {
+                .dish-order-content-right {
+                    .btn-remove-dish-order {
                         font-size: 30px;
                         color    : $colorpink;
                         cursor   : pointer;
@@ -69,14 +69,15 @@
         }
     }
 
-    .food-order-footer {
-        margin-top: 25px;
-        text-align: center;
+    .dish-order-footer {
+        margin-top: 20px;
+        text-align: right;
 
         .btn-confirm {
             background-color: $colorpink;
             color           : white;
             border          : none;
+            font-size       : inherit;
 
             &:hover {
                 background-color: $colorpink-hover;

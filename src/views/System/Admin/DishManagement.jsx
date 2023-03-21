@@ -13,7 +13,7 @@ import {
   USER_ROLE,
   NUMBER_MAX_VALUE,
   DOLLAR_TO_VND,
-  customReactSelectStyles,
+  customReactSelectStyleSystem,
 } from "../../../utils";
 import {
   Grid,
@@ -50,12 +50,12 @@ import {
   deleteRestaurantById,
 } from "../../../services/restaurantService";
 import {
-  addNewFood,
-  deleteFoodById,
-  editFoodById,
-} from "../../../services/foodService";
+  addNewDish,
+  deleteDishById,
+  editDishById,
+} from "../../../services/dishService";
 
-class FoodManagement extends Component {
+class DishManagement extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -78,7 +78,7 @@ class FoodManagement extends Component {
       photoIndex: 0,
       isOpenPhotosLightbox: false,
       listPhotoPreviewURL: [],
-      foodId: "",
+      dishId: "",
       isOpenConfirmationDialog: false,
     };
   }
@@ -127,6 +127,7 @@ class FoodManagement extends Component {
         return result;
       });
     }
+
     return result;
   };
 
@@ -137,7 +138,7 @@ class FoodManagement extends Component {
         restaurantSelected: restaurantSelected,
       },
       () => {
-        emitter.emit(EMITTER_EVENTS.FETCH_LIST_FOOD_BY_RESTAURANT);
+        emitter.emit(EMITTER_EVENTS.FETCH_LIST_DISH_BY_RESTAURANT);
       }
     );
   };
@@ -162,12 +163,12 @@ class FoodManagement extends Component {
     }
   };
 
-  fetchListFoodByRestaurant = (data) => {
+  fetchListDishByRestaurant = (data) => {
     const { language } = this.props;
     const { restaurantSelected } = this.state;
 
     data.restaurantId = restaurantSelected.value;
-    this.props.getListFoodByRestaurant(data, language);
+    this.props.getListDishByRestaurant(data, language);
   };
 
   isValidCkEditor = () => {
@@ -211,7 +212,7 @@ class FoodManagement extends Component {
       listPhoto,
       descriptionVi,
       descriptionEn,
-      foodId,
+      dishId,
     } = this.state;
 
     let data = {
@@ -229,16 +230,16 @@ class FoodManagement extends Component {
     let isValidCkEditor = this.isValidCkEditor();
 
     if (isValidCkEditor) {
-      if (!foodId) {
-        this.callApiAddNewFood(data);
+      if (!dishId) {
+        this.callApiAddNewDish(data);
       } else {
-        this.callApiEditFoodById(foodId, data);
+        this.callApiEditDishById(dishId, data);
       }
     }
   };
 
-  callApiAddNewFood = async (data) => {
-    const res = await addNewFood(data);
+  callApiAddNewDish = async (data) => {
+    const res = await addNewDish(data);
     if (res && res.errCode === 0) {
       toast.success("Thêm mới món ăn thành công");
       this.handleClearForm();
@@ -248,8 +249,8 @@ class FoodManagement extends Component {
     }
   };
 
-  callApiEditFoodById = async (foodId, data) => {
-    const res = await editFoodById(foodId, data);
+  callApiEditDishById = async (dishId, data) => {
+    const res = await editDishById(dishId, data);
     if (res && res.errCode === 0) {
       toast.success("Thay đổi thông tin món ăn thành công");
       this.handleClearForm();
@@ -275,7 +276,7 @@ class FoodManagement extends Component {
       photoIndex: 0,
       isOpenPhotosLightbox: false,
       listPhotoPreviewURL: [],
-      foodId: "",
+      dishId: "",
     });
     // window.location.reload(false);
   };
@@ -334,13 +335,13 @@ class FoodManagement extends Component {
     });
   };
 
-  handleEditRestaurant = (foodData) => {
+  handleEditRestaurant = (dishData) => {
     this.setState({
-      ...foodData,
-      avatarPreviewURL: process.env.REACT_APP_BACKEND_URL + foodData.avatar,
-      countrySelected: foodData.countryId,
+      ...dishData,
+      avatarPreviewURL: process.env.REACT_APP_BACKEND_URL + dishData.avatar,
+      countrySelected: dishData.countryId,
       avatar: "",
-      foodId: foodData.id,
+      dishId: dishData.id,
     });
   };
 
@@ -350,10 +351,10 @@ class FoodManagement extends Component {
     });
   };
 
-  handleDeleteRestaurant = async (foodId) => {
+  handleDeleteRestaurant = async (dishId) => {
     this.setState({
       isOpenConfirmationDialog: true,
-      foodId: foodId,
+      dishId: dishId,
     });
   };
 
@@ -361,7 +362,7 @@ class FoodManagement extends Component {
     this.setState({
       isOpenConfirmationDialog: false,
     });
-    const res = await deleteFoodById(this.state.foodId);
+    const res = await deleteDishById(this.state.dishId);
     if (res && res.errCode === 0) {
       toast.success("Xóa món ăn thành công");
       this.handleClearForm();
@@ -385,7 +386,7 @@ class FoodManagement extends Component {
       listRestaurant,
       restaurantSelected,
       countrySelected,
-      foodId,
+      dishId,
       listPhoto,
       photoIndex,
       isOpenPhotosLightbox,
@@ -395,7 +396,7 @@ class FoodManagement extends Component {
       isOpenConfirmationDialog,
     } = this.state;
     const { language } = this.props;
-    let columns = [
+    const columns = [
       {
         title: "STT",
         align: "left",
@@ -469,7 +470,7 @@ class FoodManagement extends Component {
                           Nhà hàng
                         </span>
                       }
-                      styles={customReactSelectStyles}
+                      styles={customReactSelectStyleSystem}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -491,7 +492,7 @@ class FoodManagement extends Component {
                       errorMessages={["Vui lòng nhập tên món ăn"]}
                       variant="outlined"
                       size="small"
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -513,7 +514,7 @@ class FoodManagement extends Component {
                       errorMessages={["Vui lòng nhập tên món ăn"]}
                       variant="outlined"
                       size="small"
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     />
                   </Grid>
                   <Grid item xs={4}>
@@ -534,7 +535,7 @@ class FoodManagement extends Component {
                       errorMessages={["Vui lòng chọn quốc gia"]}
                       variant="outlined"
                       size="small"
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     >
                       {isExistArrayAndNotEmpty(listCountry) &&
                         listCountry.map((item) => {
@@ -568,7 +569,7 @@ class FoodManagement extends Component {
                       variant="outlined"
                       size="small"
                       disabled={
-                        restaurantSelected && language === LANGUAGES.VI
+                        restaurantSelected.value && language === LANGUAGES.VI
                           ? false
                           : true
                       }
@@ -594,7 +595,7 @@ class FoodManagement extends Component {
                       variant="outlined"
                       size="small"
                       disabled={
-                        restaurantSelected && language === LANGUAGES.EN
+                        restaurantSelected.value && language === LANGUAGES.EN
                           ? false
                           : true
                       }
@@ -609,17 +610,17 @@ class FoodManagement extends Component {
                       onChange={(event) => {
                         this.handleChangeAvatar(event);
                       }}
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     />
                     <InputLabel
                       className={
-                        restaurantSelected
+                        restaurantSelected.value
                           ? "flex-center avatar-label"
                           : "flex-center avatar-label no-effect"
                       }
                       htmlFor="avatar"
                       variant="standard"
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     >
                       Avatar
                       <i className="fas fa-upload"></i>
@@ -627,7 +628,7 @@ class FoodManagement extends Component {
                   </Grid>
                   <Grid item xs={2} className="avatar-preview-grid">
                     <Grid
-                      className="food avatar-preview background-image-center-cover"
+                      className="dish avatar-preview background-image-center-cover"
                       style={{ backgroundImage: `url(${avatarPreviewURL})` }}
                       onClick={() => {
                         this.handleShowHideAvatarLightbox("open");
@@ -639,7 +640,7 @@ class FoodManagement extends Component {
                     xs={12}
                     container
                     spacing={2}
-                    className="photo-container food"
+                    className="photo-container dish"
                   >
                     <Grid item>
                       <TextField
@@ -653,17 +654,17 @@ class FoodManagement extends Component {
                         onChange={(event) => {
                           this.handleChangePhotos(event);
                         }}
-                        disabled={restaurantSelected ? false : true}
+                        disabled={restaurantSelected.value ? false : true}
                       />
                       <InputLabel
                         className={
-                          restaurantSelected
+                          restaurantSelected.value
                             ? "flex-center photo-label"
                             : "flex-center photo-label no-effect"
                         }
                         htmlFor="listPhoto"
                         variant="standard"
-                        disabled={restaurantSelected ? false : true}
+                        disabled={restaurantSelected.value ? false : true}
                       >
                         Photos
                         <i className="fas fa-upload"></i>
@@ -699,7 +700,7 @@ class FoodManagement extends Component {
                           "descriptionVi"
                         );
                       }}
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     />
                     {isDescriptionViError && (
                       <span className="description-error">
@@ -723,7 +724,7 @@ class FoodManagement extends Component {
                           "descriptionEn"
                         );
                       }}
-                      disabled={restaurantSelected ? false : true}
+                      disabled={restaurantSelected.value ? false : true}
                     />
                     {isDescriptionEnError && (
                       <span className="description-error">
@@ -743,7 +744,7 @@ class FoodManagement extends Component {
                         this.isValidCkEditor();
                       }}
                     >
-                      {!foodId ? "Thêm" : "Sửa"}
+                      {!dishId ? "Thêm" : "Sửa"}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -776,10 +777,14 @@ class FoodManagement extends Component {
             </Grid>
             <Grid className="material-table">
               <MaterialTableData
-                itemName="food"
+                itemName="dish"
                 columns={columns}
-                getListItem={this.fetchListFoodByRestaurant}
-                localization="Vui lòng chọn nhà hàng để xem danh sách món ăn"
+                getListItem={this.fetchListDishByRestaurant}
+                localization={
+                  !restaurantSelected.value
+                    ? "Vui lòng chọn nhà hàng để xem danh sách món ăn"
+                    : "Nhà hàng chưa có món ăn nào"
+                }
               />
             </Grid>
           </Grid>
@@ -839,9 +844,9 @@ const mapDispatchToProps = (dispatch) => {
     getAllRestaurant: (data, language) =>
       dispatch(actions.getListRestaurant(data, language)),
     getAllCountry: (code) => dispatch(actions.getAllCountry(code)),
-    getListFoodByRestaurant: (data, language) =>
-      dispatch(actions.getListFood(data, language)),
+    getListDishByRestaurant: (data, language) =>
+      dispatch(actions.getListDish(data, language)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FoodManagement);
+export default connect(mapStateToProps, mapDispatchToProps)(DishManagement);

@@ -1,11 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import {
-  LANGUAGES,
-  isExistArrayAndNotEmpty,
-  NUMBER_ITEM_SLIDE_HOMEPAGE,
-} from "../../../../utils";
+import { LANGUAGES, isExistArrayAndNotEmpty } from "../../../../utils";
 import { withRouter } from "react-router";
 import * as actions from "../../../../store/actions";
 import {
@@ -36,7 +32,7 @@ class RestaurantHighScore extends Component {
   componentDidMount() {
     this.props.getListRestaurant(
       {
-        pageSize: NUMBER_ITEM_SLIDE_HOMEPAGE,
+        pageSize: process.env.REACT_APP_NUMBER_ITEM_SLIDE_HOMEPAGE,
         pageOrder: 1,
       },
       this.props.language

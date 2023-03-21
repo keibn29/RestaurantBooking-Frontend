@@ -10,7 +10,7 @@ html {
 }
 
 button {
-  text-transform: capitalize !important;
+  text-transform: none !important;
 }
 
 input::-webkit-outer-spin-button,
@@ -70,5 +70,5 @@ input::-webkit-inner-spin-button {
 
 //react-select
 .react-select {
-  z-index: 9;
+  z-index: 19;
 }

@@ -119,22 +119,31 @@ export const getAllUserByRoleFailed = (error) => {
   };
 };
 
-//add-food-order
-export const ADD_FOOD_ORDER = "ADD_FOOD_ORDER";
+//add-dish-order
+export const ADD_DISH_ORDER = "ADD_DISH_ORDER";
 
-export const addFoodOrder = (food) => {
+export const addDishOrder = (dish) => {
   return {
-    type: ADD_FOOD_ORDER,
-    food,
+    type: ADD_DISH_ORDER,
+    dish,
   };
 };
 
-//update-food-order
-export const UPDATE_FOOD_ORDER = "UPDATE_FOOD_ORDER";
+//update-dish-order
+export const UPDATE_DISH_ORDER = "UPDATE_DISH_ORDER";
 
-export const updateFoodOrder = (foodId) => {
+export const updateDishOrder = (dishId) => {
   return {
-    type: UPDATE_FOOD_ORDER,
-    foodId,
+    type: UPDATE_DISH_ORDER,
+    dishId,
+  };
+};
+
+//clear-dish-order
+export const CLEAR_DISH_ORDER = "CLEAR_DISH_ORDER";
+
+export const clearDishOrder = () => {
+  return {
+    type: CLEAR_DISH_ORDER,
   };
 };

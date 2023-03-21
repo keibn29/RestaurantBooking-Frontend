@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import HomeHeader from "../Homepage/HomeHeader/HomeHeader";
-// import HomeFooter from "./HomeFooter";
+import HomeFooter from "../Homepage/HomeFooter/HomeFooter";
 import "./DetailRestaurant.scss";
 import { NAV_DETAIL_RESTAURANT } from "../../../utils";
 import {
@@ -62,15 +62,15 @@ class DetailRestaurant extends Component {
 
     return (
       <>
-        <HomeHeader isShowHeaderSearch={true} />
-        <Grid className="restaurant-container pt-4">
+        <Grid className="restaurant-container">
+          <HomeHeader isShowHeaderSearch={true} />
           <Container>
             <Grid container spacing={3}>
               <Grid item xs={8} container>
                 <Grid
                   item
                   xs={12}
-                  className="restaurant-content restaurant-general"
+                  className="restaurant-content restaurant-general mt-4"
                 >
                   <RestaurantGeneralInformation />
                 </Grid>
@@ -111,6 +111,7 @@ class DetailRestaurant extends Component {
               </Grid>
             </Grid>
           </Container>
+          <HomeFooter />
         </Grid>
       </>
     );

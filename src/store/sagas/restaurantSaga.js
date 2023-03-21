@@ -41,6 +41,24 @@ function* getScheduleByDateSaga(payload) {
   }
 }
 
+function* getListTableBookingSaga(payload) {
+  try {
+    const res = yield call(restaurantService.getListTableBooking, payload.data);
+    if (res && res.errCode === 0) {
+      yield put(
+        restaurantActions.getListTableBookingSuccess(
+          res.listBooking,
+          res.totalBooking
+        )
+      );
+    } else {
+      yield put(restaurantActions.getListTableBookingFailed(res.errMessage));
+    }
+  } catch (e) {
+    yield put(restaurantActions.getListTableBookingFailed(e));
+  }
+}
+
 function* restaurantSaga() {
   yield takeLatest(
     restaurantActions.GET_LIST_RESTAURANT,
@@ -50,6 +68,7 @@ function* restaurantSaga() {
     restaurantActions.GET_SCHEDULE_BY_DATE,
     getScheduleByDateSaga
   );
+  yield takeLatest(restaurantActions.GET_LIST_BOOKING, getListTableBookingSaga);
 }
 
 export default restaurantSaga;

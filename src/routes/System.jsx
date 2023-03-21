@@ -4,8 +4,10 @@ import { Redirect, Route, Switch } from "react-router-dom";
 import UserManagement from "../views/System/Admin/UserManagement";
 import RestaurantManagement from "../views/System/Admin/RestaurantManagement";
 import Header from "../views/System/Header/Header";
-import FoodManagement from "../views/System/Admin/FoodManagement";
+import DishManagement from "../views/System/Admin/DishManagement";
 import ScheduleManagement from "../views/System/RestaurantManager/ScheduleManagement";
+import { SYSTEM_PATH } from "../utils";
+import BookingManagement from "../views/System/RestaurantManager/BookingManagement";
 
 class System extends Component {
   render() {
@@ -16,15 +18,25 @@ class System extends Component {
         <div className="system-container">
           <div className="system-list">
             <Switch>
-              <Route path="/system/manage-user" component={UserManagement} />
               <Route
-                path="/system/manage-restaurant"
+                path={SYSTEM_PATH.USER_MANAGEMENT}
+                component={UserManagement}
+              />
+              <Route
+                path={SYSTEM_PATH.RESTAURANT_MANAGEMENT}
                 component={RestaurantManagement}
               />
-              <Route path="/system/manage-food" component={FoodManagement} />
               <Route
-                path="/system/manage-schedule"
+                path={SYSTEM_PATH.DISH_MANAGEMENT}
+                component={DishManagement}
+              />
+              <Route
+                path={SYSTEM_PATH.SCHEDULE_MANAGEMENT}
                 component={ScheduleManagement}
+              />
+              <Route
+                path={SYSTEM_PATH.BOOKING_MANAGEMENT}
+                component={BookingManagement}
               />
 
               <Route

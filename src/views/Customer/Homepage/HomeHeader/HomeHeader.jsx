@@ -2,7 +2,13 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./HomeHeader.scss";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES } from "../../../../utils";
+import {
+  ALLCODES,
+  customReactSelectStyleBanner,
+  customReactSelectStyleHeader,
+  isExistArrayAndNotEmpty,
+  LANGUAGES,
+} from "../../../../utils";
 import * as actions from "../../../../store/actions";
 import { withRouter } from "react-router";
 import {
@@ -20,6 +26,7 @@ import {
   FormControl,
   Container,
 } from "@material-ui/core";
+import Select from "react-select";
 import CustomerLogin from "../../Auth/CustomerLogin";
 
 class HomeHeader extends Component {
@@ -27,6 +34,7 @@ class HomeHeader extends Component {
     super(props);
     this.state = {
       keyword: "",
+      listProvince: [],
       provinceSelected: "",
       isOpenCustomerLoginDialog: false,
       isShowLogoutButton: false,
@@ -37,6 +45,7 @@ class HomeHeader extends Component {
 
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
+    this.props.getAllProvince(ALLCODES.PROVINCE);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -48,20 +57,46 @@ class HomeHeader extends Component {
         isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
       });
     }
+    if (prevProps.listProvince !== this.props.listProvince) {
+      let dataSelect = this.buildDataInputSelect(this.props.listProvince);
+      this.setState({
+        listProvince: dataSelect,
+      });
+    }
   }
 
   componentWillUnmount() {
     document.removeEventListener("mousedown", this.handleClickOutside);
   }
 
+  buildDataInputSelect = (listProvince) => {
+    const { language, userInfo } = this.props;
+    let result = [];
+
+    if (isExistArrayAndNotEmpty(listProvince)) {
+      listProvince.map((item, index) => {
+        let restaurant = {};
+
+        restaurant.label =
+          language === LANGUAGES.VI ? item.valueVi : item.valueEn;
+        restaurant.value = item.keyMap;
+
+        result.push(restaurant);
+        return result;
+      });
+    }
+
+    return result;
+  };
+
   changeLanguage = (language) => {
     this.props.changeLanguageAppRedux(language);
   };
 
-  handleReturnHomepage = () => {
-    if (this.props.history) {
-      this.props.history.push(`/home`);
-    }
+  handleChangeProvinceSelected = (provinceSelected) => {
+    this.setState({
+      provinceSelected: provinceSelected,
+    });
   };
 
   handleChangeInput = (event) => {
@@ -115,6 +150,7 @@ class HomeHeader extends Component {
     const {
       keyword,
       provinceSelected,
+      listProvince,
       isOpenCustomerLoginDialog,
       isShowLogoutButton,
     } = this.state;
@@ -138,34 +174,19 @@ class HomeHeader extends Component {
                   value={keyword}
                   placeholder="Tìm kiếm nhà hàng hoặc món ăn"
                   variant="outlined"
-                  // size="small"
                   onChange={(event) => {
                     this.handleChangeInput(event);
                   }}
                 />
-                <select
-                  className="center-select"
-                  // label={provinceSelected ? "" : "Tỉnh thành"}
-                  // InputLabelProps={{ shrink: false }}
-                  name="provinceSelected"
+                <Select
+                  className="react-select center-select"
                   value={provinceSelected}
-                  variant="outlined"
-                  // size="small"
-                  onChange={(event) => {
-                    this.handleChangeInput(event);
-                  }}
-                >
-                  <option key={1} value={1}>
-                    1
-                  </option>
-                  <option key={2} value={2}>
-                    2
-                  </option>
-                  <option key={3} value={3}>
-                    3
-                  </option>
-                </select>
-                <button className="right-button">Tìm</button>
+                  onChange={this.handleChangeProvinceSelected}
+                  options={listProvince}
+                  placeholder="Tỉnh thành"
+                  styles={customReactSelectStyleHeader}
+                />
+                <Button className="right-button">Tìm</Button>
               </Grid>
             )}
           </Grid>
@@ -263,43 +284,26 @@ class HomeHeader extends Component {
                   className="banner-search home-container"
                 >
                   <Grid item xs={6} className="banner-search-left">
-                    <TextField
+                    <input
                       className="w-100 left-input"
                       type="text"
                       name="keyword"
                       value={keyword}
                       placeholder="Tìm kiếm nhà hàng hoặc món ăn"
-                      variant="outlined"
-                      // size="small"
                       onChange={(event) => {
                         this.handleChangeInput(event);
                       }}
                     />
                   </Grid>
                   <Grid item xs={4} className="banner-search-center">
-                    <TextField
-                      select
-                      className="w-100 center-select"
-                      label={provinceSelected ? "" : "Tỉnh thành"}
-                      InputLabelProps={{ shrink: false }}
-                      name="provinceSelected"
+                    <Select
+                      className="react-select center-select"
                       value={provinceSelected}
-                      variant="outlined"
-                      // size="small"
-                      onChange={(event) => {
-                        this.handleChangeInput(event);
-                      }}
-                    >
-                      <MenuItem key={1} value={1}>
-                        1
-                      </MenuItem>
-                      <MenuItem key={2} value={2}>
-                        2
-                      </MenuItem>
-                      <MenuItem key={3} value={3}>
-                        3
-                      </MenuItem>
-                    </TextField>
+                      onChange={this.handleChangeProvinceSelected}
+                      options={listProvince}
+                      placeholder="Tỉnh thành"
+                      styles={customReactSelectStyleBanner}
+                    />
                   </Grid>
                   <Grid item xs={2} className="banner-search-right">
                     <Button className="h-100 right-button" variant="contained">
@@ -321,6 +325,7 @@ const mapStateToProps = (state) => {
     language: state.app.language,
     customerInfo: state.user.customerInfo,
     isOpenCustomerLoginDialog: state.user.isOpenCustomerLoginDialog,
+    listProvince: state.allCode.listProvince,
   };
 };
 
@@ -329,6 +334,7 @@ const mapDispatchToProps = (dispatch) => {
     changeLanguageAppRedux: (language) =>
       dispatch(actions.changeLanguageApp(language)),
     customerLogout: () => dispatch(actions.customerLogout()),
+    getAllProvince: (code) => dispatch(actions.getAllProvince(code)),
   };
 };
 

@@ -28,7 +28,7 @@ class RestaurantPhoto extends Component {
         <Grid className="restaurant-photo-container">
           <Grid className="restaurant-content-title">Photos (5)</Grid>
           <Grid className="restaurant-photo-description mt-3 text-justify">
-            Looking for pictures of the food and vibe at Il Cucciolo Restaurant?
+            Looking for pictures of the dish and vibe at Il Cucciolo Restaurant?
             Take a peek at these real-life photos and images of the atmosphere
             and dishes at Il Cucciolo Restaurant so you know what to expect for
             your next reservation.

@@ -2,7 +2,7 @@
 
 .home-header-container {
     background-color: white;
-    z-index         : 99;
+    z-index         : 999;
     height          : 75px;
     padding         : 5px 28px;
     position        : sticky;
@@ -27,7 +27,6 @@
         }
 
         .home-header-search {
-            // margin-left: 40px;
             width      : calc(100% - 175px - 30px);
             display    : flex;
             align-items: center;
@@ -36,7 +35,7 @@
             .left-input {
                 height       : 42px;
                 width        : 50%;
-                padding      : 8px 12px;
+                padding      : 0 10px;
                 border       : 1px solid #ddd;
                 border-radius: 10px;
                 outline      : none;
@@ -47,16 +46,7 @@
             }
 
             .center-select {
-                height       : 42px;
-                width        : 38%;
-                padding      : 8px 12px;
-                border       : 1px solid #ddd;
-                border-radius: 10px;
-                outline      : none;
-
-                &:focus {
-                    box-shadow: 0px 3px 8px $box-shadow-color;
-                }
+                width: 38%;
             }
 
             .right-button {
@@ -67,9 +57,10 @@
                 color           : white;
                 border          : none;
                 font-weight     : 600;
+                font-size       : inherit;
 
                 &:hover {
-                    background-color: #FC8558;
+                    background-color: #FFCF01;
                 }
             }
         }
@@ -171,15 +162,22 @@
             margin-top: 75px;
 
             .left-input {
+                padding         : 0 17px;
+                height          : 56px;
                 background-color: white;
+                border          : none;
                 border-radius   : 10px;
-                border          : none !important;
+                outline         : none;
+
+                &::placeholder {
+                    font-size: 17px;
+                }
             }
 
-            .center-select {
-                background-color: white;
-                border-radius   : 10px;
-            }
+            // .center-select {
+            //     background-color: white;
+            //     border-radius   : 10px;
+            // }
 
             .right-button {
                 width           : 110px;

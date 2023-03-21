@@ -15,12 +15,12 @@ import Home from "../routes/Home";
 import SystemLogin from "./System/Auth/SystemLogin";
 import System from "../routes/System";
 import CustomScrollbars from "../components/CustomScrollbars";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
-import ScrollToTop from "../components/ScrollToTop";
+import { createTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Homepage from "./Customer/Homepage/Homepage";
 import DetailRestaurant from "./Customer/Restaurant/DetailRestaurant";
+import EmailVerify from "./Customer/Email/EmailVerify";
 
-const muiTheme = createMuiTheme({
+const muiTheme = createTheme({
   palette: {
     primary: {
       main: "#7265EB",
@@ -55,7 +55,6 @@ class App extends Component {
       <Fragment>
         <MuiThemeProvider theme={muiTheme}>
           <Router history={history}>
-            {/* <ScrollToTop /> */}
             <div className="main-container">
               <div className="content-container">
                 <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
@@ -73,6 +72,10 @@ class App extends Component {
                     <Route
                       path={PATH.DETAIL_RESTAURANT}
                       component={DetailRestaurant}
+                    />
+                    <Route
+                      path={PATH.VERIFY_BOOKING_TABLE}
+                      component={EmailVerify}
                     />
                   </Switch>
                 </CustomScrollbars>

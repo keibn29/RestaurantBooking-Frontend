@@ -26,19 +26,19 @@ class RestaurantMenu extends Component {
   }
 
   componentDidMount() {
-    this.fetchListFoodByRestaurant();
+    this.fetchListDishByRestaurant();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
 
-  fetchListFoodByRestaurant = () => {
+  fetchListDishByRestaurant = () => {
     const { language, restaurantId } = this.props;
     let data = {
       pageSize: NUMBER_MAX_VALUE,
       pageOrder: 1,
       restaurantId,
     };
-    this.props.getListFoodByRestaurant(data, language);
+    this.props.getListDishByRestaurant(data, language);
   };
 
   render() {
@@ -68,8 +68,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListFoodByRestaurant: (data, language) =>
-      dispatch(actions.getListFood(data, language)),
+    getListDishByRestaurant: (data, language) =>
+      dispatch(actions.getListDish(data, language)),
   };
 };
 

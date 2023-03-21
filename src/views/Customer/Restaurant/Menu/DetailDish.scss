@@ -1,51 +1,48 @@
 @import "../../../../styles/variables";
 
-.detail-food-container {
+.detail-dish-container {
     min-height: 500px;
 
-    .detail-food-left {
+    .detail-dish-left {
         padding        : 20px;
         display        : flex;
         flex-direction : column;
         justify-content: space-between;
 
-        .detail-food-left-top {
-            .food-name {
+        .detail-dish-left-top {
+            .dish-name {
                 font-size  : 30px;
                 font-weight: 600;
             }
 
-            .food-country {}
-
-            .food-description {
-                margin-top   : 15px;
-                // text-align: justify;
+            .dish-description {
+                margin-top: 15px;
             }
 
-            .food-list-photo {
+            .dish-list-photo {
                 margin-top: 20px;
                 display   : flex;
                 gap       : 5px;
 
-                .food-photo-content {
-                    background-image: url("../../../../assets/images/food1.jpg");
+                .dish-photo-content {
+                    background-image: url("../../../../assets/images/dish1.jpg");
                     height          : 100px;
                     width           : 100px;
                     border-radius   : 5px;
 
-                    &.see-more-food-photo {
+                    &.see-more-dish-photo {
                         background-image: none;
                         display         : flex;
                         background-color: rgb(224, 187, 187);
                         color           : white;
                         cursor          : pointer;
 
-                        .food-photo-number {
+                        .dish-photo-number {
                             margin   : auto;
                             font-size: 30px;
                         }
 
-                        .food-photo-text {
+                        .dish-photo-text {
                             margin    : auto;
                             text-align: center;
                             font-size : inherit;
@@ -53,11 +50,11 @@
                         }
 
                         &:hover {
-                            .food-photo-number {
+                            .dish-photo-number {
                                 display: none;
                             }
 
-                            .food-photo-text {
+                            .dish-photo-text {
                                 display: inline;
                             }
                         }
@@ -66,7 +63,7 @@
             }
         }
 
-        .detail-food-left-bottom {
+        .detail-dish-left-bottom {
             display         : flex;
             gap             : 10px;
             // margin-bottom: 5px;
@@ -86,9 +83,5 @@
                 }
             }
         }
-    }
-
-    .detail-food-right {
-        background-image: url("../../../../assets/images/food1.jpg");
     }
 }

@@ -20,7 +20,7 @@ import {
 import { Bar } from "react-chartjs-2";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 import "./MenuContent.scss";
-import DetailFood from "./DetailFood";
+import DetailDish from "./DetailDish";
 import CustomerLogin from "../../Auth/CustomerLogin";
 import { toast } from "react-toastify";
 
@@ -28,9 +28,11 @@ class MenuContent extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpenDetailFoodDialog: false,
+      isOpenDetailDishDialog: false,
       isOpenCustomerLoginDialog: false,
-      listFood: [],
+      listDish: [],
+      dishIndex: 1,
+      dishSelected: {},
     };
   }
 
@@ -45,34 +47,37 @@ class MenuContent extends Component {
         isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
       });
     }
-    if (prevProps.listFood !== this.props.listFood) {
+    if (prevProps.listDish !== this.props.listDish) {
       this.setState({
-        listFood: this.props.listFood,
+        listDish: this.props.listDish,
       });
     }
   }
 
-  handleViewDetailFood = () => {
+  handleViewDetailDish = (dishData, index) => {
     this.setState({
-      isOpenDetailFoodDialog: true,
+      isOpenDetailDishDialog: true,
+      dishIndex: index + 1,
+      dishSelected: dishData,
     });
   };
 
-  handleCloseDetailFoodDialog = () => {
+  handleCloseDetailDishDialog = () => {
     this.setState({
-      isOpenDetailFoodDialog: false,
+      isOpenDetailDishDialog: false,
     });
   };
 
-  handleOrderFood = (food) => {
+  handleOrderDish = (dish) => {
     const { customerInfo } = this.props;
     if (!customerInfo) {
-      toast.info("Vui lòng đăng nhập trước", { theme: "light" });
+      toast.info("Vui lòng đăng nhập để đặt món");
       this.setState({
         isOpenCustomerLoginDialog: true,
       });
     } else {
-      this.props.addFoodOrder(food);
+      delete dish.avatarBase64;
+      this.props.addDishOrder(dish);
     }
   };
 
@@ -84,38 +89,41 @@ class MenuContent extends Component {
 
   render() {
     const { language } = this.props;
-    const { isOpenDetailFoodDialog, isOpenCustomerLoginDialog, listFood } =
-      this.state;
+    const {
+      isOpenDetailDishDialog,
+      isOpenCustomerLoginDialog,
+      listDish,
+      dishIndex,
+      dishSelected,
+    } = this.state;
 
     return (
       <>
         <Grid className="menu-content-container">
-          <Grid className="list-food">
-            {isExistArrayAndNotEmpty(listFood) &&
-              listFood.map((item) => {
+          <Grid className="list-dish">
+            {isExistArrayAndNotEmpty(listDish) &&
+              listDish.map((item, index) => {
                 return (
-                  <Grid key={item.id} className="food-content">
+                  <Grid key={item.id} className="dish-content">
                     <Grid
-                      className="food-content-left"
+                      className="dish-content-left"
                       onClick={() => {
-                        this.handleViewDetailFood();
+                        this.handleViewDetailDish(item, index);
                       }}
                     >
                       <Grid
-                        className="food-avatar background-image-center-cover"
+                        className="dish-avatar background-image-center-cover"
                         style={{
-                          backgroundImage: `url(${
-                            process.env.REACT_APP_BACKEND_URL + item.avatar
-                          })`,
+                          backgroundImage: `url(${item.avatarBase64})`,
                         }}
                       ></Grid>
-                      <Grid className="food-information ml-3">
-                        <Grid className="food-name">
+                      <Grid className="dish-information ml-3">
+                        <Grid className="dish-name">
                           {language === LANGUAGES.VI
                             ? item.nameVi
                             : item.nameEn}
                         </Grid>
-                        <Grid className="food-price">
+                        <Grid className="dish-price">
                           Giá:{" "}
                           {language === LANGUAGES.VI ? (
                             <>
@@ -129,19 +137,19 @@ class MenuContent extends Component {
                             </>
                           )}
                         </Grid>
-                        <Grid className="food-country">
+                        <Grid className="dish-country">
                           {language === LANGUAGES.VI
                             ? item.countryData.valueVi
                             : item.countryData.valueEn}
                         </Grid>
                       </Grid>
                     </Grid>
-                    <Grid className="food-content-right">
+                    <Grid className="dish-content-right">
                       <Button
-                        className="btn-order"
+                        className="w-100 btn-order"
                         variant="outlined"
                         onClick={() => {
-                          this.handleOrderFood(item);
+                          this.handleOrderDish(item);
                         }}
                       >
                         Đặt món
@@ -151,10 +159,12 @@ class MenuContent extends Component {
                 );
               })}
           </Grid>
-          {isOpenDetailFoodDialog && (
-            <DetailFood
-              isOpen={isOpenDetailFoodDialog}
-              handleCloseDialog={this.handleCloseDetailFoodDialog}
+          {isOpenDetailDishDialog && (
+            <DetailDish
+              isOpen={isOpenDetailDishDialog}
+              handleCloseDialog={this.handleCloseDetailDishDialog}
+              dishIndex={dishIndex}
+              dishData={dishSelected}
             />
           )}
           {isOpenCustomerLoginDialog && (
@@ -174,13 +184,13 @@ const mapStateToProps = (state) => {
     language: state.app.language,
     customerInfo: state.user.customerInfo,
     isOpenCustomerLoginDialog: state.user.isOpenCustomerLoginDialog,
-    listFood: state.food.listFood,
+    listDish: state.dish.listDish,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    addFoodOrder: (food) => dispatch(actions.addFoodOrder(food)),
+    addDishOrder: (dish) => dispatch(actions.addDishOrder(dish)),
   };
 };
 

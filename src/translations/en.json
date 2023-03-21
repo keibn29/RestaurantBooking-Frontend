@@ -1,10 +1,10 @@
 {
-    "system": {
-        "admin": {
-            "user": {
-                "user": "User",
-                "manage-user": "Manage User"
-            }
-        }
+  "system": {
+    "admin": {
+      "user": {
+        "user": "User",
+        "user-management": "Manage User"
+      }
     }
+  }
 }

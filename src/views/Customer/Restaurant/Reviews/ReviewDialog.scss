@@ -1,24 +1,25 @@
 @import"../../../../styles/variables";
 
 .review-dialog-container {
-    padding: 20px;
-
     .review-dialog-header {
-        text-align : center;
-        font-size  : 25px;
-        font-weight: 600;
-        color      : #FC8558;
-        position   : relative;
+        padding      : 10px;
+        border-bottom: 1px solid #ddd;
+        text-align   : center;
+        font-size    : 25px;
+        font-weight  : 600;
+        color        : #FC8558;
+        position     : relative;
 
         .btn-close-dialog {
             position: absolute;
-            right   : -12px;
-            top     : -5px;
+            right   : 0;
+            top     : 5px;
         }
     }
 
     .review-dialog-body {
         margin-top: 30px;
+        padding   : 0 20px;
 
         .review-dialog-customer-info {
             display: flex;
@@ -65,9 +66,11 @@
     }
 
     .review-dialog-footer {
+        padding        : 10px 20px;
+        border-top     : 1px solid #ddd;
         margin-top     : 30px;
         display        : flex;
-        justify-content: center;
+        justify-content: flex-end;
         gap            : 10px;
 
         .btn-save {
@@ -84,6 +87,7 @@
             color           : white;
             background-color: $colorpink;
             border          : none;
+            font-size       : inherit;
 
             &:hover {
                 background-color: $colorpink-hover;

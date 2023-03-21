@@ -1,45 +1,43 @@
 @import "../../../../styles/variables";
 
 .menu-content-container {
-    .list-food {
+    .list-dish {
         margin-top    : 25px;
         display       : flex;
         flex-direction: column;
         gap           : 15px;
 
-        .food-content {
+        .dish-content {
             display        : flex;
             justify-content: space-between;
             align-items    : center;
 
-            .food-content-left {
+            .dish-content-left {
                 cursor : pointer;
                 display: flex;
 
-                .food-avatar {
+                .dish-avatar {
                     height: 75px;
                     width : 75px;
                 }
 
-                .food-information {
+                .dish-information {
 
-                    .food-name {
+                    .dish-name {
                         font-size  : 20px;
                         font-weight: 600;
                     }
 
-                    .food-price,
-                    .food-country {
+                    .dish-price,
+                    .dish-country {
                         font-size: 15px;
                         color    : #6e6e6e;
                     }
                 }
             }
 
-            .food-content-right {
+            .dish-content-right {
                 .btn-order {
-                    width: 100px;
-
                     &:hover {
                         color           : white;
                         background-color: $colorpink;

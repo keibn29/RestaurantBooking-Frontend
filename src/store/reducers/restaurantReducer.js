@@ -4,6 +4,8 @@ const initialState = {
   listRestaurant: [],
   totalRestaurant: "",
   listSchedule: [],
+  listBooking: [],
+  totalBooking: "",
 };
 
 const restaurantReducer = (state = initialState, action) => {
@@ -22,7 +24,7 @@ const restaurantReducer = (state = initialState, action) => {
         totalRestaurant: "",
       };
 
-    //get - schedule - by - date;
+    //get-schedule-by-date;
     case restaurantActions.GET_SCHEDULE_BY_DATE_SUCCESS:
       return {
         ...state,
@@ -32,6 +34,20 @@ const restaurantReducer = (state = initialState, action) => {
       return {
         ...state,
         listSchedule: [],
+      };
+
+    //get-list-table-booking;
+    case restaurantActions.GET_LIST_BOOKING_SUCCESS:
+      return {
+        ...state,
+        listBooking: action.listBooking,
+        totalBooking: action.totalBooking,
+      };
+    case restaurantActions.GET_LIST_BOOKING_FAILED:
+      return {
+        ...state,
+        listBooking: [],
+        totalBooking: "",
       };
 
     default:

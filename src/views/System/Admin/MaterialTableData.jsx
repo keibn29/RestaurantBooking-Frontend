@@ -7,6 +7,8 @@ import {
   TABLE_ITEMS,
   emitter,
   EMITTER_EVENTS,
+  PAGE_SIZE_PAGINATION,
+  CRUD_ACTIONS,
 } from "../../../utils";
 import {
   Grid,
@@ -17,6 +19,7 @@ import {
   Input,
   TablePagination,
 } from "@material-ui/core";
+import { Pagination } from "@mui/material";
 import MaterialTable from "material-table";
 import { searchUser } from "../../../services/userService";
 import { toast } from "react-toastify";
@@ -27,9 +30,9 @@ class MaterialTableData extends Component {
     super(props);
     this.state = {
       listItem: [],
-      pageSize: 10,
+      pageSize: PAGE_SIZE_PAGINATION,
       pageIndex: 0,
-      totalItem: "",
+      totalItem: 0,
     };
 
     this.listenEmitterEvent();
@@ -39,13 +42,13 @@ class MaterialTableData extends Component {
     emitter.on(EMITTER_EVENTS.UPDATE_TABLE_DATA, () => {
       this.updateTableData();
     });
-    emitter.on(EMITTER_EVENTS.FETCH_LIST_FOOD_BY_RESTAURANT, () => {
+    emitter.on(EMITTER_EVENTS.FETCH_LIST_DISH_BY_RESTAURANT, () => {
       this.updateTableData();
     });
   };
 
   componentDidMount() {
-    if (this.props.itemName !== TABLE_ITEMS.FOOD) {
+    if (this.props.itemName !== TABLE_ITEMS.DISH) {
       this.updateTableData();
     }
   }
@@ -57,8 +60,8 @@ class MaterialTableData extends Component {
       totalUser,
       listRestaurant,
       totalRestaurant,
-      listFood,
-      totalFood,
+      listDish,
+      totalDish,
     } = this.props;
     if (itemName === TABLE_ITEMS.USER && prevProps.listUser !== listUser) {
       this.setState({
@@ -75,10 +78,10 @@ class MaterialTableData extends Component {
         totalItem: totalRestaurant,
       });
     }
-    if (itemName === TABLE_ITEMS.FOOD && prevProps.listFood !== listFood) {
+    if (itemName === TABLE_ITEMS.DISH && prevProps.listDish !== listDish) {
       this.setState({
-        listItem: listFood,
-        totalItem: totalFood,
+        listItem: listDish,
+        totalItem: totalDish,
       });
     }
     if (prevProps.language !== this.props.language) {
@@ -87,11 +90,10 @@ class MaterialTableData extends Component {
   }
 
   updateTableData = () => {
-    const { pageSize } = this.state;
-    let pageOrder = this.state.pageIndex + 1;
+    const { pageSize, pageIndex } = this.state;
     this.props.getListItem({
       pageSize,
-      pageOrder,
+      pageOrder: pageIndex + 1,
     });
   };
 
@@ -107,7 +109,7 @@ class MaterialTableData extends Component {
     );
   };
 
-  handleChangePageOrder = (event, newPage) => {
+  handleChangePageIndex = (event, newPage) => {
     this.setState(
       {
         pageIndex: newPage,
@@ -118,22 +120,17 @@ class MaterialTableData extends Component {
     );
   };
 
-  handleEditUser = (userData) => {
-    console.log(userData);
-  };
-
-  handleDeleteUser = (userId) => {
-    console.log(userId);
-  };
-
   render() {
     const { listItem, pageSize, pageIndex, totalItem } = this.state;
     const { columns, localization } = this.props;
+    let columnsFromParent = columns.map((item) => {
+      return { ...item };
+    });
 
     return (
       <>
         <MaterialTable
-          columns={columns}
+          columns={columnsFromParent}
           data={listItem}
           options={{
             draggable: false,
@@ -147,9 +144,10 @@ class MaterialTableData extends Component {
               height: "45px",
               fontSize: "16px",
             },
-            rowStyle: {
+            rowStyle: (rowData, index) => ({
               fontSize: "15px",
-            },
+              backgroundColor: index % 2 === 1 ? "#eee" : "#fff",
+            }),
           }}
           localization={{
             body: {
@@ -159,9 +157,9 @@ class MaterialTableData extends Component {
         />
         <TablePagination
           component="div"
-          labelRowsPerPage={<div className="text-15">Số hàng mỗi trang</div>}
+          labelRowsPerPage={<span className="text-15">Số hàng mỗi trang</span>}
           labelDisplayedRows={({ from, to, count }) => (
-            <div className="text-15">{`${from}-${to} trong ${count}`}</div>
+            <span className="text-15">{`${from}-${to} trong ${count}`}</span>
           )}
           SelectProps={{
             style: {
@@ -172,8 +170,8 @@ class MaterialTableData extends Component {
           count={totalItem}
           rowsPerPage={pageSize}
           page={pageIndex}
-          onChangeRowsPerPage={this.handleChangePageSize}
-          onChangePage={this.handleChangePageOrder}
+          onRowsPerPageChange={this.handleChangePageSize}
+          onPageChange={this.handleChangePageIndex}
         />
       </>
     );
@@ -187,8 +185,8 @@ const mapStateToProps = (state) => {
     totalUser: state.user.totalUser,
     listRestaurant: state.restaurant.listRestaurant,
     totalRestaurant: state.restaurant.totalRestaurant,
-    listFood: state.food.listFood,
-    totalFood: state.food.totalFood,
+    listDish: state.dish.listDish,
+    totalDish: state.dish.totalDish,
   };
 };
 

@@ -20,7 +20,7 @@ import {
 } from "@material-ui/core";
 import Slider from "react-slick";
 
-class DaNangRestaurant extends Component {
+class DishHighOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -33,9 +33,11 @@ class DaNangRestaurant extends Component {
       <>
         <Container className="section-container">
           <Grid className="section-header home-container">
-            <Grid className="section-header-title">Nhà hàng tại Đà Nẵng</Grid>
+            <Grid className="section-header-title">
+              Món ăn được đặt nhiều nhất
+            </Grid>
             <Grid className="section-header-text">
-              Tổng hợp những nhà hàng nổi tiếng tại Đà Nẵng
+              Tổng hợp những món ăn được đặt nhiều nhất trên Chope
             </Grid>
           </Grid>
           <Grid className="section-body">
@@ -161,5 +163,5 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 export default withRouter(
-  connect(mapStateToProps, mapDispatchToProps)(DaNangRestaurant)
+  connect(mapStateToProps, mapDispatchToProps)(DishHighOrder)
 );

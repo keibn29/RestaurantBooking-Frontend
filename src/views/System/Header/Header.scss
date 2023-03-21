@@ -1,7 +1,7 @@
 @import "../../../styles/common.scss";
 
 .header-container {
-    z-index         : 99;
+    z-index         : 999;
     display         : flex;
     justify-content : space-between;
     background-color: $colormain;
@@ -9,7 +9,7 @@
     height          : 40px;
     position        : sticky;
     top             : 0;
-    font-size       : $base-size - 2px;
+    font-size       : $base-size - 1px;
 
     .languages {
         .welcome {

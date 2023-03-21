@@ -1,3 +1,11 @@
+export const NUMBER_MAX_VALUE = 9999;
+
+export const DOLLAR_TO_VND = 23500;
+
+export const NUMBER_PEOPLE_BOOKING = 6;
+
+export const PAGE_SIZE_PAGINATION = 10;
+
 export const PATH = {
   HOME: "/",
   HOMEPAGE: "/home",
@@ -5,23 +13,17 @@ export const PATH = {
   LOG_OUT: "/logout",
   SYSTEM: "/system",
   DETAIL_RESTAURANT: "/restaurant/:restaurantId",
-
-  DOCTOR: "/doctor",
-  DOCTOR_INFO: "/doctor-info/:id",
-  VERIFY_EMAIL_BOOKING: "/verify-booking",
-  DETAIL_SPECIALTY: "/detail-specialty/:id",
-  DETAIL_CLINIC: "/detail-clinic/:id",
-  DETAIL_HANDBOOK: "/detail-handbook/:id",
-  MORE_INFOR: "/more",
+  VERIFY_BOOKING_TABLE: "/verify-booking-table",
 };
 
-export const NUMBER_ITEM_SLIDE_HOMEPAGE = 6;
-
-export const NUMBER_MAX_VALUE = 9999;
-
-export const DOLLAR_TO_VND = 23500;
-
-export const NUMBER_DATE_SELECTED_DATE_PICKER_ADDITION = 6;
+export const SYSTEM_PATH = {
+  USER_MANAGEMENT: "/system/user-management",
+  RESTAURANT_MANAGEMENT: "/system/restaurant-management",
+  DISH_MANAGEMENT: "/system/dish-management",
+  SCHEDULE_MANAGEMENT: "/system/schedule-management",
+  BOOKING_MANAGEMENT: "/system/booking-management",
+  HANDBOOK_MANAGEMENT: "/system/handbook-management",
+};
 
 export const NAV_DETAIL_RESTAURANT = {
   ABOUT: "about",
@@ -33,7 +35,7 @@ export const NAV_DETAIL_RESTAURANT = {
 export const TABLE_ITEMS = {
   USER: "user",
   RESTAURANT: "restaurant",
-  FOOD: "food",
+  DISH: "dish",
 };
 
 export const ALLCODES = {
@@ -78,7 +80,7 @@ export const PAGE_LOGIN = {
 
 export const EMITTER_EVENTS = {
   UPDATE_TABLE_DATA: "UPDATE_TABLE_DATA",
-  FETCH_LIST_FOOD_BY_RESTAURANT: "FETCH_LIST_FOOD_BY_RESTAURANT",
+  FETCH_LIST_DISH_BY_RESTAURANT: "FETCH_LIST_DISH_BY_RESTAURANT",
 };
 
 export const CRUD_ACTIONS = {
@@ -88,11 +90,27 @@ export const CRUD_ACTIONS = {
   READ: "READ",
 };
 
-export const dateFormat = {
-  SEND_TO_SERVER: "DD/MM/YYYY",
+export const CUSTOMER_ACTIONS = {
+  DETAIL: "DETAIL",
+  CONFIRM: "CONFIRM",
+  DONE: "DONE",
+  CANCEL: "CANCEL",
 };
 
-export const YesNoObj = {
-  YES: "Y",
-  NO: "N",
+export const LIST_STATUS = {
+  NEW: "S1",
+  VERIFIED: "S2",
+  CONFIRMED: "S3",
+  DONE: "S4",
+  CANCELLED: "S5",
+};
+
+export const GENERAL_STATUS = {
+  DONE: "DONE",
+  SLACKING: "SLACKING",
+};
+
+export const SOCIAL_NETWORK = {
+  FACEBOOK: "FACEBOOK",
+  GITHUB: "GITHUB",
 };

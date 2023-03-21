@@ -1,0 +1,118 @@
+@import "../../../styles/variables";
+
+.customer-management-container {
+    .date-picker {
+        .flatpickr-input {
+            border       : 1px solid #ccc;
+            border-radius: 4px;
+            width        : 60%;
+            padding      : 6px 10px;
+            outline      : none;
+        }
+    }
+}
+
+.detail-booking-dialog-container {
+
+    .detail-booking-header {
+        padding      : 10px 20px;
+        border-bottom: 1px solid #ddd;
+        user-select  : none;
+        font-size    : 28px;
+        font-weight  : 600;
+        text-align   : center;
+        position     : relative;
+        color        : $colormain;
+
+        .btn-close-dialog {
+            position: absolute;
+            right   : 5px;
+            top     : 7px;
+        }
+    }
+
+    .detail-booking-body {
+        margin-top: 20px;
+        padding   : 0 20px;
+
+        .body-title {
+            font-size  : 19px;
+            font-weight: 600;
+        }
+
+        .body-up {
+            .customer-infor-content {
+                gap       : 12px;
+                margin-top: 5px;
+
+                .customer-avatar {
+                    width           : 120px;
+                    height          : 120px;
+                    border-radius   : 50%;
+                    background-image: url("../../../assets/images/customer-avatar-default.png");
+                }
+
+                .customer-text {
+                    .text-content {
+                        font-size: 18px;
+
+                        .text-content-right {
+                            margin-left: 5px;
+                        }
+                    }
+                }
+            }
+        }
+
+        .body-down {
+            margin-top: 20px;
+
+            .booking-infor {
+                font-size: 17px;
+
+                .status-text {
+                    color: #28A745;
+                }
+            }
+
+            .list-dish-order {
+                padding   : 0 20px;
+                margin-top: 10px;
+                gap       : 10px 0;
+
+                .dish-order-content {
+                    gap: 10px;
+
+                    .dish-order-avatar {
+                        width           : 60px;
+                        height          : 60px;
+                        background-image: url("../../../assets/images/dish-default.jpg");
+                    }
+
+                    .dish-order-text {
+                        .dish-order-name {
+                            font-weight: 500;
+                        }
+
+                        .dish-order-price {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .detail-booking-footer {
+        border-top: 1px solid #ddd;
+        margin-top: 20px;
+        padding   : 10px 20px;
+
+        .btn-close {
+            background-color: $colormain;
+            border          : none;
+            color           : white;
+            font-size       : inherit;
+        }
+    }
+}

@@ -22,12 +22,11 @@ import {
   Container,
   Dialog,
 } from "@material-ui/core";
-import "./FoodOrder.scss";
+import "./DishOrder.scss";
 import Flatpickr from "react-flatpickr";
-// import "flatpickr/dist/themes/material_white.css";
 import "flatpickr/dist/flatpickr.css";
 
-class FoodOrder extends Component {
+class DishOrder extends Component {
   constructor(props) {
     super(props);
     this.state = {};
@@ -37,12 +36,16 @@ class FoodOrder extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
 
-  handleRemoveFoodOrderItem = (foodId) => {
-    this.props.removeFoodOrderItem(foodId);
+  handleRemoveDishOrderItem = (dishId) => {
+    const { listDishOrder, handleCloseDialog } = this.props;
+    this.props.removeDishOrderItem(dishId);
+    if (listDishOrder.length <= 1) {
+      handleCloseDialog();
+    }
   };
 
   render() {
-    const { language, isOpen, handleCloseDialog, listFoodOrder } = this.props;
+    const { language, isOpen, handleCloseDialog, listDishOrder } = this.props;
     const {} = this.state;
 
     return (
@@ -53,8 +56,8 @@ class FoodOrder extends Component {
           fullWidth={true}
           onClose={handleCloseDialog}
         >
-          <Grid className="food-order-container">
-            <Grid className="food-order-header">
+          <Grid className="dish-order-container">
+            <Grid className="dish-order-header">
               Danh sách món ăn dự định đặt
               <IconButton
                 className="btn-close-dialog"
@@ -67,28 +70,28 @@ class FoodOrder extends Component {
                 </Icon>
               </IconButton>
             </Grid>
-            <Grid className="food-order-body">
-              <Grid className="list-food-order">
-                {isExistArrayAndNotEmpty(listFoodOrder) &&
-                  [...listFoodOrder].reverse().map((item) => {
+            <Grid className="dish-order-body">
+              <Grid className="list-dish-order">
+                {isExistArrayAndNotEmpty(listDishOrder) &&
+                  [...listDishOrder].reverse().map((item) => {
                     return (
-                      <Grid key={item.id} className="food-order-content">
-                        <Grid className="food-order-content-left">
+                      <Grid key={item.id} className="dish-order-content">
+                        <Grid className="dish-order-content-left">
                           <Grid
-                            className="food-order-avatar background-image-center-cover"
+                            className="dish-order-avatar background-image-center-cover"
                             style={{
                               backgroundImage: `url(${
                                 process.env.REACT_APP_BACKEND_URL + item.avatar
                               })`,
                             }}
                           ></Grid>
-                          <Grid className="food-order-name-price-country">
-                            <Grid className="food-order-name">
+                          <Grid className="dish-order-name-price-country">
+                            <Grid className="dish-order-name">
                               {language === LANGUAGES.VI
                                 ? item.nameVi
                                 : item.nameEn}
                             </Grid>
-                            <Grid className="food-order-price">
+                            <Grid className="dish-order-price">
                               Giá:{" "}
                               {language === LANGUAGES.VI ? (
                                 <>
@@ -102,18 +105,18 @@ class FoodOrder extends Component {
                                 </>
                               )}
                             </Grid>
-                            <Grid className="food-order-country">
+                            <Grid className="dish-order-country">
                               {language === LANGUAGES.VI
                                 ? item.countryData.valueVi
                                 : item.countryData.valueEn}
                             </Grid>
                           </Grid>
                         </Grid>
-                        <Grid className="food-order-content-right">
+                        <Grid className="dish-order-content-right">
                           <Icon
-                            className="btn-remove-food-order"
+                            className="btn-remove-dish-order"
                             onClick={() => {
-                              this.handleRemoveFoodOrderItem(item.id);
+                              this.handleRemoveDishOrderItem(item.id);
                             }}
                           >
                             highlight_off
@@ -124,7 +127,7 @@ class FoodOrder extends Component {
                   })}
               </Grid>
             </Grid>
-            <Grid className="food-order-footer">
+            <Grid className="dish-order-footer">
               <Button
                 className="btn-confirm"
                 variant="outlined"
@@ -150,8 +153,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeFoodOrderItem: (foodId) => dispatch(actions.updateFoodOrder(foodId)),
+    removeDishOrderItem: (dishId) => dispatch(actions.updateDishOrder(dishId)),
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(FoodOrder);
+export default connect(mapStateToProps, mapDispatchToProps)(DishOrder);

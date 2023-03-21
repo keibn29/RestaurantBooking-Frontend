@@ -110,17 +110,24 @@
                         color           : white;
                     }
                 }
+
+                .list-schedule-empty-text {
+                    max-width : 340px;
+                    margin    : 0 auto;
+                    font-size : 15px;
+                    font-style: italic;
+                }
             }
         }
 
-        &.food {
-            .schedule-list-food-order {
+        &.dish {
+            .schedule-list-dish-order {
                 display   : flex;
                 gap       : 5px;
                 flex-wrap : wrap;
                 margin-top: 10px;
 
-                .schedule-food-order-content {
+                .schedule-dish-order-content {
                     font-size    : 15px;
                     border       : 1px solid $colorpink;
                     box-shadow   : 0px 1px 2px $box-shadow-color;
@@ -128,7 +135,7 @@
                     border-radius: 15px;
                     position     : relative;
 
-                    .clear-food-icon {
+                    .clear-dish-icon {
                         position        : absolute;
                         top             : 11%;
                         right           : 3px;

@@ -54,3 +54,30 @@ export const getScheduleByDateFailed = (error) => {
     type: GET_SCHEDULE_BY_DATE_FAILED,
   };
 };
+
+//get-list-booking
+export const GET_LIST_BOOKING = "GET_LIST_BOOKING";
+export const GET_LIST_BOOKING_SUCCESS = "GET_LIST_BOOKING_SUCCESS";
+export const GET_LIST_BOOKING_FAILED = "GET_LIST_BOOKING_FAILED";
+
+export const getListTableBooking = (data) => {
+  return {
+    type: GET_LIST_BOOKING,
+    data,
+  };
+};
+
+export const getListTableBookingSuccess = (listBooking, totalBooking) => {
+  return {
+    type: GET_LIST_BOOKING_SUCCESS,
+    listBooking,
+    totalBooking,
+  };
+};
+
+export const getListTableBookingFailed = (error) => {
+  toast.error(error);
+  return {
+    type: GET_LIST_BOOKING_FAILED,
+  };
+};

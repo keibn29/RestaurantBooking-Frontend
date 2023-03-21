@@ -3,12 +3,12 @@
     "header": {
       "welcome": "Xin chào",
       "user": "Người dùng",
-      "manage-user": "Quản lý người dùng",
+      "user-management": "Quản lý người dùng",
       "restaurant": "Nhà hàng",
-      "manage-restaurant": "Quản lý nhà hàng",
-      "manage-schedule": "Quản lý lịch đặt bàn",
-      "food": "Món ăn",
-      "manage-food": "Quản lý món ăn",
+      "restaurant-management": "Quản lý nhà hàng",
+      "schedule-management": "Quản lý lịch đặt bàn",
+      "dish-management": "Quản lý món ăn",
+      "booking-management": "Quản lý đơn đặt bàn",
       "handbook": "Bài đăng"
     }
   }

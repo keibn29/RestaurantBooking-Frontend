@@ -5,6 +5,7 @@ import {
   isExistArrayAndNotEmpty,
   LANGUAGE,
   LANGUAGES,
+  NUMBER_PEOPLE_BOOKING,
 } from "../../../../utils";
 import {
   Grid,
@@ -25,20 +26,28 @@ import { Clear } from "@material-ui/icons";
 import "./RestaurantSchedule.scss";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
-import FoodOrder from "./FoodOrder";
+import DishOrder from "./DishOrder";
+import moment from "moment";
+import { bookingTable } from "../../../../services/customerService";
+import { toast } from "react-toastify";
+import CustomerLogin from "../../Auth/CustomerLogin";
 
 class RestaurantSchedule extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listOptionPeople: [1, 2, 3, 4, 5, 6],
+      listOptionPeople: [...Array(NUMBER_PEOPLE_BOOKING).keys()].map(
+        (item) => ++item
+      ),
       numberPeople: 2,
       isShowOptionPeople: false,
       date: new Date().setHours(0, 0, 0, 0),
+      timeType: "",
       isOpenDatePicker: false,
-      isShowFoodOrderDialog: false,
-      listFoodOrder: [],
+      isShowDishOrderDialog: false,
+      listDishOrder: [],
       listSchedule: [],
+      isOpenCustomerLoginDialog: false,
     };
   }
 
@@ -46,7 +55,7 @@ class RestaurantSchedule extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.listSchedule !== this.props.listSchedule) {
-      let listSchedule = this.addFieldToListSchedule(this.props.listSchedule);
+      let listSchedule = this.props.listSchedule;
       this.setState({
         listSchedule: listSchedule,
       });
@@ -54,11 +63,22 @@ class RestaurantSchedule extends Component {
     if (prevProps.restaurantId !== this.props.restaurantId) {
       this.fetchScheduleByDate(+this.props.restaurantId);
     }
+    if (
+      prevProps.isOpenCustomerLoginDialog !==
+      this.props.isOpenCustomerLoginDialog
+    ) {
+      this.setState({
+        isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
+      });
+    }
+    if (prevProps.customerInfo !== this.props.customerInfo) {
+      this.handleClearState();
+    }
   }
 
   componentWillReceiveProps(nextProps) {
     this.setState({
-      listFoodOrder: nextProps.listFoodOrder.filter(
+      listDishOrder: nextProps.listDishOrder.filter(
         (item) => item.restaurantId === +nextProps.restaurantId
       ),
     });
@@ -66,18 +86,7 @@ class RestaurantSchedule extends Component {
 
   fetchScheduleByDate = (restaurantId) => {
     const { date } = this.state;
-    let dateSelected = new Date(date).getTime();
-    this.props.getScheduleByDate(restaurantId, dateSelected);
-  };
-
-  addFieldToListSchedule = (listSchedule) => {
-    if (!isExistArrayAndNotEmpty(listSchedule)) {
-      return [];
-    }
-    return listSchedule.map((item) => ({
-      ...item,
-      isSelected: false,
-    }));
+    this.props.getScheduleByDate(+restaurantId, date);
   };
 
   handleShowHideOptionPeople = () => {
@@ -113,7 +122,7 @@ class RestaurantSchedule extends Component {
 
   handleChangeDatePicker = (date) => {
     this.setState({
-      date: date,
+      date: new Date(date).getTime(),
       isOpenDatePicker: !this.state.isOpenDatePicker,
     });
 
@@ -123,35 +132,121 @@ class RestaurantSchedule extends Component {
     }
   };
 
-  handleOpenFoodOrderDialog = () => {
+  handleOpenDishOrderDialog = () => {
     this.setState({
-      isShowFoodOrderDialog: true,
+      isShowDishOrderDialog: true,
     });
   };
 
-  handleChangeTimeSelected = (timeSelected) => {
-    const { listSchedule } = this.state;
-    let newList = listSchedule.map((item) => {
-      if (item.id !== timeSelected.id) {
-        item.isSelected = false;
-        return item;
+  handleChangeTimeSelected = (timeTypeSelected) => {
+    this.setState({
+      timeType: timeTypeSelected,
+    });
+  };
+
+  handleClearState = () => {
+    this.setState(
+      {
+        numberPeople: 2,
+        isShowOptionPeople: false,
+        date: new Date().setHours(0, 0, 0, 0),
+        timeType: "",
+        isOpenDatePicker: false,
+        isShowDishOrderDialog: false,
+        isOpenCustomerLoginDialog: false,
+      },
+      () => {
+        this.fetchScheduleByDate(+this.props.restaurantId);
       }
-      item.isSelected = true;
-      return item;
-    });
+    );
+  };
+
+  handleCloseDishOrderDialog = () => {
     this.setState({
-      listSchedule: newList,
+      isShowDishOrderDialog: false,
     });
   };
 
-  handleCloseFoodOrderDialog = () => {
-    this.setState({
-      isShowFoodOrderDialog: false,
-    });
+  handleRemoveDishOrderItem = (dishId) => {
+    this.props.removeDishOrderItem(dishId);
   };
 
-  handleRemoveFoodOrderItem = (foodId) => {
-    this.props.removeFoodOrderItem(foodId);
+  handleValidateCustomerBooking = () => {
+    const { customerInfo } = this.props;
+    if (!customerInfo) {
+      toast.info("Vui lòng đăng nhập để đặt bàn");
+      this.setState({
+        isOpenCustomerLoginDialog: true,
+      });
+    } else {
+      this.handleBookingTable();
+    }
+  };
+
+  handleBookingTable = () => {
+    if (!this.state.timeType) {
+      toast.error("Vui lòng chọn thời gian muốn đặt bàn");
+    } else {
+      const { restaurantId, customerInfo, language } = this.props;
+      const { numberPeople, date, timeType } = this.state;
+      const timeString = this.buildTimeBooking(timeType);
+
+      let data = {
+        restaurantId,
+        customerId: customerInfo.id,
+        table: Math.ceil(numberPeople / 6),
+        date,
+        timeType,
+        timeString,
+        language,
+        listDishOrder: this.props.listDishOrder,
+      };
+
+      this.callApiBookingTable(data);
+    }
+  };
+
+  buildTimeBooking = (timeType) => {
+    const { language } = this.props;
+    const { date, listSchedule } = this.state;
+
+    let dateVi = moment.unix(+date / 1000).format("dddd - DD/MM/YYYY"); //ms -> s
+    let dateEn = moment
+      .unix(+date / 1000)
+      .locale("en")
+      .format("dddd - MM/DD/YYYY");
+    let dateBooking =
+      language === LANGUAGES.VI ? this.capitalizeFirstLetter(dateVi) : dateEn;
+
+    let timeSelected = listSchedule.find((item) => item.timeType === timeType);
+
+    let time =
+      language === LANGUAGES.VI
+        ? timeSelected.timeTypeData.valueVi
+        : timeSelected.timeTypeData.valueEn;
+
+    return `${time} - ${dateBooking}`;
+  };
+
+  capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
+  callApiBookingTable = async (data) => {
+    const res = await bookingTable(data);
+    if (res && res.errCode === 0) {
+      toast.info("Đặt lịch thành công, vui lòng kiểm tra email để xác nhận");
+      this.handleClearState();
+      this.props.clearDishOrder();
+    } else {
+      toast.error(res.errMessage);
+    }
+  };
+
+  handleCloseCustomerLoginDialog = () => {
+    this.setState({
+      isOpenCustomerLoginDialog: false,
+    });
   };
 
   render() {
@@ -161,11 +256,16 @@ class RestaurantSchedule extends Component {
       listOptionPeople,
       numberPeople,
       isOpenDatePicker,
-      isShowFoodOrderDialog,
-      listFoodOrder,
+      timeType,
+      isShowDishOrderDialog,
+      listDishOrder,
       listSchedule,
+      date,
+      isOpenCustomerLoginDialog,
     } = this.state;
-    console.log(listSchedule);
+
+    // console.log("date", date);
+
     return (
       <>
         <Grid
@@ -235,9 +335,10 @@ class RestaurantSchedule extends Component {
                 onChange={([date]) => {
                   this.handleChangeDatePicker(date);
                 }}
+                value={date}
                 options={{
                   defaultDate: "today",
-                  dateFormat: "d/m/Y",
+                  dateFormat: language === LANGUAGES.VI ? "d/m/Y" : "m/d/Y",
                   minDate: "today",
                   maxDate: new Date().fp_incr(30),
                   locale: {
@@ -261,18 +362,18 @@ class RestaurantSchedule extends Component {
               <span>Choose a time:</span>
             </Grid>
             <Grid container spacing={2} className="list-schedule">
-              {isExistArrayAndNotEmpty(listSchedule) &&
+              {isExistArrayAndNotEmpty(listSchedule) ? (
                 listSchedule.map((item) => {
                   return (
                     <Grid key={item.id} item xs={4}>
                       <Button
                         className={
-                          item.isSelected
+                          timeType === item.timeType
                             ? "w-100 schedule-content time-active"
                             : "w-100 schedule-content"
                         }
                         onClick={() => {
-                          this.handleChangeTimeSelected(item);
+                          this.handleChangeTimeSelected(item.timeType);
                         }}
                       >
                         {language === LANGUAGES.VI
@@ -281,37 +382,43 @@ class RestaurantSchedule extends Component {
                       </Button>
                     </Grid>
                   );
-                })}
+                })
+              ) : (
+                <Grid className="list-schedule-empty-text text-justify">
+                  Nhà hàng không có lịch đặt bàn trong ngày, quý khách vui lòng
+                  chọn ngày khác
+                </Grid>
+              )}
             </Grid>
           </Grid>
-          <Grid className="restaurant-schedule-infor food">
+          <Grid className="restaurant-schedule-infor dish">
             <Grid className="grid-mui-icon">
               <Icon>fastfood</Icon>
               <span>
-                Food Order:{" "}
-                {!isExistArrayAndNotEmpty(listFoodOrder) && <>(Chưa đặt món)</>}
+                Dish Order:{" "}
+                {!isExistArrayAndNotEmpty(listDishOrder) && <>(Chưa đặt món)</>}
               </span>
             </Grid>
-            {isExistArrayAndNotEmpty(listFoodOrder) && (
-              <Grid className="schedule-list-food-order">
-                {listFoodOrder.slice(0, 3).map((item) => {
+            {isExistArrayAndNotEmpty(listDishOrder) && (
+              <Grid className="schedule-list-dish-order">
+                {listDishOrder.slice(0, 3).map((item) => {
                   return (
-                    <Grid key={item.id} className="schedule-food-order-content">
+                    <Grid key={item.id} className="schedule-dish-order-content">
                       {language === LANGUAGES.VI ? item.nameVi : item.nameEn}
                       <Clear
-                        className="clear-food-icon"
+                        className="clear-dish-icon"
                         onClick={() => {
-                          this.handleRemoveFoodOrderItem(item.id);
+                          this.handleRemoveDishOrderItem(item.id);
                         }}
                       />
                     </Grid>
                   );
                 })}
-                {listFoodOrder.length > 3 && (
+                {listDishOrder.length > 3 && (
                   <Grid
-                    className="schedule-food-order-content more"
+                    className="schedule-dish-order-content more"
                     onClick={() => {
-                      this.handleOpenFoodOrderDialog();
+                      this.handleOpenDishOrderDialog();
                     }}
                   >
                     &sdot;&sdot;&sdot;
@@ -319,17 +426,30 @@ class RestaurantSchedule extends Component {
                 )}
               </Grid>
             )}
-            {isShowFoodOrderDialog && (
-              <FoodOrder
-                isOpen={isShowFoodOrderDialog}
-                handleCloseDialog={this.handleCloseFoodOrderDialog}
-                listFoodOrder={listFoodOrder}
+            {isShowDishOrderDialog && (
+              <DishOrder
+                isOpen={isShowDishOrderDialog}
+                handleCloseDialog={this.handleCloseDishOrderDialog}
+                listDishOrder={listDishOrder}
               />
             )}
           </Grid>
           <Grid className="restaurant-schedule-book">
-            <Button className="w-100 btn-book">Book now</Button>
+            <Button
+              className="w-100 btn-book"
+              onClick={() => {
+                this.handleValidateCustomerBooking();
+              }}
+            >
+              Book now
+            </Button>
           </Grid>
+          {isOpenCustomerLoginDialog && (
+            <CustomerLogin
+              isOpen={isOpenCustomerLoginDialog}
+              handleCloseDialog={this.handleCloseCustomerLoginDialog}
+            />
+          )}
         </Grid>
       </>
     );
@@ -339,16 +459,19 @@ class RestaurantSchedule extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
-    listFoodOrder: state.user.listFoodOrder,
+    listDishOrder: state.user.listDishOrder,
     listSchedule: state.restaurant.listSchedule,
+    customerInfo: state.user.customerInfo,
+    isOpenCustomerLoginDialog: state.user.isOpenCustomerLoginDialog,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    removeFoodOrderItem: (foodId) => dispatch(actions.updateFoodOrder(foodId)),
+    removeDishOrderItem: (dishId) => dispatch(actions.updateDishOrder(dishId)),
     getScheduleByDate: (restaurantId, date) =>
       dispatch(actions.getScheduleByDate(restaurantId, date)),
+    clearDishOrder: () => dispatch(actions.clearDishOrder()),
   };
 };
 

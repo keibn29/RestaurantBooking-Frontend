@@ -5,7 +5,7 @@ import { CRUD_ACTIONS } from "../utils";
 function MaterialTableAction(props) {
   const item = props.item;
   return (
-    <div>
+    <>
       <IconButton
         size="small"
         style={{ padding: "5px" }}
@@ -24,7 +24,7 @@ function MaterialTableAction(props) {
           delete
         </Icon>
       </IconButton>
-    </div>
+    </>
   );
 }
 

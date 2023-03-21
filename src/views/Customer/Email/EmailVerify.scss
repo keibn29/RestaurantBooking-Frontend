@@ -1,0 +1,23 @@
+.email-verify-container {
+    min-height: calc(100vh - 75px - 425px);
+
+    .icon {
+        width          : 50px;
+        height         : 50px;
+        background-size: contain !important;
+        margin         : 0 auto;
+
+        &.icon-success {
+            background-image: url("../../../../src/assets/images/success.svg");
+        }
+
+        &.icon-failed {
+            background-image: url("../../../../src/assets/images/failed.svg");
+        }
+    }
+
+    .text {
+        font-size  : 18px;
+        font-weight: 600;
+    }
+}

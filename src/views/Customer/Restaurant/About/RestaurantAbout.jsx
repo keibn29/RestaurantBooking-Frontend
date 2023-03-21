@@ -40,7 +40,7 @@ class RestaurantAbout extends Component {
 
   componentDidMount() {
     if (this.props.restaurantId) {
-      this.fetchListFoodByRestaurant();
+      this.fetchListDishByRestaurant();
     }
     let listDayNextWeek = this.customDayShowNextWeek();
     this.setState({
@@ -50,7 +50,7 @@ class RestaurantAbout extends Component {
 
   async componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.restaurantId !== this.props.restaurantId) {
-      this.fetchListFoodByRestaurant();
+      this.fetchListDishByRestaurant();
     }
   }
 
@@ -90,14 +90,14 @@ class RestaurantAbout extends Component {
     return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
-  fetchListFoodByRestaurant = () => {
+  fetchListDishByRestaurant = () => {
     const { language, restaurantId } = this.props;
     let data = {
       pageSize: 2,
       pageOrder: 1,
       restaurantId: +restaurantId,
     };
-    this.props.getListFoodByRestaurant(data, language);
+    this.props.getListDishByRestaurant(data, language);
   };
 
   handleChangeNavSelected = (navSelected) => {
@@ -231,8 +231,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getListFoodByRestaurant: (data, language) =>
-      dispatch(actions.getListFood(data, language)),
+    getListDishByRestaurant: (data, language) =>
+      dispatch(actions.getListDish(data, language)),
   };
 };
 

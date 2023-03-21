@@ -1,23 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import HomeHeader from "./HomeHeader/HomeHeader";
-// import HomeFooter from "./HomeFooter";
+import HomeFooter from "./HomeFooter/HomeFooter";
 import "./Homepage.scss";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import RestaurantHighScore from "./HomeSections/RestaurantHighScore";
-import FoodHighOrder from "./HomeSections/FoodHighOrder";
+import DishHighOrder from "./HomeSections/DishHighOrder";
 import HaNoiRestaurant from "./HomeSections/HaNoiRestaurant";
-import DaNangRestaurant from "./HomeSections/DaNangRestaurant";
-import HoChiMinhRestaurant from "./HomeSections/HoChiMinhRestaurant";
+import _ from "lodash";
 
 class HomePage extends Component {
-  componentDidMount() {
-    // document.getElementById("home-header").scrollIntoView({
-    //   // behavior: "smooth",
-    //   block: "end",
-    // });
+  constructor(props) {
+    super(props);
+    this.state = {};
   }
+
+  componentDidMount() {}
 
   render() {
     const settings = {
@@ -30,17 +29,13 @@ class HomePage extends Component {
     };
 
     return (
-      <div>
+      <>
         <HomeHeader isShowBanner={true} />
         <RestaurantHighScore settings={settings} />
-        <FoodHighOrder settings={settings} />
+        <DishHighOrder settings={settings} />
         <HaNoiRestaurant settings={settings} />
-        <DaNangRestaurant settings={settings} />
-        <HoChiMinhRestaurant settings={settings} />
-        {/* <HomeFooter
-                    isShowFanpage={true}
-                /> */}
-      </div>
+        <HomeFooter />
+      </>
     );
   }
 }

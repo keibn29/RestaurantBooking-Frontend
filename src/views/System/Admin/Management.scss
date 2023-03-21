@@ -35,7 +35,7 @@
         border          : 1px solid #bbb;
 
         &.user,
-        &.food {
+        &.dish {
             width : 120px;
             height: 120px;
         }
@@ -50,7 +50,7 @@
 .photo-container {
     height: 170px;
 
-    &.food {
+    &.dish {
         height: 90px;
     }
 
@@ -59,7 +59,6 @@
     }
 
     .photo-number {
-        // width           : 120px;
         height          : 40px;
         padding         : 0 10px;
         cursor          : pointer;
@@ -79,12 +78,7 @@
         }
 
         span {
-            margin   : auto;
-            // color : white;
-
-            &.number {
-                // font-size: 50px;
-            }
+            margin: auto;
 
             &.text {
                 display: none;
@@ -102,5 +96,15 @@
 }
 
 .material-table {
-    margin-top: 100px !important;
+    margin-top    : 50px;
+    padding-bottom: 50px;
+}
+
+.table-pagination {
+    margin: 10px 0 50px;
+    float : right;
+
+    .css-1to7aaw-MuiButtonBase-root-MuiPaginationItem-root.Mui-selected {
+        background-color: $colormain;
+    }
 }

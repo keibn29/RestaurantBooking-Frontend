@@ -13,8 +13,7 @@ import {
   USER_ROLE,
   NUMBER_MAX_VALUE,
   DOLLAR_TO_VND,
-  customReactSelectStyles,
-  NUMBER_DATE_SELECTED_DATE_PICKER_ADDITION,
+  customReactSelectStyleSystem,
 } from "../../../utils";
 import {
   Grid,
@@ -103,6 +102,7 @@ class ScheduleManagement extends Component {
         return result;
       });
     }
+
     return result;
   };
 
@@ -115,17 +115,17 @@ class ScheduleManagement extends Component {
   getLastDefaultDateFromDatePicker = () => {
     const lastDate = new Date();
     lastDate.setDate(
-      lastDate.getDate() + NUMBER_DATE_SELECTED_DATE_PICKER_ADDITION
+      lastDate.getDate() + process.env.REACT_APP_DATE_PICKER_RANGE
     );
     this.setState({
-      lastDate: lastDate,
+      lastDate: new Date(lastDate).getTime(),
     });
   };
 
   handleChangeDatePicker = (selectedDates) => {
     this.setState({
-      firstDate: selectedDates[0],
-      lastDate: selectedDates[1],
+      firstDate: new Date(selectedDates[0]).getTime(),
+      lastDate: new Date(selectedDates[1]).getTime(),
     });
   };
 
@@ -190,6 +190,9 @@ class ScheduleManagement extends Component {
   };
 
   getDatesInRange = (firstDate, lastDate) => {
+    if (!firstDate || !lastDate) {
+      return;
+    }
     return eachDayOfInterval({
       start: firstDate,
       end: lastDate,
@@ -216,10 +219,7 @@ class ScheduleManagement extends Component {
     const res = await bulkCreateNewSchedule(data);
     if (res && res.errCode === 0) {
       toast.success("Thêm lịch đặt bàn thành công");
-      this.getLastDefaultDateFromDatePicker();
       this.setState({
-        restaurantSelected: "",
-        firstDate: new Date(),
         isNoon: false,
         isEvening: false,
       });
@@ -251,7 +251,7 @@ class ScheduleManagement extends Component {
                       Nhà hàng
                     </span>
                   }
-                  styles={customReactSelectStyles}
+                  styles={customReactSelectStyleSystem}
                 />
               </Grid>
               <Grid item xs={4}>
@@ -268,7 +268,7 @@ class ScheduleManagement extends Component {
                     defaultDate: [
                       "today",
                       new Date().fp_incr(
-                        NUMBER_DATE_SELECTED_DATE_PICKER_ADDITION
+                        process.env.REACT_APP_DATE_PICKER_RANGE
                       ),
                     ],
                     dateFormat: "d/m/Y",
