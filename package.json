@@ -27,7 +27,7 @@
     "dateformat": "^5.0.3",
     "lodash": "^4.17.21",
     "markdown-it": "12.1.0",
-    "material-table": "1.61.0",
+    "material-table": "1.69.3",
     "material-ui": "^1.0.0-beta.47",
     "material-ui-dropzone": "^3.5.0",
     "moment": "^2.29.0",

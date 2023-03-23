@@ -37,12 +37,8 @@ class DetailRestaurant extends Component {
   }
 
   componentDidMount() {
-    if (
-      this.props.match &&
-      this.props.match.params &&
-      this.props.match.params.restaurantId
-    ) {
-      let restaurantId = this.props.match.params.restaurantId;
+    if (this.props.match.params.restaurantId) {
+      const restaurantId = this.props.match.params.restaurantId;
       this.setState({
         restaurantId: restaurantId,
       });
@@ -66,21 +62,17 @@ class DetailRestaurant extends Component {
           <HomeHeader isShowHeaderSearch={true} />
           <Container>
             <Grid container spacing={3}>
-              <Grid item xs={8} container>
-                <Grid
-                  item
-                  xs={12}
-                  className="restaurant-content restaurant-general mt-4"
-                >
+              <Grid item xs={8}>
+                <Grid className="restaurant-content restaurant-general mt-4">
                   <RestaurantGeneralInformation />
                 </Grid>
-                <Grid item xs={12} className="restaurant-nav">
+                <Grid className="restaurant-nav">
                   <RestaurantNav
                     handleChangeNavSelected={this.handleChangeNavSelected}
                     navSelected={navSelected}
                   />
                 </Grid>
-                <Grid item xs={12} id="detail-restaurant-top">
+                <Grid id="detail-restaurant-top">
                   {navSelected === NAV_DETAIL_RESTAURANT.ABOUT && (
                     <RestaurantAbout
                       handleChangeNavSelected={this.handleChangeNavSelected}

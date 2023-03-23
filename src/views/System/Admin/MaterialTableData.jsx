@@ -170,8 +170,8 @@ class MaterialTableData extends Component {
           count={totalItem}
           rowsPerPage={pageSize}
           page={pageIndex}
-          onRowsPerPageChange={this.handleChangePageSize}
-          onPageChange={this.handleChangePageIndex}
+          onChangeRowsPerPage={this.handleChangePageSize}
+          onChangePage={this.handleChangePageIndex}
         />
       </>
     );

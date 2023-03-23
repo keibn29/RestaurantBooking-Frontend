@@ -219,9 +219,7 @@ class UserManagement extends Component {
   };
 
   handleConfirmDelete = async () => {
-    this.setState({
-      isOpenConfirmationDialog: false,
-    });
+    this.handleCloseConfirmationDialog();
     const res = await deleteUserById(this.state.userId);
     if (res && res.errCode === 0) {
       toast.success("Xóa người dùng thành công");
@@ -252,7 +250,6 @@ class UserManagement extends Component {
     const columns = [
       {
         title: "STT",
-        align: "left",
         width: "100",
         sorting: false,
         render: (rowData) => rowData.tableData.id + 1,
@@ -260,31 +257,30 @@ class UserManagement extends Component {
       {
         title: "Vai trò",
         field: "roleData.valueVi",
-        align: "left",
       },
       {
-        title: "Họ",
-        field: "firstName",
-        align: "left",
-      },
-      {
-        title: "Tên",
-        field: "lastName",
-        align: "left",
+        title: "Họ và tên",
+        render: (rowData) =>
+          language === LANGUAGES.VI
+            ? `${rowData.lastName} ${rowData.firstName}`
+            : `${rowData.firstName} ${rowData.lastName}`,
       },
       {
         title: "Email",
         field: "email",
-        align: "left",
       },
       {
         title: "Số điện thoại",
         field: "phone",
-        align: "left",
       },
       {
         title: "Action",
-        align: "center",
+        headerStyle: {
+          textAlign: "center",
+        },
+        cellStyle: {
+          textAlign: "center",
+        },
         sorting: false,
         render: (rowData) => (
           <MaterialTableAction

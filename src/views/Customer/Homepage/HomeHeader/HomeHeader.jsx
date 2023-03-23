@@ -8,6 +8,8 @@ import {
   customReactSelectStyleHeader,
   isExistArrayAndNotEmpty,
   LANGUAGES,
+  PATH,
+  NAV_CUSTOMER_PROFILE,
 } from "../../../../utils";
 import * as actions from "../../../../store/actions";
 import { withRouter } from "react-router";
@@ -37,7 +39,7 @@ class HomeHeader extends Component {
       listProvince: [],
       provinceSelected: "",
       isOpenCustomerLoginDialog: false,
-      isShowLogoutButton: false,
+      isShowProfileAction: false,
     };
     this.wrapperRef = React.createRef();
     this.handleClickOutside = this.handleClickOutside.bind(this);
@@ -127,17 +129,26 @@ class HomeHeader extends Component {
 
   handleShowHideLogoutButton = () => {
     this.setState({
-      isShowLogoutButton: !this.state.isShowLogoutButton,
+      isShowProfileAction: !this.state.isShowProfileAction,
     });
   };
 
   handleClickOutside(event) {
     if (this.wrapperRef && !this.wrapperRef.current.contains(event.target)) {
       this.setState({
-        isShowLogoutButton: false,
+        isShowProfileAction: false,
       });
     }
   }
+
+  handleOpenCustomerProfile = (navSelected) => {
+    if (this.props.history) {
+      this.props.history.push({
+        pathname: PATH.BOOKING_HISTORY,
+        state: navSelected,
+      });
+    }
+  };
 
   render() {
     const {
@@ -152,7 +163,7 @@ class HomeHeader extends Component {
       provinceSelected,
       listProvince,
       isOpenCustomerLoginDialog,
-      isShowLogoutButton,
+      isShowProfileAction,
     } = this.state;
 
     return (
@@ -225,9 +236,42 @@ class HomeHeader extends Component {
                   }
                 ></Grid>
                 <Grid className="customer-name">{customerInfo.firstName}</Grid>
-                {isShowLogoutButton && (
-                  <Grid className="customer-logout" onClick={customerLogout}>
-                    <span>Log out</span> <i className="fas fa-sign-out-alt"></i>
+                {isShowProfileAction && (
+                  <Grid className="profile-action">
+                    <Grid
+                      className="profile-action-content"
+                      container
+                      alignItems="center"
+                      onClick={() => {
+                        this.handleOpenCustomerProfile(
+                          NAV_CUSTOMER_PROFILE.RESERVATION
+                        );
+                      }}
+                    >
+                      Lịch sử đặt bàn
+                    </Grid>
+                    <Grid
+                      className="profile-action-content"
+                      container
+                      alignItems="center"
+                      onClick={() => {
+                        this.handleOpenCustomerProfile(
+                          NAV_CUSTOMER_PROFILE.ACCOUNT
+                        );
+                      }}
+                    >
+                      Thông tin tài khoản
+                    </Grid>
+                    <Grid
+                      className="profile-action-content logout"
+                      onClick={customerLogout}
+                      container
+                      justify="space-between"
+                      alignItems="center"
+                    >
+                      <span>Log out</span>
+                      <i className="fas fa-sign-out-alt"></i>
+                    </Grid>
                   </Grid>
                 )}
               </Grid>

@@ -14,6 +14,7 @@ export const PATH = {
   SYSTEM: "/system",
   DETAIL_RESTAURANT: "/restaurant/:restaurantId",
   VERIFY_BOOKING_TABLE: "/verify-booking-table",
+  BOOKING_HISTORY: "/customer/profile",
 };
 
 export const SYSTEM_PATH = {
@@ -30,6 +31,11 @@ export const NAV_DETAIL_RESTAURANT = {
   MENU: "menu",
   PHOTOS: "photos",
   REVIEWS: "reviews",
+};
+
+export const NAV_CUSTOMER_PROFILE = {
+  RESERVATION: "reservation",
+  ACCOUNT: "account",
 };
 
 export const TABLE_ITEMS = {

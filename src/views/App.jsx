@@ -15,12 +15,13 @@ import Home from "../routes/Home";
 import SystemLogin from "./System/Auth/SystemLogin";
 import System from "../routes/System";
 import CustomScrollbars from "../components/CustomScrollbars";
-import { createTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
 import Homepage from "./Customer/Homepage/Homepage";
 import DetailRestaurant from "./Customer/Restaurant/DetailRestaurant";
 import EmailVerify from "./Customer/Email/EmailVerify";
+import CustomerProfile from "./Customer/Profile/CustomerProfile";
 
-const muiTheme = createTheme({
+const muiTheme = createMuiTheme({
   palette: {
     primary: {
       main: "#7265EB",
@@ -76,6 +77,10 @@ class App extends Component {
                     <Route
                       path={PATH.VERIFY_BOOKING_TABLE}
                       component={EmailVerify}
+                    />
+                    <Route
+                      path={PATH.BOOKING_HISTORY}
+                      component={CustomerProfile}
                     />
                   </Switch>
                 </CustomScrollbars>

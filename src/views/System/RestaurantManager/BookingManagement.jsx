@@ -45,7 +45,11 @@ import {
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import Select from "react-select";
-import { bulkCreateNewSchedule } from "../../../services/restaurantService";
+import {
+  bulkCreateNewSchedule,
+  cancelBookingTable,
+  confirmOrDoneBookingTable,
+} from "../../../services/restaurantService";
 import CustomerAction from "../../../components/CustomerAction";
 import DetailBookingDialog from "./DetailBookingDialog";
 
@@ -66,6 +70,8 @@ class BookingManagement extends Component {
       method: "",
       listGeneralStatus: [],
       generalStatusSelected: "",
+      isOpenConfirmationDialog: false,
+      confirmMessage: "",
     };
   }
 
@@ -227,8 +233,26 @@ class BookingManagement extends Component {
       });
     } else {
       this.setState({
+        isOpenConfirmationDialog: true,
         bookingId: bookingData.id,
         method: method,
+      });
+      this.setCofirmationMessage(method);
+    }
+  };
+
+  setCofirmationMessage = (method) => {
+    if (method === CUSTOMER_ACTIONS.CONFIRM) {
+      this.setState({
+        confirmMessage: "Xác nhận đơn đặt bàn đúng thông tin?",
+      });
+    } else if (method === CUSTOMER_ACTIONS.DONE) {
+      this.setState({
+        confirmMessage: "Xác nhận khách hàng đã dùng bữa?",
+      });
+    } else {
+      this.setState({
+        confirmMessage: "Xác nhận huỷ đơn đặt bàn này?",
       });
     }
   };
@@ -237,6 +261,44 @@ class BookingManagement extends Component {
     this.setState({
       isOpenDetailBookingDialog: false,
     });
+  };
+
+  handleCloseConfirmationDialog = () => {
+    this.setState({
+      isOpenConfirmationDialog: false,
+    });
+  };
+
+  handleConfirm = async () => {
+    this.handleCloseConfirmationDialog();
+    const { method, bookingId } = this.state;
+    if (method === CUSTOMER_ACTIONS.CONFIRM) {
+      this.callApiConfirmOrDoneBookingTable(bookingId, LIST_STATUS.VERIFIED);
+    } else if (method === CUSTOMER_ACTIONS.DONE) {
+      this.callApiConfirmOrDoneBookingTable(bookingId, LIST_STATUS.CONFIRMED);
+    } else {
+      this.callApiCancelBookingTable(bookingId);
+    }
+  };
+
+  callApiConfirmOrDoneBookingTable = async (bookingId, statusId) => {
+    const res = await confirmOrDoneBookingTable(bookingId, statusId);
+    if (res && res.errCode === 0) {
+      toast.success("Xác nhận thành công");
+      this.fetchListTableBooking();
+    } else {
+      toast.error(res.errMessage);
+    }
+  };
+
+  callApiCancelBookingTable = async (bookingId) => {
+    const res = await cancelBookingTable(bookingId);
+    if (res && res.errCode === 0) {
+      toast.success("Hủy đơn đặt bàn thành công");
+      this.fetchListTableBooking();
+    } else {
+      toast.error(res.errMessage);
+    }
   };
 
   render() {
@@ -253,18 +315,18 @@ class BookingManagement extends Component {
       bookingSelected,
       listGeneralStatus,
       generalStatusSelected,
+      isOpenConfirmationDialog,
+      confirmMessage,
     } = this.state;
     const columns = [
       {
         title: "STT",
-        align: "left",
         width: "100",
         sorting: false,
         render: (rowData) => rowData.tableData.id + 1,
       },
       {
         title: "Tên khách hàng",
-        align: "left",
         render: (rowData) =>
           language === LANGUAGES.VI
             ? `${rowData.customerData.lastName} ${rowData.customerData.firstName}`
@@ -273,7 +335,6 @@ class BookingManagement extends Component {
       {
         title: "Số điện thoại",
         field: "customerData.phone",
-        align: "left",
       },
       {
         title: "Thời gian",
@@ -281,7 +342,6 @@ class BookingManagement extends Component {
           language === LANGUAGES.VI
             ? "timeTypeData.valueVi"
             : "timeTypeData.valueEn",
-        align: "left",
       },
       {
         title: "Trạng thái",
@@ -289,11 +349,16 @@ class BookingManagement extends Component {
           language === LANGUAGES.VI
             ? "statusData.valueVi"
             : "statusData.valueEn",
-        align: "left",
       },
       {
         title: "Action",
         align: "center",
+        headerStyle: {
+          textAlign: "center",
+        },
+        cellStyle: {
+          textAlign: "center",
+        },
         sorting: false,
         render: (rowData) => (
           <CustomerAction
@@ -305,7 +370,6 @@ class BookingManagement extends Component {
         ),
       },
     ];
-    console.log(listGeneralStatus);
 
     return (
       <>
@@ -380,22 +444,36 @@ class BookingManagement extends Component {
                         ? "#fff"
                         : "#eee",
                   }),
+                  maxBodyHeight: "100vh",
+                  minBodyHeight: "400px",
                 }}
                 localization={{
                   body: {
-                    emptyDataSourceMessage: !restaurantSelected.value
-                      ? "Vui lòng chọn nhà hàng để xem danh sách đơn đặt bàn"
-                      : "Không có đơn đặt bàn nào trong ngày",
+                    emptyDataSourceMessage: (
+                      <Grid
+                        container
+                        justify="center"
+                        alignItems="center"
+                        style={{
+                          height: "362px",
+                          fontSize: "16px",
+                        }}
+                      >
+                        {!restaurantSelected.value
+                          ? "Vui lòng chọn nhà hàng để xem danh sách đơn đặt bàn"
+                          : "Không có đơn đặt bàn nào trong ngày"}
+                      </Grid>
+                    ),
                   },
                 }}
               />
               <TablePagination
                 component="div"
                 labelRowsPerPage={
-                  <div className="text-15">Số hàng mỗi trang</div>
+                  <span className="text-15">Số hàng mỗi trang</span>
                 }
                 labelDisplayedRows={({ from, to, count }) => (
-                  <div className="text-15">{`${from}-${to} trong ${count}`}</div>
+                  <span className="text-15">{`${from}-${to} trong ${count}`}</span>
                 )}
                 SelectProps={{
                   style: {
@@ -406,8 +484,8 @@ class BookingManagement extends Component {
                 count={totalBooking}
                 rowsPerPage={pageSize}
                 page={pageIndex}
-                onRowsPerPageChange={this.handleChangePageSize}
-                onPageChange={this.handleChangePageIndex}
+                onChangeRowsPerPage={this.handleChangePageSize}
+                onChangePage={this.handleChangePageIndex}
               />
             </Grid>
           </Grid>
@@ -416,6 +494,17 @@ class BookingManagement extends Component {
               isOpen={isOpenDetailBookingDialog}
               handleCloseDialog={this.handleCloseDetailBookingDialog}
               bookingData={bookingSelected}
+            />
+          )}
+          {isOpenConfirmationDialog && (
+            <ConfirmationDialog
+              title={"Xác nhận"}
+              text={confirmMessage}
+              isOpen={isOpenConfirmationDialog}
+              onCancelClick={this.handleCloseConfirmationDialog}
+              onConfirmClick={this.handleConfirm}
+              confirm={"Xác nhận"}
+              cancel={"Hủy"}
             />
           )}
         </Container>

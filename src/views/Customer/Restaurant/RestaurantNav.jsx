@@ -23,28 +23,12 @@ import MenuContent from "./Menu/MenuContent";
 class RestaurantNav extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      navSelected: "",
-    };
+    this.state = {};
   }
 
-  componentDidMount() {
-    this.getNavSelectedFromParent();
-  }
+  componentDidMount() {}
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.navSelected !== this.props.navSelected) {
-      this.setState({
-        navSelected: this.props.navSelected,
-      });
-    }
-  }
-
-  getNavSelectedFromParent = () => {
-    this.setState({
-      navSelected: this.props.navSelected,
-    });
-  };
+  componentDidUpdate(prevProps, prevState, snapshot) {}
 
   handleChangeNavSelected = (navSelected) => {
     this.props.handleChangeNavSelected(navSelected);
@@ -55,8 +39,7 @@ class RestaurantNav extends Component {
   };
 
   render() {
-    const { language } = this.props;
-    const { navSelected } = this.state;
+    const { language, navSelected } = this.props;
 
     return (
       <>

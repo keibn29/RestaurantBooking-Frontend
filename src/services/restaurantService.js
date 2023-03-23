@@ -35,3 +35,11 @@ export const getScheduleByDate = (restaurantId, date) => {
 export const getListTableBooking = (data) => {
   return axios.post(`/api/bookings/search`, data);
 };
+
+export const confirmOrDoneBookingTable = (bookingId, statusId) => {
+  return axios.put(`/api/bookings/confirm/${bookingId}?statusId=${statusId}`);
+};
+
+export const cancelBookingTable = (bookingId) => {
+  return axios.delete(`/api/bookings/${bookingId}`);
+};

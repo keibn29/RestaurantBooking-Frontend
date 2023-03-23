@@ -359,9 +359,7 @@ class DishManagement extends Component {
   };
 
   handleConfirmDelete = async () => {
-    this.setState({
-      isOpenConfirmationDialog: false,
-    });
+    this.handleCloseConfirmationDialog();
     const res = await deleteDishById(this.state.dishId);
     if (res && res.errCode === 0) {
       toast.success("Xóa món ăn thành công");
@@ -399,7 +397,6 @@ class DishManagement extends Component {
     const columns = [
       {
         title: "STT",
-        align: "left",
         width: "100",
         sorting: false,
         render: (rowData) => rowData.tableData.id + 1,
@@ -410,12 +407,10 @@ class DishManagement extends Component {
           language === LANGUAGES.VI
             ? "restaurantData.nameVi"
             : "restaurantData.nameEn",
-        align: "left",
       },
       {
         title: "Tên món ăn",
         field: language === LANGUAGES.VI ? "nameVi" : "nameEn",
-        align: "left",
       },
       {
         title: "Quốc gia",
@@ -423,16 +418,19 @@ class DishManagement extends Component {
           language === LANGUAGES.VI
             ? "countryData.valueVi"
             : "countryData.valueEn",
-        align: "left",
       },
       {
         title: "Đơn giá",
         field: language === LANGUAGES.VI ? "priceVi" : "priceEn",
-        align: "left",
       },
       {
         title: "Action",
-        align: "center",
+        headerStyle: {
+          textAlign: "center",
+        },
+        cellStyle: {
+          textAlign: "center",
+        },
         sorting: false,
         render: (rowData) => (
           <MaterialTableAction

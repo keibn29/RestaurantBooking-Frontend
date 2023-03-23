@@ -99,22 +99,28 @@
                 background-image: url("../../../../assets/images/customer-avatar-default.png");
             }
 
-            .customer-name {}
-
-            .customer-logout {
+            .profile-action {
                 position        : absolute;
+                min-width       : 250px;
                 top             : 60px;
+                right           : 0;
                 background-color: white;
-                width           : 140px;
-                padding         : 10px;
                 box-shadow      : 0px 4px 8px $box-shadow-color;
-                display         : flex;
-                justify-content : space-between;
-                align-items     : center;
-                cursor          : pointer;
+                padding         : 3px 0;
+                border-radius   : 0 0 5px 5px;
 
-                &:hover {
-                    color: $colorhome;
+                .profile-action-content {
+                    cursor : pointer;
+                    padding: 0px 15px;
+                    height : 40px;
+
+                    &:hover {
+                        background-color: $color-hover-mui;
+                    }
+
+                    &.logout {
+                        border-top: 1px solid #ddd;
+                    }
                 }
             }
         }
@@ -144,8 +150,7 @@
         padding         : 150px 0px;
 
         .banner-text {
-            color    : white;
-            // border: 1px solid red;
+            color: white;
 
             .banner-text-top {
                 font-size  : 50px;
@@ -173,11 +178,6 @@
                     font-size: 17px;
                 }
             }
-
-            // .center-select {
-            //     background-color: white;
-            //     border-radius   : 10px;
-            // }
 
             .right-button {
                 width           : 110px;

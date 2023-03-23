@@ -226,7 +226,7 @@ class DetaiBookingDialog extends Component {
             <Grid
               className="detail-booking-footer"
               container
-              justifyContent="flex-end"
+              justify="flex-end"
             >
               <Button
                 className="btn-close"

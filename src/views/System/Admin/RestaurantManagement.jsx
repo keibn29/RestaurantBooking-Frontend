@@ -301,9 +301,7 @@ class RestaurantManagement extends Component {
   };
 
   handleConfirmDelete = async () => {
-    this.setState({
-      isOpenConfirmationDialog: false,
-    });
+    this.handleCloseConfirmationDialog();
     const res = await deleteRestaurantById(this.state.restaurantId);
     if (res && res.errCode === 0) {
       toast.success("Xóa nhà hàng thành công");
@@ -342,7 +340,6 @@ class RestaurantManagement extends Component {
     const columns = [
       {
         title: "STT",
-        align: "left",
         width: "100",
         sorting: false,
         render: (rowData) => rowData.tableData.id + 1,
@@ -350,7 +347,6 @@ class RestaurantManagement extends Component {
       {
         title: "Tên nhà hàng",
         field: language === LANGUAGES.VI ? "nameVi" : "nameEn",
-        align: "left",
       },
       {
         title: "Tỉnh thành",
@@ -358,11 +354,9 @@ class RestaurantManagement extends Component {
           language === LANGUAGES.VI
             ? "provinceData.valueVi"
             : "provinceData.valueEn",
-        align: "left",
       },
       {
         title: "Người quản lý",
-        align: "left",
         render: (rowData) =>
           language === LANGUAGES.VI
             ? `${rowData.managerData.lastName} ${rowData.managerData.firstName}`
@@ -371,16 +365,19 @@ class RestaurantManagement extends Component {
       {
         title: "Địa chỉ",
         field: language === LANGUAGES.VI ? "addressVi" : "addressEn",
-        align: "left",
       },
       {
         title: "Số bàn",
         field: "table",
-        align: "left",
       },
       {
         title: "Action",
-        align: "center",
+        headerStyle: {
+          textAlign: "center",
+        },
+        cellStyle: {
+          textAlign: "center",
+        },
         sorting: false,
         render: (rowData) => (
           <MaterialTableAction
