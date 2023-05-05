@@ -27,12 +27,11 @@
     position: relative;
 
     .avatar-preview {
-        position        : absolute;
-        border-radius   : 4px;
-        // float        : right;
-        right           : 9px;
-        cursor          : pointer;
-        border          : 1px solid #bbb;
+        position     : absolute;
+        border-radius: 4px;
+        right        : 9px;
+        cursor       : pointer;
+        border       : 1px solid #bbb;
 
         &.user,
         &.dish {
@@ -40,7 +39,8 @@
             height: 120px;
         }
 
-        &.restaurant {
+        &.restaurant,
+        &.handbook {
             width : 350px;
             height: 200px;
         }
@@ -48,10 +48,15 @@
 }
 
 .photo-container {
-    height: 170px;
+    height     : 170px;
+    user-select: none;
 
     &.dish {
         height: 90px;
+    }
+
+    &.handbook {
+        height: 240px;
     }
 
     .photo-label {
@@ -88,6 +93,8 @@
 }
 
 .ckeditor-container {
+    user-select: none;
+
     .description-error {
         font-size  : 13px;
         color      : #DB2F2F;
@@ -98,6 +105,12 @@
 .material-table {
     margin-top    : 50px;
     padding-bottom: 50px;
+
+    .list-item-title {
+        font-size  : 20px;
+        font-weight: 600;
+        color      : $colormain;
+    }
 }
 
 .table-pagination {

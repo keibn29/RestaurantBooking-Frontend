@@ -1,0 +1,213 @@
+@import "../../../styles/variables";
+
+.searchpage-container {
+    background-color: $color-page-background;
+
+    .searchpage-body {
+        min-height: calc(100vh - 210px);
+
+        .searchpage-content {
+            background-color: white;
+            border-radius   : 5px;
+
+            &.filter {
+                user-select: none;
+
+                .filter-container {
+                    padding: 20px;
+
+                    .filter-content {
+                        .filter-title {
+                            font-size  : 18px;
+                            font-weight: 600;
+                        }
+
+                        .check-box {
+                            user-select: none;
+                            height     : 30px;
+
+                            &:hover {
+                                color: $colorhome;
+                            }
+                        }
+                    }
+                }
+            }
+
+            &.schedule {
+                .schedule-container {
+                    padding: 10px 20px 20px;
+
+                    .schedule-title {
+                        font-weight: 600;
+                        font-size  : 25px;
+                        user-select: none;
+                    }
+
+                    .schedule-content {
+                        user-select: none;
+
+                        .schedule-content-top {
+                            color      : $colorhome;
+                            font-weight: 600;
+                        }
+
+                        .schedule-content-bottom {
+                            height: 40px;
+
+                            .bottom-left {
+                                border       : 1px solid #bbb;
+                                border-radius: 10px;
+
+                                &:hover {
+                                    border: 1px solid $colorhome;
+                                }
+
+                                &.bottom-left-focus {
+                                    border    : 1px solid $colorhome;
+                                    box-shadow: 0 4px 8px $color-box-shadow;
+                                }
+
+                                .bottom-left-option {
+                                    padding: 5px 0;
+                                    width  : 87.5%;
+
+                                    .option-child {
+                                        border-right: 1px solid #ddd;
+                                        padding     : 0 10px;
+                                        font-weight : 600;
+                                        gap         : 5px;
+                                        cursor      : pointer;
+                                        user-select : none;
+
+                                        .option-child-data {
+                                            color: $colorhome;
+                                        }
+
+                                        &:last-child {
+                                            border: none;
+                                        }
+
+                                        &.select-people {
+                                            position: relative;
+
+                                            .list-number {
+                                                width           : 295px;
+                                                box-shadow      : 0 3px 8px $color-box-shadow;
+                                                border          : 1px solid #ddd;
+                                                padding         : 15px;
+                                                background-color: white;
+                                                position        : absolute;
+                                                top             : 37px;
+                                                left            : 0;
+                                                gap             : 10px;
+                                                cursor          : default;
+
+                                                .number-item {
+                                                    width        : 35px;
+                                                    height       : 35px;
+                                                    font-size    : 14px;
+                                                    border-radius: 50%;
+                                                    cursor       : pointer;
+
+                                                    &:hover {
+                                                        background-color: $color-hover-mui;
+                                                    }
+
+                                                    &.number-active {
+                                                        background-color: $colorhome;
+                                                        color           : white;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        &.date-picker {
+                                            position: relative;
+
+                                            .flatpickr-input {
+                                                border : none;
+                                                width  : 0;
+                                                padding: 0;
+                                                outline: none;
+
+                                                position: absolute;
+                                                left    : 0;
+                                                right   : 0;
+                                                margin  : 0 auto;
+                                            }
+
+                                            &.selected {
+                                                .flatpickr-input {
+                                                    width      : calc(100% - 75px);
+                                                    color      : $colorhome;
+                                                    font-weight: 600;
+                                                }
+                                            }
+                                        }
+
+                                        &.time {
+                                            position: relative;
+
+                                            .list-time {
+                                                width           : 295px;
+                                                box-shadow      : 0 3px 8px $color-box-shadow;
+                                                border          : 1px solid #ddd;
+                                                padding         : 10px;
+                                                background-color: white;
+                                                position        : absolute;
+                                                top             : 41px;
+                                                right           : 3px;
+                                                cursor          : default;
+
+                                                .time-item {
+                                                    border-bottom: 1px solid #aaa;
+                                                    padding      : 7px;
+                                                    border-radius: 20px;
+                                                    cursor       : pointer;
+
+                                                    &.time-active {
+                                                        background-color: $colorhome;
+                                                        color           : white;
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+
+                                .bottom-left-apply {
+                                    width           : 12.5%;
+                                    color           : white;
+                                    background-color: #FAD998;
+                                    border-radius   : 0px 10px 10px 0px;
+                                    font-weight     : 600;
+                                    cursor          : no-drop;
+                                    user-select     : none;
+
+                                    &.apply {
+                                        background-color: $colorhome;
+                                        cursor          : pointer;
+                                    }
+                                }
+                            }
+
+                            .bottom-right-cancel {
+                                text-decoration: underline;
+                                font-size      : 14px;
+                                cursor         : pointer;
+                                user-select    : none;
+                            }
+                        }
+                    }
+
+                    .schedule-text {
+                        text-align: justify;
+                        font-size : 15px;
+                        border-top: 1px solid #ddd;
+                    }
+                }
+            }
+        }
+    }
+}

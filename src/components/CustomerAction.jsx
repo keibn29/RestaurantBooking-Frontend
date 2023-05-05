@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton, Icon, Button } from "@material-ui/core";
+import { Button } from "@material-ui/core";
 import { CUSTOMER_ACTIONS, LIST_STATUS } from "../utils";
 
 function CustomerAction(props) {
@@ -7,6 +7,7 @@ function CustomerAction(props) {
   return (
     <>
       <Button
+        className={item.statusId === LIST_STATUS.OVERDUE ? "mr-1" : ""}
         onClick={() => props.onSelect(item, CUSTOMER_ACTIONS.DETAIL)}
         style={{
           backgroundColor: "#007AFE",
@@ -34,21 +35,26 @@ function CustomerAction(props) {
               Xác nhận
             </Button>
           ) : (
-            <Button
-              className="mx-2"
-              onClick={() => props.onSelect(item, CUSTOMER_ACTIONS.DONE)}
-              style={{
-                backgroundColor: "#28A745",
-                color: "white",
-                border: "none",
-                fontSize: "13px",
-                width: "100px",
-              }}
-            >
-              Hoàn thành
-            </Button>
+            <>
+              {item.statusId === LIST_STATUS.CONFIRMED && (
+                <Button
+                  className="mx-2"
+                  onClick={() => props.onSelect(item, CUSTOMER_ACTIONS.DONE)}
+                  style={{
+                    backgroundColor: "#28A745",
+                    color: "white",
+                    border: "none",
+                    fontSize: "13px",
+                    width: "100px",
+                  }}
+                >
+                  Hoàn thành
+                </Button>
+              )}
+            </>
           )}
           <Button
+            className={item.statusId === LIST_STATUS.OVERDUE ? "ml-1" : ""}
             onClick={() => props.onSelect(item, CUSTOMER_ACTIONS.CANCEL)}
             style={{
               backgroundColor: "#DC3444",

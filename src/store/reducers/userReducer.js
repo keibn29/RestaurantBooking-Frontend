@@ -51,6 +51,7 @@ const userReducer = (state = initialState, action) => {
         ...state,
         customerInfo: "",
         listDishOrder: [],
+        isOpenCustomerLoginDialog: true,
       };
 
     //get-list-user
@@ -67,16 +68,15 @@ const userReducer = (state = initialState, action) => {
         totalUser: "",
       };
 
-    //get-all-user-by-role
-    case userActions.GET_ALL_USER_BY_ROLE_SUCCESS:
+    //edit-user-by-id
+    case userActions.EDIT_CUSTOMER_INFO_BY_ID_SUCCESS:
       return {
         ...state,
-        listUserByRole: action.listUser,
+        customerInfo: action.userEdited,
       };
-    case userActions.GET_ALL_USER_BY_ROLE_FAILED:
+    case userActions.EDIT_CUSTOMER_INFO_BY_ID_FAILED:
       return {
         ...state,
-        listUserByRole: [],
       };
 
     //add-dish-order

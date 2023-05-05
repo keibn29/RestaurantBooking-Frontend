@@ -1,0 +1,188 @@
+@import "../../../../styles/variables";
+
+.booking-history-container {
+    .booking-history-body {
+        min-height: 520px;
+
+        .list-booking {
+            .booking-content {
+                padding      : 25px 15px 60px;
+                border       : 1px solid #ddd;
+                border-radius: 5px;
+                margin-top   : 20px;
+                box-shadow   : 0 1px 2px $color-box-shadow;
+
+                .booking-content-top {
+                    .content-top-left {
+                        gap: 10px;
+
+                        .left-avatar {
+                            width           : 70px;
+                            height          : 70px;
+                            border-radius   : 5px;
+                            background-image: url("../../../../assets/images/restaurant-default.png");
+                        }
+
+                        .left-text {
+                            .restaurant-name {
+                                font-size  : 17px;
+                                font-weight: 600;
+                            }
+
+                            .other {
+                                user-select: none;
+                                font-size  : 14px;
+
+                                .dish-order {
+                                    cursor  : pointer;
+                                    position: relative;
+
+                                    i {
+                                        position: absolute;
+                                        top     : 4px;
+                                        right   : -12px;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    .content-top-right {
+                        .btn-cancel-booking {
+                            background-color: $colorpink;
+                            color           : white;
+                            border          : none;
+
+                            &:hover {
+                                background-color: $colorpink-hover;
+                            }
+                        }
+                    }
+                }
+
+                .list-dish-order {
+                    padding-left: 80px;
+                    margin-top  : 20px;
+                    gap         : 10px 0;
+
+                    .dish-order-content {
+                        gap: 10px;
+
+                        .dish-order-avatar {
+                            width           : 50px;
+                            height          : 50px;
+                            border-radius   : 5px;
+                            background-image: url("../../../../assets/images/dish-default.jpg");
+                        }
+
+                        .dish-order-text {
+                            .dish-order-name {
+                                font-weight: 500;
+                                font-size  : 15px;
+                            }
+
+                            .dish-order-price {
+                                font-size: 13px;
+                            }
+                        }
+                    }
+                }
+
+                .booking-content-bottom {
+                    .booking-status {
+                        height          : 1px;
+                        background-color: #ddd;
+                        position        : relative;
+                        user-select     : none;
+
+                        .booking-status-process {
+                            height          : 1px;
+                            position        : absolute;
+                            background-color: #28A745;
+
+                            &.verified {
+                                width: 33%;
+                            }
+
+                            &.confirmed {
+                                width: 67%;
+                            }
+
+                            &.done {
+                                width: 100%;
+                            }
+
+                            &.overdue {
+                                width           : 100%;
+                                background-color: $colorpink;
+                            }
+                        }
+
+                        .status-content {
+                            width           : 35px;
+                            height          : 35px;
+                            border-radius   : 50%;
+                            border          : 1px solid #ddd;
+                            background-color: white;
+                            position        : relative;
+
+                            .status-icon {
+                                margin   : auto;
+                                font-size: 21px;
+                                color    : #ddd;
+                            }
+
+                            .status-text {
+                                font-size      : 13px;
+                                white-space    : nowrap;
+                                position       : absolute;
+                                top            : 35px;
+                                left           : 0;
+                                right          : 0;
+                                display        : flex;
+                                justify-content: center;
+                                color          : #9f9f9f;
+                            }
+
+                            &.status-active {
+                                border: 1px solid #28A745;
+
+                                .status-icon {
+                                    color: #28A745;
+                                }
+
+                                .status-text {
+                                    color: #28A745;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                &.booking-content-overdue {
+                    background-color: rgb(255, 224, 224);
+
+                    .status-content {
+                        border: 1px solid $colorpink !important;
+
+                        .status-icon {
+                            color: $colorpink !important;
+                        }
+
+                        .status-text {
+                            color: red !important;
+                        }
+                    }
+                }
+            }
+        }
+
+        .booking-pagination {
+            .css-j1lukf-MuiButtonBase-root-MuiPaginationItem-root {
+                .Mui-selected {
+                    color: white !important;
+                }
+            }
+        }
+    }
+}

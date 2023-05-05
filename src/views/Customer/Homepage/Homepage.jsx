@@ -8,32 +8,30 @@ import "slick-carousel/slick/slick-theme.css";
 import RestaurantHighScore from "./HomeSections/RestaurantHighScore";
 import DishHighOrder from "./HomeSections/DishHighOrder";
 import HaNoiRestaurant from "./HomeSections/HaNoiRestaurant";
-import _ from "lodash";
+import ChatRealTime from "./ChatRealTime/ChatRealTime";
+import TopHandbook from "./HomeSections/TopHandbook";
 
-class HomePage extends Component {
+class Homepage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    document.getElementById("homepage-top").scrollIntoView({
+      block: "end",
+    });
+  }
 
   render() {
-    const settings = {
-      dots: false,
-      infinite: false,
-      speed: 500,
-      slidesToShow: 4,
-      slidesToScroll: 1,
-      arrows: true,
-    };
-
     return (
       <>
         <HomeHeader isShowBanner={true} />
-        <RestaurantHighScore settings={settings} />
-        <DishHighOrder settings={settings} />
-        <HaNoiRestaurant settings={settings} />
+        <RestaurantHighScore />
+        <DishHighOrder />
+        <HaNoiRestaurant />
+        <TopHandbook />
+        <ChatRealTime />
         <HomeFooter />
       </>
     );
@@ -48,4 +46,4 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+export default connect(mapStateToProps, mapDispatchToProps)(Homepage);

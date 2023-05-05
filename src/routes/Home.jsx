@@ -5,21 +5,14 @@ import { PATH } from "../utils";
 
 class Home extends Component {
   render() {
-    const { isLoggedInSystem } = this.props;
-    let linkToRedirect = isLoggedInSystem
-      ? "/system/user-management"
-      : PATH.HOMEPAGE;
-
-    // let linkToRedirect = PATH.HOMEPAGE;
+    let linkToRedirect = PATH.HOMEPAGE;
 
     return <Redirect to={linkToRedirect} />;
   }
 }
 
 const mapStateToProps = (state) => {
-  return {
-    isLoggedInSystem: state.user.isLoggedInSystem,
-  };
+  return {};
 };
 
 const mapDispatchToProps = (dispatch) => {

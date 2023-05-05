@@ -2,22 +2,9 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import HomeHeader from "../Homepage/HomeHeader/HomeHeader";
 import HomeFooter from "../Homepage/HomeFooter/HomeFooter";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid, Container } from "@material-ui/core";
 import "./CustomerProfile.scss";
+import ChatRealTime from "../Homepage/ChatRealTime/ChatRealTime";
 import { NAV_CUSTOMER_PROFILE } from "../../../utils";
 import CustomerNav from "./CustomerNav";
 import BookingHistory from "./BookingHistory/BookingHistory";
@@ -32,37 +19,39 @@ class CustomerProfile extends Component {
   }
 
   componentDidMount() {
-    if (this.props.location.state) {
+    if (this.props.location.hash) {
       this.setState({
-        customerNavSelected: this.props.location.state,
+        customerNavSelected: this.props.location.hash,
       });
     }
+    document.getElementById("customer-profile-top").scrollIntoView();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.location.state !== this.props.location.state) {
+    if (
+      this.props.location &&
+      prevProps.location.hash !== this.props.location.hash
+    ) {
       this.setState({
-        customerNavSelected: this.props.location.state,
+        customerNavSelected: this.props.location.hash,
       });
     }
   }
   render() {
     const { customerNavSelected } = this.state;
-    console.log("customerNavSelected", customerNavSelected);
-    console.log(this.props.location.state);
 
     return (
       <>
         <Grid className="customer-profile-container">
           <HomeHeader isShowHeaderSearch={true} />
-          <Container>
+          <Container className="customer-profile-body">
             <Grid container spacing={3}>
               <Grid item xs={3}>
                 <Grid className="customer-profile-content customer-nav mt-4">
                   <CustomerNav navSelected={customerNavSelected} />
                 </Grid>
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={6} id="customer-profile-top">
                 {customerNavSelected === NAV_CUSTOMER_PROFILE.RESERVATION && (
                   <Grid className="customer-profile-content customer-reservation mt-4">
                     <BookingHistory />
@@ -76,6 +65,7 @@ class CustomerProfile extends Component {
               </Grid>
             </Grid>
           </Container>
+          <ChatRealTime />
           <HomeFooter />
         </Grid>
       </>

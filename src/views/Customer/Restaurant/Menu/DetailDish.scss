@@ -25,7 +25,7 @@
                 gap       : 5px;
 
                 .dish-photo-content {
-                    background-image: url("../../../../assets/images/dish1.jpg");
+                    background-image: url("../../../../assets/images/dish-default.jpg");
                     height          : 100px;
                     width           : 100px;
                     border-radius   : 5px;
@@ -64,19 +64,20 @@
         }
 
         .detail-dish-left-bottom {
-            display         : flex;
-            gap             : 10px;
-            // margin-bottom: 5px;
+            display: flex;
+            gap    : 10px;
 
             .btn-back {
                 border-color: $colorpink;
                 color       : $colorpink;
+                font-size   : inherit;
             }
 
             .btn-order {
                 border          : none;
                 color           : white;
                 background-color: $colorpink;
+                font-size       : inherit;
 
                 &:hover {
                     background-color: $colorpink-hover;

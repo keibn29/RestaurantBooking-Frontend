@@ -5,6 +5,8 @@ const initialState = {
   listProvince: [],
   listCountry: [],
   listTime: [],
+  listDishType: [],
+  listPhoto: [],
 };
 
 const allCodeReducer = (state = initialState, action) => {
@@ -55,6 +57,30 @@ const allCodeReducer = (state = initialState, action) => {
       return {
         ...state,
         listTime: [],
+      };
+
+    //get-dish-type
+    case allCodeActions.GET_ALL_DISH_TYPE_SUCCESS:
+      return {
+        ...state,
+        listDishType: action.listCode,
+      };
+    case allCodeActions.GET_ALL_DISH_TYPE_FAILED:
+      return {
+        ...state,
+        listDishType: [],
+      };
+
+    //get-all-photo-by-object
+    case allCodeActions.GET_ALL_PHOTO_BY_OBJECT_SUCCESS:
+      return {
+        ...state,
+        listPhoto: action.listPhoto,
+      };
+    case allCodeActions.GET_ALL_PHOTO_BY_OBJECT_FAILED:
+      return {
+        ...state,
+        listPhoto: [],
       };
 
     default:

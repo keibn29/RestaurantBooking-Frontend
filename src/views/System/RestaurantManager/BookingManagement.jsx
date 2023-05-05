@@ -1,57 +1,31 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
 import "./BookingManagement.scss";
 import * as actions from "../../../store/actions";
 import {
-  CRUD_ACTIONS,
   LANGUAGES,
-  ALLCODES,
-  emitter,
-  EMITTER_EVENTS,
-  isExistArrayAndNotEmpty,
   USER_ROLE,
   NUMBER_MAX_VALUE,
-  DOLLAR_TO_VND,
   customReactSelectStyleSystem,
   CUSTOMER_ACTIONS,
   LIST_STATUS,
   GENERAL_STATUS,
+  buildRestaurantReactSelect,
 } from "../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid, TablePagination, Container } from "@material-ui/core";
 import MaterialTable from "material-table";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
-import { eachDayOfInterval } from "date-fns";
-import {
-  ValidatorForm,
-  TextValidator,
-  SelectValidator,
-} from "react-material-ui-form-validator";
 import { toast } from "react-toastify";
 import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import Select from "react-select";
 import {
-  bulkCreateNewSchedule,
   cancelBookingTable,
-  confirmOrDoneBookingTable,
+  confirmBookingTable,
 } from "../../../services/restaurantService";
 import CustomerAction from "../../../components/CustomerAction";
 import DetailBookingDialog from "./DetailBookingDialog";
+import BillEmailDialog from "./BillEmailDialog";
 
 class BookingManagement extends Component {
   constructor(props) {
@@ -65,6 +39,7 @@ class BookingManagement extends Component {
       pageSize: 10,
       pageIndex: 0,
       isOpenDetailBookingDialog: false,
+      isOpenBillEmailDialog: false,
       bookingSelected: {},
       bookingId: "",
       method: "",
@@ -86,11 +61,24 @@ class BookingManagement extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.listRestaurant !== this.props.listRestaurant) {
-      let dataSelect = this.buildDataRestaurantSelect(
-        this.props.listRestaurant
+      this.getListRestaurantForReactSelect();
+    }
+    if (prevProps.language !== this.props.language) {
+      this.getListRestaurantForReactSelect();
+    }
+    if (
+      prevState.listRestaurant !== this.state.listRestaurant &&
+      this.state.restaurantSelected
+    ) {
+      let dataSelect = buildRestaurantReactSelect(
+        this.props.listRestaurant,
+        this.props.language
+      );
+      const newRestaurantSelected = dataSelect.find(
+        (item) => item.value === this.state.restaurantSelected.value
       );
       this.setState({
-        listRestaurant: dataSelect,
+        restaurantSelected: newRestaurantSelected,
       });
     }
     if (prevProps.listBooking !== this.props.listBooking) {
@@ -110,34 +98,42 @@ class BookingManagement extends Component {
     this.props.getAllRestaurant(data, language);
   };
 
-  buildDataRestaurantSelect = (listRestaurant) => {
-    const { language, userInfo } = this.props;
-    let result = [];
-
-    if (isExistArrayAndNotEmpty(listRestaurant)) {
-      listRestaurant.map((item) => {
-        let restaurant = {};
-
-        restaurant.label =
-          language === LANGUAGES.VI ? item.nameVi : item.nameEn;
-        restaurant.value = item.id;
-
-        result.push(restaurant);
-        return result;
+  getListRestaurantForReactSelect = () => {
+    const { listRestaurant, language, userInfo } = this.props;
+    let dataSelect = buildRestaurantReactSelect(
+      listRestaurant,
+      language,
+      userInfo
+    );
+    if (userInfo?.roleId === USER_ROLE.RESTAURANT_MANAGER) {
+      this.setState(
+        {
+          listRestaurant: dataSelect,
+          restaurantSelected: dataSelect[0],
+        },
+        () => {
+          this.fetchListTableBooking();
+        }
+      );
+    } else {
+      this.setState({
+        listRestaurant: dataSelect,
       });
     }
-
-    return result;
   };
 
   buildDataStatusSelect = () => {
-    const slackingObj = {
+    const slacking = {
       label: "Đơn chưa hoàn thành",
       value: GENERAL_STATUS.SLACKING,
     };
-    const doneObj = { label: "Đơn đã hoàn thành", value: GENERAL_STATUS.DONE };
+    const done = { label: "Đơn đã hoàn thành", value: GENERAL_STATUS.DONE };
+    const overdue = {
+      label: "Đơn quá thời hạn",
+      value: GENERAL_STATUS.OVERDUE,
+    };
 
-    return [slackingObj, doneObj];
+    return [slacking, done, overdue];
   };
 
   handleChangeDatePicker = (date) => {
@@ -229,7 +225,11 @@ class BookingManagement extends Component {
       this.setState({
         isOpenDetailBookingDialog: true,
         bookingSelected: bookingData,
-        method: method,
+      });
+    } else if (method === CUSTOMER_ACTIONS.DONE) {
+      this.setState({
+        isOpenBillEmailDialog: true,
+        bookingSelected: bookingData,
       });
     } else {
       this.setState({
@@ -246,10 +246,6 @@ class BookingManagement extends Component {
       this.setState({
         confirmMessage: "Xác nhận đơn đặt bàn đúng thông tin?",
       });
-    } else if (method === CUSTOMER_ACTIONS.DONE) {
-      this.setState({
-        confirmMessage: "Xác nhận khách hàng đã dùng bữa?",
-      });
     } else {
       this.setState({
         confirmMessage: "Xác nhận huỷ đơn đặt bàn này?",
@@ -257,10 +253,12 @@ class BookingManagement extends Component {
     }
   };
 
-  handleCloseDetailBookingDialog = () => {
+  handleCloseDialog = () => {
     this.setState({
       isOpenDetailBookingDialog: false,
+      isOpenBillEmailDialog: false,
     });
+    this.fetchListTableBooking();
   };
 
   handleCloseConfirmationDialog = () => {
@@ -269,22 +267,20 @@ class BookingManagement extends Component {
     });
   };
 
-  handleConfirm = async () => {
+  handleConfirmYesClick = async () => {
     this.handleCloseConfirmationDialog();
     const { method, bookingId } = this.state;
     if (method === CUSTOMER_ACTIONS.CONFIRM) {
-      this.callApiConfirmOrDoneBookingTable(bookingId, LIST_STATUS.VERIFIED);
-    } else if (method === CUSTOMER_ACTIONS.DONE) {
-      this.callApiConfirmOrDoneBookingTable(bookingId, LIST_STATUS.CONFIRMED);
+      this.callApiConfirmOrDoneBookingTable(bookingId);
     } else {
       this.callApiCancelBookingTable(bookingId);
     }
   };
 
-  callApiConfirmOrDoneBookingTable = async (bookingId, statusId) => {
-    const res = await confirmOrDoneBookingTable(bookingId, statusId);
+  callApiConfirmOrDoneBookingTable = async (bookingId) => {
+    const res = await confirmBookingTable(bookingId);
     if (res && res.errCode === 0) {
-      toast.success("Xác nhận thành công");
+      toast.success("Xác nhận đơn đặt bàn thành công");
       this.fetchListTableBooking();
     } else {
       toast.error(res.errMessage);
@@ -302,7 +298,7 @@ class BookingManagement extends Component {
   };
 
   render() {
-    const { language } = this.props;
+    const { language, userInfo } = this.props;
     const {
       restaurantSelected,
       date,
@@ -312,6 +308,7 @@ class BookingManagement extends Component {
       pageSize,
       pageIndex,
       isOpenDetailBookingDialog,
+      isOpenBillEmailDialog,
       bookingSelected,
       listGeneralStatus,
       generalStatusSelected,
@@ -321,16 +318,16 @@ class BookingManagement extends Component {
     const columns = [
       {
         title: "STT",
+        field: "no",
         width: "100",
         sorting: false,
-        render: (rowData) => rowData.tableData.id + 1,
       },
       {
         title: "Tên khách hàng",
         render: (rowData) =>
           language === LANGUAGES.VI
-            ? `${rowData.customerData.lastName} ${rowData.customerData.firstName}`
-            : `${rowData.customerData.firstName} ${rowData.customerData.lastName}`,
+            ? `${rowData.customerData?.lastName} ${rowData.customerData?.firstName}`
+            : `${rowData.customerData?.firstName} ${rowData.customerData?.lastName}`,
       },
       {
         title: "Số điện thoại",
@@ -349,6 +346,10 @@ class BookingManagement extends Component {
           language === LANGUAGES.VI
             ? "statusData.valueVi"
             : "statusData.valueEn",
+        cellStyle: (cellValue, rowData) => ({
+          color:
+            rowData.statusId === LIST_STATUS.OVERDUE ? "#FF6571" : "#28A745",
+        }),
       },
       {
         title: "Action",
@@ -390,6 +391,11 @@ class BookingManagement extends Component {
                     </span>
                   }
                   styles={customReactSelectStyleSystem}
+                  isDisabled={
+                    userInfo.roleId === USER_ROLE.RESTAURANT_MANAGER
+                      ? true
+                      : false
+                  }
                 />
               </Grid>
               <Grid item xs={5} className="date-picker">
@@ -409,6 +415,12 @@ class BookingManagement extends Component {
                     },
                     monthSelectorType: "static",
                     position: "auto center",
+                  }}
+                  onDayCreate={function (dObj, dStr, fp, dayElem) {
+                    const dateItem = new Date(dayElem.dateObj).getTime();
+                    if (dateItem === date) {
+                      dayElem.className += " colormain";
+                    }
                   }}
                 />
               </Grid>
@@ -440,9 +452,9 @@ class BookingManagement extends Component {
                   rowStyle: (rowData) => ({
                     fontSize: "16px",
                     backgroundColor:
-                      rowData.statusId === LIST_STATUS.VERIFIED
-                        ? "#fff"
-                        : "#eee",
+                      rowData.statusId === LIST_STATUS.CONFIRMED
+                        ? "#eee"
+                        : "#fff",
                   }),
                   maxBodyHeight: "100vh",
                   minBodyHeight: "400px",
@@ -492,7 +504,14 @@ class BookingManagement extends Component {
           {isOpenDetailBookingDialog && (
             <DetailBookingDialog
               isOpen={isOpenDetailBookingDialog}
-              handleCloseDialog={this.handleCloseDetailBookingDialog}
+              handleCloseDialog={this.handleCloseDialog}
+              bookingData={bookingSelected}
+            />
+          )}
+          {isOpenBillEmailDialog && (
+            <BillEmailDialog
+              isOpen={isOpenBillEmailDialog}
+              handleCloseDialog={this.handleCloseDialog}
               bookingData={bookingSelected}
             />
           )}
@@ -502,7 +521,7 @@ class BookingManagement extends Component {
               text={confirmMessage}
               isOpen={isOpenConfirmationDialog}
               onCancelClick={this.handleCloseConfirmationDialog}
-              onConfirmClick={this.handleConfirm}
+              onConfirmClick={this.handleConfirmYesClick}
               confirm={"Xác nhận"}
               cancel={"Hủy"}
             />
@@ -516,6 +535,7 @@ class BookingManagement extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
     listRestaurant: state.restaurant.listRestaurant,
     listBooking: state.restaurant.listBooking,
     totalBooking: state.restaurant.totalBooking,

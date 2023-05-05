@@ -10,6 +10,8 @@ import {
   emitter,
   EMITTER_EVENTS,
   isExistArrayAndNotEmpty,
+  USER_ROLE,
+  TABLE_ITEM_NAME,
 } from "../../../utils";
 import {
   Grid,
@@ -49,11 +51,13 @@ class UserManagement extends Component {
       address: "",
       listRole: [],
       roleId: "",
+      roleSelectedToGetListUser: USER_ROLE.ADMIN,
       isOpenLightbox: false,
       avatarPreviewURL: "",
-      avatar: null,
+      avatar: "",
       userId: "",
       isOpenConfirmationDialog: false,
+      keyAvatar: Date.now(),
     };
   }
 
@@ -76,6 +80,7 @@ class UserManagement extends Component {
   }
 
   fetchListUser = (data) => {
+    data.roleId = this.state.roleSelectedToGetListUser;
     this.props.getListUser(data);
   };
 
@@ -98,7 +103,7 @@ class UserManagement extends Component {
     });
   };
 
-  handleSubmitForm = async () => {
+  handleSubmitForm = () => {
     const {
       firstName,
       lastName,
@@ -123,23 +128,31 @@ class UserManagement extends Component {
     };
 
     if (!userId) {
-      const res = await addNewUser(data);
-      if (res && res.errCode === 0) {
-        toast.success("Thêm mới người dùng thành công");
-        this.handleClearForm();
-        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
-      } else {
-        toast.error(res.errMessage);
-      }
+      this.callApiAddNewUser(data);
     } else {
-      const res = await editUserById(userId, data);
-      if (res && res.errCode === 0) {
-        toast.success("Thay đổi thông tin người dùng thành công");
-        this.handleClearForm();
-        emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
-      } else {
-        toast.error(res.errMessage);
-      }
+      this.callApiEditUserById(userId, data);
+    }
+  };
+
+  callApiAddNewUser = async (data) => {
+    const res = await addNewUser(data);
+    if (res && res.errCode === 0) {
+      toast.success("Thêm mới người dùng thành công");
+      this.handleClearForm();
+      emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+    } else {
+      toast.error(res.errMessage);
+    }
+  };
+
+  callApiEditUserById = async (userId, data) => {
+    const res = await editUserById(userId, data);
+    if (res && res.errCode === 0) {
+      toast.success("Thay đổi thông tin người dùng thành công");
+      this.handleClearForm();
+      emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+    } else {
+      toast.error(res.errMessage);
     }
   };
 
@@ -155,18 +168,25 @@ class UserManagement extends Component {
       roleId: "",
       isOpenLightbox: false,
       avatarPreviewURL: "",
-      avatar: null,
+      avatar: "",
       userId: "",
+      keyAvatar: Date.now(),
     });
-    // window.location.reload(false);
   };
 
   handleChangeInput = (event) => {
     let copyState = { ...this.state };
     copyState[event.target.name] = event.target.value;
-    this.setState({
-      ...copyState,
-    });
+    this.setState(
+      {
+        ...copyState,
+      },
+      () => {
+        if (event.target.name === "roleSelectedToGetListUser") {
+          emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+        }
+      }
+    );
   };
 
   handleChangeAvatar = (event) => {
@@ -200,8 +220,13 @@ class UserManagement extends Component {
       address: userData.address,
       roleId: userData.roleId,
       avatarPreviewURL: process.env.REACT_APP_BACKEND_URL + userData.avatar,
-      avatar: null,
+      avatar: "",
       userId: userData.id,
+    });
+
+    document.querySelector(".title").scrollIntoView({
+      behavior: "smooth",
+      block: "end",
     });
   };
 
@@ -245,21 +270,23 @@ class UserManagement extends Component {
       avatarPreviewURL,
       isOpenLightbox,
       isOpenConfirmationDialog,
+      roleSelectedToGetListUser,
+      keyAvatar,
     } = this.state;
     const { language } = this.props;
     const columns = [
       {
-        title: "STT",
+        title: language === LANGUAGES.VI ? "STT" : "NO",
+        field: "no",
         width: "100",
         sorting: false,
-        render: (rowData) => rowData.tableData.id + 1,
       },
       {
-        title: "Vai trò",
+        title: language === LANGUAGES.VI ? "Vai trò" : "Role",
         field: "roleData.valueVi",
       },
       {
-        title: "Họ và tên",
+        title: language === LANGUAGES.VI ? "Họ và tên" : "Full name",
         render: (rowData) =>
           language === LANGUAGES.VI
             ? `${rowData.lastName} ${rowData.firstName}`
@@ -270,7 +297,7 @@ class UserManagement extends Component {
         field: "email",
       },
       {
-        title: "Số điện thoại",
+        title: language === LANGUAGES.VI ? "Số điện thoại" : "Phone number",
         field: "phone",
       },
       {
@@ -297,11 +324,17 @@ class UserManagement extends Component {
         ),
       },
     ];
+
+    console.log("this.state.avatar", this.state.avatar);
+    console.log("this.state.avatarPreview", this.state.avatarPreviewURL);
+
     return (
       <>
         <Container className="mt-3">
           <Grid>
-            <Grid className="title mb-3">Quản lý người dùng</Grid>
+            <Grid className="title mb-3">
+              <FormattedMessage id="system.header.user-management" />
+            </Grid>
             <Grid>
               <ValidatorForm ref="form" onSubmit={this.handleSubmitForm}>
                 <Grid container spacing={2}>
@@ -336,7 +369,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Password
+                          <FormattedMessage id="customer.auth.password" />
                         </span>
                       }
                       onChange={(event) => {
@@ -358,7 +391,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Repeat Password
+                          <FormattedMessage id="customer.auth.repeat-password" />
                         </span>
                       }
                       onChange={(event) => {
@@ -383,7 +416,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Họ
+                          <FormattedMessage id="customer.auth.last-name" />
                         </span>
                       }
                       onChange={(event) => {
@@ -404,7 +437,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên
+                          <FormattedMessage id="customer.auth.first-name" />
                         </span>
                       }
                       onChange={(event) => {
@@ -425,7 +458,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Số điện thoại
+                          <FormattedMessage id="customer.auth.phone" />
                         </span>
                       }
                       onChange={(event) => {
@@ -449,7 +482,7 @@ class UserManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Địa chỉ
+                          <FormattedMessage id="customer.auth.address" />
                         </span>
                       }
                       onChange={(event) => {
@@ -464,13 +497,13 @@ class UserManagement extends Component {
                       size="small"
                     />
                   </Grid>
-                  <Grid item md={4} xs={12}>
+                  <Grid item xs={4}>
                     <SelectValidator
                       className="w-100"
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Vai trò
+                          <FormattedMessage id="system.admin.role" />
                         </span>
                       }
                       onChange={(event) => {
@@ -486,7 +519,7 @@ class UserManagement extends Component {
                       {isExistArrayAndNotEmpty(listRole) &&
                         listRole.map((item) => {
                           return (
-                            <MenuItem key={item.id} value={item.keyMap}>
+                            <MenuItem key={item.keyMap} value={item.keyMap}>
                               {language === LANGUAGES.VI
                                 ? item.valueVi
                                 : item.valueEn}
@@ -497,6 +530,7 @@ class UserManagement extends Component {
                   </Grid>
                   <Grid item xs={2}>
                     <TextField
+                      key={keyAvatar}
                       id="avatar"
                       name="avatar"
                       type="file"
@@ -510,7 +544,7 @@ class UserManagement extends Component {
                       htmlFor="avatar"
                       variant="standard"
                     >
-                      Upload Avatar
+                      Avatar
                       <i className="fas fa-upload"></i>
                     </InputLabel>
                   </Grid>
@@ -527,7 +561,11 @@ class UserManagement extends Component {
                 <Grid container spacing={1} className="mt-4">
                   <Grid item>
                     <Button variant="contained" color="primary" type="submit">
-                      {!userId ? "Thêm" : "Sửa"}
+                      {!userId ? (
+                        <FormattedMessage id="system.admin.add" />
+                      ) : (
+                        <FormattedMessage id="system.admin.edit" />
+                      )}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -539,7 +577,7 @@ class UserManagement extends Component {
                         this.handleClearForm();
                       }}
                     >
-                      Clear
+                      <FormattedMessage id="system.admin.clear" />
                     </Button>
                   </Grid>
                 </Grid>
@@ -558,12 +596,43 @@ class UserManagement extends Component {
                 />
               )}
             </Grid>
-            <Grid className="material-table">
-              <MaterialTableData
-                itemName="user"
-                columns={columns}
-                getListItem={this.fetchListUser}
-              />
+            <Grid className="material-table mt-5" container spacing={2}>
+              <Grid item xs={12} className="list-item-title">
+                <FormattedMessage id="system.admin.list-user" />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  className="w-100"
+                  label={<FormattedMessage id="system.admin.role" />}
+                  onChange={(event) => {
+                    this.handleChangeInput(event);
+                  }}
+                  name="roleSelectedToGetListUser"
+                  value={roleSelectedToGetListUser}
+                  variant="outlined"
+                  size="small"
+                >
+                  {isExistArrayAndNotEmpty(listRole) &&
+                    listRole.map((item) => {
+                      return (
+                        <MenuItem key={item.keyMap} value={item.keyMap}>
+                          {language === LANGUAGES.VI
+                            ? item.valueVi
+                            : item.valueEn}
+                        </MenuItem>
+                      );
+                    })}
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <MaterialTableData
+                  itemName={TABLE_ITEM_NAME.USER}
+                  columns={columns}
+                  getListItem={this.fetchListUser}
+                  localization="Không có người dùng nào"
+                />
+              </Grid>
             </Grid>
           </Grid>
         </Container>

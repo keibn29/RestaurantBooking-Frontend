@@ -93,29 +93,33 @@ export const getListUserFailed = (error) => {
   };
 };
 
-//get-all-user-by-role
-export const GET_ALL_USER_BY_ROLE = "GET_ALL_USER_BY_ROLE";
-export const GET_ALL_USER_BY_ROLE_SUCCESS = "GET_ALL_USER_BY_ROLE_SUCCESS";
-export const GET_ALL_USER_BY_ROLE_FAILED = "GET_ALL_USER_BY_ROLE_FAILED";
+//edit-user-by-id
+export const EDIT_CUSTOMER_INFO_BY_ID = "EDIT_CUSTOMER_INFO_BY_ID";
+export const EDIT_CUSTOMER_INFO_BY_ID_SUCCESS =
+  "EDIT_CUSTOMER_INFO_BY_ID_SUCCESS";
+export const EDIT_CUSTOMER_INFO_BY_ID_FAILED =
+  "EDIT_CUSTOMER_INFO_BY_ID_FAILED";
 
-export const getAllUserByRole = (role) => {
+export const editCustomerInfoById = (customerId, data) => {
   return {
-    type: GET_ALL_USER_BY_ROLE,
-    role,
+    type: EDIT_CUSTOMER_INFO_BY_ID,
+    customerId,
+    data,
   };
 };
 
-export const getAllUserByRoleSuccess = (listUser) => {
+export const editCustomerInfoByIdSuccess = (userEdited) => {
+  toast.success("Cập nhật thông tin thành công");
   return {
-    type: GET_ALL_USER_BY_ROLE_SUCCESS,
-    listUser,
+    type: EDIT_CUSTOMER_INFO_BY_ID_SUCCESS,
+    userEdited,
   };
 };
 
-export const getAllUserByRoleFailed = (error) => {
+export const editCustomerInfoByIdFailed = (error) => {
   toast.error(error);
   return {
-    type: GET_ALL_USER_BY_ROLE_FAILED,
+    type: EDIT_CUSTOMER_INFO_BY_ID_FAILED,
   };
 };
 

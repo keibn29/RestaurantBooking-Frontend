@@ -4,12 +4,196 @@
       "welcome": "Xin chào",
       "user": "Người dùng",
       "user-management": "Quản lý người dùng",
+      "customer-support": "Hỗ trợ khách hàng",
       "restaurant": "Nhà hàng",
       "restaurant-management": "Quản lý nhà hàng",
       "schedule-management": "Quản lý lịch đặt bàn",
       "dish-management": "Quản lý món ăn",
       "booking-management": "Quản lý đơn đặt bàn",
-      "handbook": "Bài đăng"
+      "handbook": "Bài đăng",
+      "handbook-management": "Quản lý bài đăng"
+    },
+    "admin": {
+      "list-customer": "Danh sách khách hàng",
+      "dish-type": "Loại món ăn",
+      "dish-name": "Tên món ăn",
+      "price": "Đơn giá",
+      "click-to-view-all-photo": "Nhấn để xem tất cả ảnh",
+      "photo-normal": "ảnh",
+      "dish-information": "Mô tả món ăn",
+      "add": "Thêm",
+      "edit": "Sửa",
+      "clear": "Xóa",
+      "list-dish": "Danh sách món ăn:",
+      "handbook-title": "Tiêu đề bài đăng",
+      "handbook-content": "Nội dung bài đăng",
+      "list-handbook": "Danh sách bài đăng:",
+      "row-per-page": "Số hàng mỗi trang",
+      "in": "trong",
+      "restaurant-name": "Tên nhà hàng",
+      "province": "Tỉnh thành",
+      "manager": "Người quản lý",
+      "number-table": "Số bàn",
+      "restaurant-information": "Mô tả món ăn",
+      "list-restaurant": "Danh sách nhà hàng:",
+      "list-user": "Danh sách người dùng:",
+      "role": "Vai trò"
+    }
+  },
+  "customer": {
+    "auth": {
+      "login": "Đăng nhập",
+      "signup": "Đăng ký",
+      "forgot-password": "Quên mật khẩu?",
+      "or-login-with": "Hoặc đăng nhập với",
+      "not-have-account": "Chưa có tài khoản?",
+      "signup-now": "Đăng ký ngay",
+      "required-information-note": "chứa những thông tin bắt buộc",
+      "have-account": "Đã có tài khoản?",
+      "login-now": "Đăng nhập ngay",
+      "type-your-email": "Nhập email của bạn",
+      "type-your-password": "Nhập mật khẩu của bạn",
+      "password": "Mật khẩu",
+      "last-name": "Họ",
+      "first-name": "Tên",
+      "phone": "Số điện thoại",
+      "repeat-password": "Nhập lại mật khẩu",
+      "address": "Địa chỉ"
+    },
+    "email": {
+      "update-password": "Cập nhật mật khẩu",
+      "type-new-password": "Nhập mật khẩu mới",
+      "save-change": "Lưu thay đổi",
+      "continue-note": "Để tiếp tục quy trình đặt bàn, quý khách vui lòng sử dụng PayPal thanh toán tiền cọc",
+      "success-note": "Chúc mừng bạn đã thanh toán và xác nhận đơn đặt bàn thành công",
+      "failed-note": "Đơn đặt bàn đã được xác nhận hoặc không tồn tại"
+    },
+    "handbook": {
+      "image-demo": "Hình ảnh minh họa món ăn",
+      "other-handbook": "Các cẩm nang khác:"
+    },
+    "homepage": {
+      "chat-real-time": {
+        "chope-table-booking": "Chope - Đặt bàn ăn",
+        "reply-after-min": "Trả lời sau vài phút",
+        "no-customer-need-support": "Chưa có khách hàng cần hỗ trợ",
+        "hello": "Xin chào",
+        "we-can-help-you": "Chúng tôi có thể giúp gì cho bạn?"
+      },
+      "home-footer": {
+        "dev-name": "Nguyễn Đức Long",
+        "computer-science": "Khoa học máy tính",
+        "neu": "Đại học Kinh tế Quốc dân"
+      },
+      "home-header": {
+        "find": "Tìm",
+        "login-or-signup": "Đăng nhập hoặc đăng ký",
+        "booking-history": "Lịch sử đặt bàn",
+        "account-information": "Thông tin tài khoản",
+        "logout": "Đăng xuất"
+      },
+      "home-sections": {
+        "dish-most-order-title": "Món ăn được đặt nhiều nhất",
+        "dish-most-order-text": "Tổng hợp những món ăn được đặt nhiều nhất trên Chope",
+        "number-order": "lượt đặt",
+        "see-more-dish": "Xem thêm món ăn khác",
+        "restaurant-in-hanoi-title": "Nhà hàng tại Hà Nội",
+        "restaurant-in-hanoi-text": "Tổng hợp những nhà hàng tại Hà Nội",
+        "see-more-restaurant": "Xem thêm nhà hàng khác",
+        "together-text": "Hãy cùng nhau khám phá các nhà hàng",
+        "restaurant-most-score-title": "Nhà hàng có điểm cao nhất",
+        "restaurant-most-score-text": "Tổng hợp những nhà hàng được đánh giá cao nhất trên Chope",
+        "food-handbook": "Cẩm nang ẩm thực",
+        "new-handbook-text": "Tổng hợp những cẩm nang mới nhất",
+        "see-more-handbook": "Xem thêm cẩm nang khác"
+      }
+    },
+    "profile": {
+      "account": {
+        "email-address": "Địa chỉ email"
+      },
+      "booking-history": {
+        "reservation": "Đơn đã đặt",
+        "time": "Thời gian:",
+        "dish": "Món ăn:",
+        "part-dish": "món",
+        "cancel": "Hủy"
+      }
+    },
+    "restaurant": {
+      "about": {
+        "about": "Thông tin",
+        "next-7-day": "Thời gian hoạt động trong 7 ngày tới",
+        "see-all-menu": "Xem tất cả thực đơn",
+        "see-more-photo": "Xem thêm ảnh",
+        "photo-empty-text": "Nhà hàng hiện chưa cập nhật thêm ảnh.",
+        "see-all-review": "Xem tất cả đánh giá"
+      },
+      "general": {
+        "average-price": "Giá trung bình:"
+      },
+      "menu": {
+        "menu": "Thực đơn",
+        "price": "Giá:",
+        "back": "Quay lại",
+        "order": "Đặt món",
+        "food": "Đồ ăn",
+        "drink": "Đồ uống",
+        "menu-empty-text": "Nhà hàng hiện chưa cập nhật thực đơn trên hệ thống, xin lỗi quý khách vì sự bất tiện này.",
+        "menu-description": "Hãy xem thực đơn tại Nhà hàng số 01 và khám phá những món ăn phổ biến mà mọi người đang thèm muốn! Từ món khai vị đến món ngọt, hãy xem có gì dành cho bạn, bạn cũng có thể kiểm tra giá món ăn để bạn biết những hương vị nào phù hợp túi tiền. Xem thực đơn từ Nhà hàng số 01 và đặt món ngay thôi nào!"
+      },
+      "photos": {
+        "photo": "Ảnh",
+        "photo-description": "Hãy xem qua những hình ảnh thực tế tại nhà hàng để thấy không gian cũng như các món ăn tại nhà hàng để bạn biết những gì đang chờ bạn trong lần đặt bàn tiếp theo của mình."
+      },
+      "reviews": {
+        "review": "Đánh giá",
+        "review-description": "Hãy đọc những đánh giá mọi người về nhà hàng. Tất cả các đánh giá được viết bởi các thực khách đã được trải nghiệm tại nhà hàng. Với những đánh giá thực tế, bạn có thể biết những thực khách khác yêu thích điều gì ở Nhà hàng và tự tin đặt bàn!",
+        "review-normal-one": "đánh giá",
+        "review-normal-many": "đánh giá",
+        "edit-review": "Sửa đánh giá",
+        "write-review": "Viết một đánh giá",
+        "no-comment": "Khách hàng không để lại bình luận",
+        "review-empty-text": "Nhà hàng hiện chưa có đánh giá nào",
+        "review-restaurant": "Đánh giá nhà hàng",
+        "public-review-text": "Bài đánh giá sẽ được công khai cho tất cả mọi người"
+      },
+      "schedule": {
+        "list-dish-will-order": "Danh sách món ăn dự định đặt",
+        "confirm": "Xác nhận",
+        "book-a-table": "Đặt một bàn",
+        "people": "người",
+        "choose-time": "Chọn 1 khung giờ:",
+        "schedule-empty-text": "Nhà hàng không còn lịch đặt bàn trong ngày, xin quý khách vui lòng chọn ngày khác.",
+        "dish-order": "Món đặt kèm:",
+        "no-dish-order": "Chưa đặt món",
+        "book-now": "Đặt bàn ngay",
+        "paypal-text": "Thanh toán tiền cọc ($5) và đặt bàn ngay với PayPal"
+      }
+    },
+    "search": {
+      "object": "Đối tượng",
+      "country": "Xuất sứ",
+      "price-range": "Mức giá",
+      "average-score": "Điểm trung bình",
+      "restaurant-in": "Nhà hàng ở",
+      "people-cap": "Người",
+      "date": "Ngày",
+      "time": "Giờ",
+      "apply": "Áp dụng",
+      "text-description-restaurant": "Tìm kiếm các nhà hàng tốt nhất? Chúng tôi sẽ giới thiệu cho bạn những địa điểm tốt nhất để đi ăn ngoài cho bữa sáng, bữa trưa và bữa tối. Sẵn sàng để khám phá những nhà hàng hàng đầu? Nhân tiện, đừng quên đặt bàn trực tuyến. Bạn có nguy cơ không có bàn ăn nếu không đặt chỗ trước!",
+      "text-description-dish": "Tìm kiếm các món ăn ngon? Chúng tôi sẽ giới thiệu cho bạn những món ăn phù hợp nhất cho bữa sáng, bữa trưa và bữa tối. Nhân tiện, đừng quên đặt bàn trực tuyến. Bạn có nguy cơ không có bàn ăn nếu không đặt chỗ trước!",
+      "what-handbook": "Hãy cùng xem chúng ta có những cẩm nang gì?",
+      "text-description-handbook": "Tìm kiếm các bài đăng, cẩm nang về ẩm thực? Chúng tôi sẽ giới thiệu cho bạn những cẩm nang thú vị và bổ ích. Nhân tiện, đừng quên đặt bàn trực tuyến. Bạn có nguy cơ không có bàn ăn nếu không đặt chỗ trước!",
+      "hanoi": "Hà Nội",
+      "result": {
+        "result-one": "kết quả",
+        "result-many": "kết quả",
+        "most-order": "Đặt nhiều nhất",
+        "number-order-search": "lượt đã đặt",
+        "no-result": "Không tìm thấy kết quả phù hợp",
+        "most-score": "Đánh giá cao nhất"
+      }
     }
   }
 }

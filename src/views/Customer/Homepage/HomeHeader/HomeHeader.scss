@@ -5,12 +5,14 @@
     z-index         : 999;
     height          : 75px;
     padding         : 5px 28px;
+    position        : -webkit-sticky;
     position        : sticky;
     top             : 0;
     display         : flex;
     justify-content : space-between;
     align-items     : center;
     border-bottom   : 1px solid #ddd;
+    user-select     : none;
 
     .home-header-left {
         width  : 70%;
@@ -32,16 +34,29 @@
             align-items: center;
             gap        : 20px;
 
-            .left-input {
-                height       : 42px;
-                width        : 50%;
-                padding      : 0 10px;
-                border       : 1px solid #ddd;
-                border-radius: 10px;
-                outline      : none;
+            .left-input-container {
+                position: relative;
 
-                &:focus {
-                    box-shadow: 0px 3px 8px $box-shadow-color;
+                .left-input {
+                    height       : 42px;
+                    padding      : 0 10px;
+                    border       : 1px solid #ddd;
+                    border-radius: 10px;
+                    outline      : none;
+
+                    &:focus {
+                        box-shadow: 0px 3px 8px $color-box-shadow;
+                    }
+                }
+
+                .icon-clear-input {
+                    position: absolute;
+                    top     : 0;
+                    bottom  : 0;
+                    right   : 10px;
+                    margin  : auto;
+                    color   : #bbb;
+                    cursor  : pointer;
                 }
             }
 
@@ -105,7 +120,7 @@
                 top             : 60px;
                 right           : 0;
                 background-color: white;
-                box-shadow      : 0px 4px 8px $box-shadow-color;
+                box-shadow      : 0px 4px 8px $color-box-shadow;
                 padding         : 3px 0;
                 border-radius   : 0 0 5px 5px;
 
@@ -143,6 +158,8 @@
 }
 
 .home-banner-container {
+    user-select: none;
+
     .banner-background {
         width           : 100vw;
         height          : calc(100vh - 75px);
@@ -166,26 +183,42 @@
         .banner-search {
             margin-top: 75px;
 
-            .left-input {
-                padding         : 0 17px;
-                height          : 56px;
-                background-color: white;
-                border          : none;
-                border-radius   : 10px;
-                outline         : none;
+            .banner-search-left {
+                position: relative;
 
-                &::placeholder {
-                    font-size: 17px;
+                .left-input {
+                    padding         : 0 17px;
+                    height          : 56px;
+                    background-color: white;
+                    border          : none;
+                    border-radius   : 10px;
+                    outline         : none;
+
+                    &::placeholder {
+                        font-size: 17px;
+                    }
+                }
+
+                .icon-clear-input-banner {
+                    position: absolute;
+                    top     : 0;
+                    bottom  : 0;
+                    right   : 20px;
+                    margin  : auto;
+                    color   : #bbb;
+                    cursor  : pointer;
                 }
             }
 
-            .right-button {
-                width           : 110px;
-                background-color: $colorhome;
-                border-radius   : 10px;
-                color           : white;
-                font-size       : 19px;
-                font-weight     : 600;
+            .banner-search-right {
+                .right-button {
+                    width           : 110px;
+                    background-color: $colorhome;
+                    border-radius   : 10px;
+                    color           : white;
+                    font-size       : 19px;
+                    font-weight     : 600;
+                }
             }
         }
     }

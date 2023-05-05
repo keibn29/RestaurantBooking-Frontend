@@ -3,7 +3,7 @@
 .restaurant-about-container {
     .restaurant-about-about {
         .restaurant-about-about-center {
-            margin-top: 15px;
+            margin-top: 20px;
 
             .restaurant-about-about-center-left {
                 display       : flex;
@@ -29,20 +29,14 @@
                 }
             }
         }
-
-        .restaurant-about-about-bottom {
-            border-radius   : 5px;
-            margin-top      : 20px;
-            height          : 200px;
-            background-image: url("../../../../assets/images/google-map.png");
-        }
     }
 
     .restaurant-about-menu {
         .restaurant-about-menu-see-more {
-            color     : $colorhome;
-            text-align: center;
-            margin-top: 10px;
+            color      : $colorhome;
+            text-align : center;
+            margin-top : 10px;
+            user-select: none;
 
             span {
                 cursor: pointer;
@@ -69,7 +63,8 @@
             }
 
             .see-more-photo {
-                color: $colorhome;
+                color      : $colorhome;
+                user-select: none;
 
                 span {
                     cursor: pointer;
@@ -84,9 +79,10 @@
 
     .restaurant-about-review {
         .restaurant-about-review-see-more {
-            margin-top: 20px;
-            color     : $colorhome;
-            text-align: center;
+            margin-top : 20px;
+            color      : $colorhome;
+            text-align : center;
+            user-select: none;
 
             span {
                 cursor: pointer;

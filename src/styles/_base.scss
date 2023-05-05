@@ -19,6 +19,10 @@ input::-webkit-inner-spin-button {
   margin            : 0;
 }
 
+label {
+  margin-bottom: 0 !important;
+}
+
 //ckeditor
 .ck-editor__editable {
   min-height: 250px;
@@ -27,8 +31,7 @@ input::-webkit-inner-spin-button {
 //flatpickr
 .flatpickr-day {
   &.selected {
-    background-color: $colorpink !important;
-    border          : none !important;
+    border: none !important;
   }
 
   &.startRange,
@@ -71,4 +74,9 @@ input::-webkit-inner-spin-button {
 //react-select
 .react-select {
   z-index: 19;
+}
+
+//react-image-lightbox
+.ReactModal__Overlay {
+  z-index: 9999 !important;
 }

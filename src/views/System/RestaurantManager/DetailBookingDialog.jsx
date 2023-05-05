@@ -1,26 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../../store/actions";
 import { isExistArrayAndNotEmpty, LANGUAGES } from "../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
-} from "@material-ui/core";
+import { Grid, IconButton, Icon, Button, Dialog } from "@material-ui/core";
 import dateFormat from "dateformat";
 
 class DetaiBookingDialog extends Component {
@@ -42,13 +23,11 @@ class DetaiBookingDialog extends Component {
       ? dateFormat(+bookingData.date, "mm/dd/yyyy")
       : "";
 
-    console.log("bookingData", bookingData);
-
     return (
       <>
         <Dialog open={isOpen} maxWidth="sm" fullWidth={true}>
-          <Grid className="detail-booking-dialog-container">
-            <Grid className="detail-booking-header">
+          <Grid className="dialog-container">
+            <Grid className="dialog-header">
               Thông tin đơn đặt bàn
               <IconButton
                 className="btn-close-dialog"
@@ -72,6 +51,7 @@ class DetaiBookingDialog extends Component {
                   <Grid
                     className="customer-avatar background-image-center-cover"
                     style={
+                      bookingData.customerData &&
                       bookingData.customerData.avatar
                         ? {
                             backgroundImage: `url(${
@@ -88,19 +68,15 @@ class DetaiBookingDialog extends Component {
                         Họ và tên:
                       </Grid>
                       <Grid item xs={6} className="text-content-right">
-                        {bookingData.customerData && (
+                        {language === LANGUAGES.VI ? (
                           <>
-                            {language === LANGUAGES.VI ? (
-                              <>
-                                {bookingData.customerData.lastName}{" "}
-                                {bookingData.customerData.firstName}
-                              </>
-                            ) : (
-                              <>
-                                {bookingData.customerData.firstName}{" "}
-                                {bookingData.customerData.lastName}
-                              </>
-                            )}
+                            {bookingData?.customerData?.lastName}{" "}
+                            {bookingData?.customerData?.firstName}
+                          </>
+                        ) : (
+                          <>
+                            {bookingData?.customerData?.firstName}{" "}
+                            {bookingData?.customerData?.lastName}
                           </>
                         )}
                       </Grid>
@@ -110,8 +86,7 @@ class DetaiBookingDialog extends Component {
                         Email:
                       </Grid>
                       <Grid item xs={6} className="text-content-right">
-                        {bookingData.customerData &&
-                          bookingData.customerData.email}
+                        {bookingData?.customerData?.email}
                       </Grid>
                     </Grid>
                     <Grid className="text-content" container>
@@ -119,8 +94,7 @@ class DetaiBookingDialog extends Component {
                         Số điện thoại:
                       </Grid>
                       <Grid item xs={6} className="text-content-right">
-                        {bookingData.customerData &&
-                          bookingData.customerData.phone}
+                        {bookingData?.customerData?.phone}
                       </Grid>
                     </Grid>
                     <Grid className="text-content" container>
@@ -128,8 +102,7 @@ class DetaiBookingDialog extends Component {
                         Địa chỉ:
                       </Grid>
                       <Grid item xs={6} className="text-content-right">
-                        {bookingData.customerData &&
-                          bookingData.customerData.address}
+                        {bookingData?.customerData?.address}
                       </Grid>
                     </Grid>
                   </Grid>
@@ -140,25 +113,17 @@ class DetaiBookingDialog extends Component {
                 <Grid className="booking-infor" container>
                   <Grid item xs={6}>
                     Thời gian:{" "}
-                    {bookingData.timeTypeData && (
-                      <>
-                        {language === LANGUAGES.VI
-                          ? bookingData.timeTypeData.valueVi
-                          : bookingData.timeTypeData.valueEn}
-                      </>
-                    )}{" "}
+                    {language === LANGUAGES.VI
+                      ? bookingData?.timeTypeData?.valueVi
+                      : bookingData?.timeTypeData?.valueEn}{" "}
                     - {language === LANGUAGES.VI ? dateVi : dateEn}
                   </Grid>
                   <Grid item xs={6}>
                     Trạng thái:{" "}
-                    <span className="status-text">
-                      {bookingData.statusData && (
-                        <>
-                          {language === LANGUAGES.VI
-                            ? bookingData.statusData.valueVi
-                            : bookingData.statusData.valueEn}
-                        </>
-                      )}
+                    <span className="status-text overdue">
+                      {language === LANGUAGES.VI
+                        ? bookingData?.statusData?.valueVi
+                        : bookingData?.statusData?.valueEn}
                     </span>
                   </Grid>
                   <Grid item xs={6}>
@@ -223,14 +188,11 @@ class DetaiBookingDialog extends Component {
                 </Grid>
               </Grid>
             </Grid>
-            <Grid
-              className="detail-booking-footer"
-              container
-              justify="flex-end"
-            >
+            <Grid className="dialog-footer" container justify="flex-end">
               <Button
-                className="btn-close"
-                variant="outlined"
+                className="dialog-button"
+                variant="contained"
+                color="primary"
                 onClick={handleCloseDialog}
               >
                 Đóng

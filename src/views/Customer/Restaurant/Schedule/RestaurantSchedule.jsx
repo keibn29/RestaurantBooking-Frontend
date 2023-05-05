@@ -3,25 +3,11 @@ import { connect } from "react-redux";
 import * as actions from "../../../../store/actions";
 import {
   isExistArrayAndNotEmpty,
-  LANGUAGE,
   LANGUAGES,
   NUMBER_PEOPLE_BOOKING,
 } from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid, Icon, Button } from "@material-ui/core";
+import { Skeleton } from "@mui/material";
 import { Clear } from "@material-ui/icons";
 import "./RestaurantSchedule.scss";
 import Flatpickr from "react-flatpickr";
@@ -31,6 +17,7 @@ import moment from "moment";
 import { bookingTable } from "../../../../services/customerService";
 import { toast } from "react-toastify";
 import CustomerLogin from "../../Auth/CustomerLogin";
+import { FormattedMessage } from "react-intl";
 
 class RestaurantSchedule extends Component {
   constructor(props) {
@@ -68,7 +55,7 @@ class RestaurantSchedule extends Component {
       this.props.isOpenCustomerLoginDialog
     ) {
       this.setState({
-        isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
+        isOpenCustomerLoginDialog: false,
       });
     }
     if (prevProps.customerInfo !== this.props.customerInfo) {
@@ -86,7 +73,11 @@ class RestaurantSchedule extends Component {
 
   fetchScheduleByDate = (restaurantId) => {
     const { date } = this.state;
-    this.props.getScheduleByDate(+restaurantId, date);
+    this.props.getScheduleByDate({
+      restaurantId: +restaurantId,
+      date,
+      isFilterByNowTime: true,
+    });
   };
 
   handleShowHideOptionPeople = () => {
@@ -123,7 +114,7 @@ class RestaurantSchedule extends Component {
   handleChangeDatePicker = (date) => {
     this.setState({
       date: new Date(date).getTime(),
-      isOpenDatePicker: !this.state.isOpenDatePicker,
+      isOpenDatePicker: false,
     });
 
     const { restaurantId } = this.props;
@@ -171,39 +162,43 @@ class RestaurantSchedule extends Component {
     this.props.removeDishOrderItem(dishId);
   };
 
-  handleValidateCustomerBooking = () => {
+  handleValidateCustomerAndTimeType = () => {
     const { customerInfo } = this.props;
+    const { timeType } = this.state;
     if (!customerInfo) {
       toast.info("Vui lòng đăng nhập để đặt bàn");
       this.setState({
         isOpenCustomerLoginDialog: true,
       });
-    } else {
-      this.handleBookingTable();
+      return;
     }
+
+    if (!timeType) {
+      toast.error("Vui lòng chọn thời gian muốn đặt bàn");
+      return;
+    }
+
+    this.props.changeBackropLoading(true);
+    this.handleBookingTable();
   };
 
   handleBookingTable = () => {
-    if (!this.state.timeType) {
-      toast.error("Vui lòng chọn thời gian muốn đặt bàn");
-    } else {
-      const { restaurantId, customerInfo, language } = this.props;
-      const { numberPeople, date, timeType } = this.state;
-      const timeString = this.buildTimeBooking(timeType);
+    const { restaurantId, customerInfo, language } = this.props;
+    const { numberPeople, date, timeType } = this.state;
+    const timeString = this.buildTimeBooking(timeType);
 
-      let data = {
-        restaurantId,
-        customerId: customerInfo.id,
-        table: Math.ceil(numberPeople / 6),
-        date,
-        timeType,
-        timeString,
-        language,
-        listDishOrder: this.props.listDishOrder,
-      };
+    let data = {
+      restaurantId,
+      customerId: customerInfo.id,
+      table: Math.ceil(numberPeople / 6),
+      date,
+      timeType,
+      timeString,
+      language,
+      listDishOrder: this.props.listDishOrder,
+    };
 
-      this.callApiBookingTable(data);
-    }
+    this.callApiBookingTable(data);
   };
 
   buildTimeBooking = (timeType) => {
@@ -235,10 +230,12 @@ class RestaurantSchedule extends Component {
   callApiBookingTable = async (data) => {
     const res = await bookingTable(data);
     if (res && res.errCode === 0) {
-      toast.info("Đặt lịch thành công, vui lòng kiểm tra email để xác nhận");
+      this.props.changeBackropLoading(false);
       this.handleClearState();
       this.props.clearDishOrder();
+      toast.info("Đặt lịch thành công, vui lòng kiểm tra email để xác nhận");
     } else {
+      this.props.changeBackropLoading(false);
       toast.error(res.errMessage);
     }
   };
@@ -250,7 +247,7 @@ class RestaurantSchedule extends Component {
   };
 
   render() {
-    const { language } = this.props;
+    const { language, isLoadingSchedule } = this.props;
     const {
       isShowOptionPeople,
       listOptionPeople,
@@ -264,8 +261,6 @@ class RestaurantSchedule extends Component {
       isOpenCustomerLoginDialog,
     } = this.state;
 
-    // console.log("date", date);
-
     return (
       <>
         <Grid
@@ -273,7 +268,9 @@ class RestaurantSchedule extends Component {
           container
           direction="column"
         >
-          <Grid className="restaurant-content-title">Book a table</Grid>
+          <Grid className="restaurant-content-title">
+            <FormattedMessage id="customer.restaurant.schedule.book-a-table" />
+          </Grid>
           <Grid
             className="restaurant-schedule-infor people"
             onClick={() => {
@@ -284,7 +281,10 @@ class RestaurantSchedule extends Component {
               <Grid className="people-hide-option flex-between-center">
                 <Grid className="grid-mui-icon">
                   <Icon>people_alt</Icon>
-                  <span className="text">{numberPeople} people</span>
+                  <span className="text">
+                    {numberPeople}{" "}
+                    <FormattedMessage id="customer.restaurant.schedule.people" />
+                  </span>
                 </Grid>
                 <Icon className="drop-down">expand_more</Icon>
               </Grid>
@@ -293,7 +293,10 @@ class RestaurantSchedule extends Component {
                 <Grid className="people-show-option-top flex-between-center">
                   <Grid className="grid-mui-icon">
                     <Icon>people_alt</Icon>
-                    <span className="text">{numberPeople} people</span>
+                    <span className="text">
+                      {numberPeople}{" "}
+                      <FormattedMessage id="customer.restaurant.schedule.people" />
+                    </span>
                   </Grid>
                   <Icon className="drop-up">expand_less</Icon>
                 </Grid>
@@ -348,6 +351,12 @@ class RestaurantSchedule extends Component {
                   position: "auto center",
                   ignoredFocusElements: [window.document.body],
                 }}
+                onDayCreate={function (dObj, dStr, fp, dayElem) {
+                  const dateItem = new Date(dayElem.dateObj).getTime();
+                  if (dateItem === date) {
+                    dayElem.className += " colorpink";
+                  }
+                }}
               />
             </Grid>
             {!isOpenDatePicker ? (
@@ -359,35 +368,61 @@ class RestaurantSchedule extends Component {
           <Grid className="restaurant-schedule-infor time">
             <Grid className="grid-mui-icon">
               <Icon className="mui-icon">schedule</Icon>
-              <span>Choose a time:</span>
+              <span>
+                <FormattedMessage id="customer.restaurant.schedule.choose-time" />
+              </span>
             </Grid>
             <Grid container spacing={2} className="list-schedule">
-              {isExistArrayAndNotEmpty(listSchedule) ? (
-                listSchedule.map((item) => {
-                  return (
-                    <Grid key={item.id} item xs={4}>
-                      <Button
-                        className={
-                          timeType === item.timeType
-                            ? "w-100 schedule-content time-active"
-                            : "w-100 schedule-content"
-                        }
-                        onClick={() => {
-                          this.handleChangeTimeSelected(item.timeType);
-                        }}
-                      >
-                        {language === LANGUAGES.VI
-                          ? item.timeTypeData.valueVi
-                          : item.timeTypeData.valueEn}
-                      </Button>
-                    </Grid>
-                  );
-                })
+              {isLoadingSchedule ? (
+                <>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <Skeleton variant="rounded" width={108} height={40} />
+                  </Grid>
+                </>
               ) : (
-                <Grid className="list-schedule-empty-text text-justify">
-                  Nhà hàng không có lịch đặt bàn trong ngày, quý khách vui lòng
-                  chọn ngày khác
-                </Grid>
+                <>
+                  {isExistArrayAndNotEmpty(listSchedule) ? (
+                    listSchedule.map((item) => {
+                      return (
+                        <Grid key={item.id} item xs={4}>
+                          <Button
+                            className={
+                              timeType === item.timeType
+                                ? "w-100 schedule-content time-active"
+                                : "w-100 schedule-content"
+                            }
+                            onClick={() => {
+                              this.handleChangeTimeSelected(item.timeType);
+                            }}
+                          >
+                            {language === LANGUAGES.VI
+                              ? item.timeTypeData?.valueVi
+                              : item.timeTypeData?.valueEn}
+                          </Button>
+                        </Grid>
+                      );
+                    })
+                  ) : (
+                    <Grid className="list-schedule-empty-text">
+                      <FormattedMessage id="customer.restaurant.schedule.schedule-empty-text" />
+                    </Grid>
+                  )}
+                </>
               )}
             </Grid>
           </Grid>
@@ -395,8 +430,14 @@ class RestaurantSchedule extends Component {
             <Grid className="grid-mui-icon">
               <Icon>fastfood</Icon>
               <span>
-                Dish Order:{" "}
-                {!isExistArrayAndNotEmpty(listDishOrder) && <>(Chưa đặt món)</>}
+                <FormattedMessage id="customer.restaurant.schedule.dish-order" />{" "}
+                {!isExistArrayAndNotEmpty(listDishOrder) && (
+                  <>
+                    (
+                    <FormattedMessage id="customer.restaurant.schedule.no-dish-order" />
+                    )
+                  </>
+                )}
               </span>
             </Grid>
             {isExistArrayAndNotEmpty(listDishOrder) && (
@@ -438,11 +479,14 @@ class RestaurantSchedule extends Component {
             <Button
               className="w-100 btn-book"
               onClick={() => {
-                this.handleValidateCustomerBooking();
+                this.handleValidateCustomerAndTimeType();
               }}
             >
-              Book now
+              <FormattedMessage id="customer.restaurant.schedule.book-now" />
             </Button>
+            <Grid className="book-note">
+              <FormattedMessage id="customer.restaurant.schedule.paypal-text" />
+            </Grid>
           </Grid>
           {isOpenCustomerLoginDialog && (
             <CustomerLogin
@@ -463,14 +507,14 @@ const mapStateToProps = (state) => {
     listSchedule: state.restaurant.listSchedule,
     customerInfo: state.user.customerInfo,
     isOpenCustomerLoginDialog: state.user.isOpenCustomerLoginDialog,
+    isLoadingSchedule: state.restaurant.isLoadingSchedule,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     removeDishOrderItem: (dishId) => dispatch(actions.updateDishOrder(dishId)),
-    getScheduleByDate: (restaurantId, date) =>
-      dispatch(actions.getScheduleByDate(restaurantId, date)),
+    getScheduleByDate: (data) => dispatch(actions.getScheduleByDate(data)),
     clearDishOrder: () => dispatch(actions.clearDishOrder()),
   };
 };

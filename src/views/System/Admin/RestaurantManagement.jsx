@@ -11,20 +11,16 @@ import {
   EMITTER_EVENTS,
   isExistArrayAndNotEmpty,
   USER_ROLE,
+  TABLE_ITEM_NAME,
+  OBJECT,
+  NUMBER_MAX_VALUE,
 } from "../../../utils";
 import {
   Grid,
-  IconButton,
-  Icon,
   Button,
-  InputAdornment,
-  Input,
-  TablePagination,
   MenuItem,
   TextField,
   InputLabel,
-  Box,
-  FormControl,
   Container,
 } from "@material-ui/core";
 import {
@@ -72,12 +68,18 @@ class RestaurantManagement extends Component {
       listPhotoPreviewURL: [],
       restaurantId: "",
       isOpenConfirmationDialog: false,
+      keyAvatar: Date.now(),
+      keyListPhoto: Date.now(),
     };
   }
 
   componentDidMount() {
     this.props.getAllProvince(ALLCODES.PROVINCE);
-    this.props.getAllManager(USER_ROLE.RESTAURANT_MANAGER);
+    this.props.getAllManager({
+      pageSize: NUMBER_MAX_VALUE,
+      pageOrder: 1,
+      roleId: USER_ROLE.RESTAURANT_MANAGER,
+    });
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -91,11 +93,29 @@ class RestaurantManagement extends Component {
         listManager: this.props.listManager,
       });
     }
+    if (prevProps.listPhoto !== this.props.listPhoto) {
+      this.getListPhotoPreviewURL();
+    }
   }
 
   fetchListRestaurant = (data) => {
     const { language } = this.props;
     this.props.getListRestaurant(data, language);
+  };
+
+  getListPhotoPreviewURL = () => {
+    const { listPhoto } = this.props;
+    let listPhotoPreviewURL = [];
+    if (isExistArrayAndNotEmpty(listPhoto)) {
+      listPhoto.map((item) => {
+        let photoPreviewURLItem = process.env.REACT_APP_BACKEND_URL + item.link;
+        listPhotoPreviewURL.push(photoPreviewURLItem);
+        return listPhotoPreviewURL;
+      });
+    }
+    this.setState({
+      listPhotoPreviewURL: listPhotoPreviewURL,
+    });
   };
 
   isValidCkEditor = () => {
@@ -143,27 +163,37 @@ class RestaurantManagement extends Component {
       restaurantId,
     } = this.state;
 
-    let data = {
-      nameVi,
-      nameEn,
-      descriptionVi,
-      descriptionEn,
-      addressVi,
-      addressEn,
-      provinceId: provinceSelected,
-      managerId: managerSelected,
-      table,
-      avatar,
-      listPhoto,
-      restaurantId,
-    };
-    let isValidCkEditor = this.isValidCkEditor();
+    let isSendAvatar = false;
+    let listImage = [...listPhoto];
+    if (avatar) {
+      isSendAvatar = true;
+      listImage.unshift(avatar);
+    }
+    let formData = new FormData();
+    if (isExistArrayAndNotEmpty(listImage)) {
+      listImage.map((item) => {
+        formData.append("images", item);
+        return formData;
+      });
+    }
+    formData.append("isSendAvatar", isSendAvatar);
+    formData.append("nameVi", nameVi);
+    formData.append("nameEn", nameEn);
+    formData.append("descriptionVi", descriptionVi);
+    formData.append("descriptionEn", descriptionEn);
+    formData.append("addressVi", addressVi);
+    formData.append("addressEn", addressEn);
+    formData.append("provinceId", provinceSelected);
+    formData.append("managerId", managerSelected);
+    formData.append("table", table);
+    formData.append("restaurantId", restaurantId);
 
+    let isValidCkEditor = this.isValidCkEditor();
     if (isValidCkEditor) {
       if (!restaurantId) {
-        this.callApiAddNewRestaurant(data);
+        this.callApiAddNewRestaurant(formData);
       } else {
-        this.callApiEditRestaurantById(restaurantId, data);
+        this.callApiEditRestaurantById(restaurantId, formData);
       }
     }
   };
@@ -209,8 +239,9 @@ class RestaurantManagement extends Component {
       isOpenPhotosLightbox: false,
       listPhotoPreviewURL: [],
       restaurantId: "",
+      keyAvatar: Date.now(),
+      keyListPhoto: Date.now(),
     });
-    // window.location.reload(false);
   };
 
   handleChangeInput = (event) => {
@@ -258,8 +289,8 @@ class RestaurantManagement extends Component {
   };
 
   handleShowHidePhotosLightbox = (action) => {
-    const { listPhoto } = this.state;
-    if (action === "open" && listPhoto.length === 0) {
+    const { listPhotoPreviewURL } = this.state;
+    if (action === "open" && listPhotoPreviewURL.length === 0) {
       return;
     }
     this.setState({
@@ -276,6 +307,7 @@ class RestaurantManagement extends Component {
   };
 
   handleEditRestaurant = (restaurantData) => {
+    this.props.getAllPhotoByRestaurant(OBJECT.RESTAURANT, restaurantData.id);
     this.setState({
       ...restaurantData,
       avatarPreviewURL:
@@ -283,7 +315,13 @@ class RestaurantManagement extends Component {
       provinceSelected: restaurantData.provinceId,
       managerSelected: restaurantData.managerId,
       avatar: "",
+      listPhoto: [],
       restaurantId: restaurantData.id,
+    });
+
+    document.querySelector(".title").scrollIntoView({
+      behavior: "smooth",
+      block: "end",
     });
   };
 
@@ -328,46 +366,49 @@ class RestaurantManagement extends Component {
       managerSelected,
       table,
       restaurantId,
-      listPhoto,
       photoIndex,
       isOpenPhotosLightbox,
       listPhotoPreviewURL,
       avatarPreviewURL,
       isOpenAvatarLightbox,
       isOpenConfirmationDialog,
+      keyAvatar,
+      keyListPhoto,
     } = this.state;
+
     const { language } = this.props;
     const columns = [
       {
-        title: "STT",
+        title: language === LANGUAGES.VI ? "STT" : "NO",
+        field: "no",
         width: "100",
         sorting: false,
-        render: (rowData) => rowData.tableData.id + 1,
       },
       {
-        title: "Tên nhà hàng",
+        title: language === LANGUAGES.VI ? "Tên nhà hàng" : "Restaurant's name",
         field: language === LANGUAGES.VI ? "nameVi" : "nameEn",
       },
       {
-        title: "Tỉnh thành",
+        title: language === LANGUAGES.VI ? "Tỉnh thành" : "Province",
         field:
           language === LANGUAGES.VI
             ? "provinceData.valueVi"
             : "provinceData.valueEn",
       },
       {
-        title: "Người quản lý",
+        title:
+          language === LANGUAGES.VI ? "Người quản lý" : "Restaurant's manager",
         render: (rowData) =>
           language === LANGUAGES.VI
             ? `${rowData.managerData.lastName} ${rowData.managerData.firstName}`
             : `${rowData.managerData.firstName} ${rowData.managerData.lastName}`,
       },
       {
-        title: "Địa chỉ",
+        title: language === LANGUAGES.VI ? "Địa chỉ" : "Address",
         field: language === LANGUAGES.VI ? "addressVi" : "addressEn",
       },
       {
-        title: "Số bàn",
+        title: language === LANGUAGES.VI ? "Số bàn" : "Table",
         field: "table",
       },
       {
@@ -399,7 +440,9 @@ class RestaurantManagement extends Component {
       <>
         <Container className="mt-3">
           <Grid>
-            <Grid className="title mb-3">Quản lý nhà hàng</Grid>
+            <Grid className="title mb-3">
+              <FormattedMessage id="system.header.restaurant-management" />
+            </Grid>
             <Grid>
               <ValidatorForm ref="form" onSubmit={this.handleSubmitForm}>
                 <Grid container spacing={2}>
@@ -409,7 +452,8 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên nhà hàng (VI)
+                          <FormattedMessage id="system.admin.restaurant-name" />{" "}
+                          (VI)
                         </span>
                       }
                       onChange={(event) => {
@@ -430,7 +474,8 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên nhà hàng (EN)
+                          <FormattedMessage id="system.admin.restaurant-name" />{" "}
+                          (EN)
                         </span>
                       }
                       onChange={(event) => {
@@ -451,7 +496,7 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Địa chỉ (VI)
+                          <FormattedMessage id="customer.auth.address" /> (VI)
                         </span>
                       }
                       onChange={(event) => {
@@ -472,7 +517,7 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Địa chỉ (EN)
+                          <FormattedMessage id="customer.auth.address" /> (EN)
                         </span>
                       }
                       onChange={(event) => {
@@ -493,7 +538,7 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tỉnh thành
+                          <FormattedMessage id="system.admin.province" />
                         </span>
                       }
                       onChange={(event) => {
@@ -509,7 +554,7 @@ class RestaurantManagement extends Component {
                       {isExistArrayAndNotEmpty(listProvince) &&
                         listProvince.map((item) => {
                           return (
-                            <MenuItem key={item.id} value={item.keyMap}>
+                            <MenuItem key={item.keyMap} value={item.keyMap}>
                               {language === LANGUAGES.VI
                                 ? item.valueVi
                                 : item.valueEn}
@@ -524,7 +569,7 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Người quản lý
+                          <FormattedMessage id="system.admin.manager" />
                         </span>
                       }
                       onChange={(event) => {
@@ -555,7 +600,7 @@ class RestaurantManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Số bàn
+                          <FormattedMessage id="system.admin.number-table" />
                         </span>
                       }
                       onChange={(event) => {
@@ -572,6 +617,7 @@ class RestaurantManagement extends Component {
                   </Grid>
                   <Grid item xs={1}>
                     <TextField
+                      key={keyAvatar}
                       id="avatar"
                       name="avatar"
                       type="file"
@@ -607,6 +653,7 @@ class RestaurantManagement extends Component {
                   >
                     <Grid item>
                       <TextField
+                        key={keyListPhoto}
                         id="listPhoto"
                         name="listPhoto"
                         type="file"
@@ -623,7 +670,7 @@ class RestaurantManagement extends Component {
                         htmlFor="listPhoto"
                         variant="standard"
                       >
-                        Photos
+                        <FormattedMessage id="customer.restaurant.photos.photo" />
                         <i className="fas fa-upload"></i>
                       </InputLabel>
                     </Grid>
@@ -635,15 +682,19 @@ class RestaurantManagement extends Component {
                         }}
                       >
                         <span className="number">
-                          {listPhoto.length} photos
+                          {listPhotoPreviewURL.length}{" "}
+                          <FormattedMessage id="system.admin.photo-normal" />
                         </span>
-                        <span className="text">Click to view all photos</span>
+                        <span className="text">
+                          <FormattedMessage id="system.admin.click-to-view-all-photo" />
+                        </span>
                       </Grid>
                     </Grid>
                   </Grid>
                   <Grid item xs={6} className="ckeditor-container">
-                    <InputLabel htmlFor="descriptionVi">
-                      Thông tin nhà hàng (VI)
+                    <InputLabel htmlFor="descriptionVi" className="mb-2">
+                      <FormattedMessage id="system.admin.restaurant-information" />{" "}
+                      (VI)
                     </InputLabel>
                     <CKEditor
                       editor={ClassicEditor}
@@ -665,8 +716,9 @@ class RestaurantManagement extends Component {
                     )}
                   </Grid>
                   <Grid item xs={6} className="ckeditor-container">
-                    <InputLabel htmlFor="descriptionEn">
-                      Thông tin nhà hàng (EN)
+                    <InputLabel htmlFor="descriptionEn" className="mb-2">
+                      <FormattedMessage id="system.admin.restaurant-information" />{" "}
+                      (EN)
                     </InputLabel>
                     <CKEditor
                       editor={ClassicEditor}
@@ -699,7 +751,11 @@ class RestaurantManagement extends Component {
                         this.isValidCkEditor();
                       }}
                     >
-                      {!restaurantId ? "Thêm" : "Sửa"}
+                      {!restaurantId ? (
+                        <FormattedMessage id="system.admin.add" />
+                      ) : (
+                        <FormattedMessage id="system.admin.edit" />
+                      )}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -711,7 +767,7 @@ class RestaurantManagement extends Component {
                         this.handleClearForm();
                       }}
                     >
-                      Clear
+                      <FormattedMessage id="system.admin.clear" />
                     </Button>
                   </Grid>
                 </Grid>
@@ -731,10 +787,14 @@ class RestaurantManagement extends Component {
               )}
             </Grid>
             <Grid className="material-table">
+              <Grid className="list-item-title mb-2">
+                <FormattedMessage id="system.admin.list-restaurant" />
+              </Grid>
               <MaterialTableData
-                itemName="restaurant"
+                itemName={TABLE_ITEM_NAME.RESTAURANT}
                 columns={columns}
                 getListItem={this.fetchListRestaurant}
+                localization="Không có nhà hàng nào"
               />
             </Grid>
           </Grid>
@@ -785,16 +845,19 @@ const mapStateToProps = (state) => {
   return {
     language: state.app.language,
     listProvince: state.allCode.listProvince,
-    listManager: state.user.listUserByRole,
+    listManager: state.user.listUser,
+    listPhoto: state.allCode.listPhoto,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     getAllProvince: (code) => dispatch(actions.getAllProvince(code)),
-    getAllManager: (role) => dispatch(actions.getAllUserByRole(role)),
+    getAllManager: (data) => dispatch(actions.getListUser(data)),
     getListRestaurant: (data, language) =>
       dispatch(actions.getListRestaurant(data, language)),
+    getAllPhotoByRestaurant: (objectId, restaurantId) =>
+      dispatch(actions.getAllPhotoByObject(objectId, restaurantId)),
   };
 };
 

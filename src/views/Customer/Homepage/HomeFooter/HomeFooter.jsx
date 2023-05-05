@@ -2,21 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import "./HomeFooter.scss";
 import * as actions from "../../../../store/actions";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Fanpage from "../../SocialPlugin/Fanpage";
 import {
   ALLCODES,
@@ -24,7 +10,7 @@ import {
   LANGUAGES,
   SOCIAL_NETWORK,
 } from "../../../../utils";
-import { Facebook, GitHub } from "@material-ui/icons";
+import { FormattedMessage } from "react-intl";
 
 class HomeFooter extends Component {
   constructor(props) {
@@ -76,9 +62,15 @@ class HomeFooter extends Component {
                 container
                 direction="column"
               >
-                <Grid>Nguyễn Đức Long</Grid>
-                <Grid>Khoa học máy tính</Grid>
-                <Grid>Đại học Kinh tế Quốc dân</Grid>
+                <Grid>
+                  <FormattedMessage id="customer.homepage.home-footer.dev-name" />
+                </Grid>
+                <Grid>
+                  <FormattedMessage id="customer.homepage.home-footer.computer-science" />
+                </Grid>
+                <Grid>
+                  <FormattedMessage id="customer.homepage.home-footer.neu" />
+                </Grid>
                 <Grid className="dev-social-infor mt-3" container>
                   <Grid
                     className="social-icon-svg facebook background-image-center-cover"
@@ -105,7 +97,7 @@ class HomeFooter extends Component {
                 {isExistArrayAndNotEmpty(listProvince) &&
                   listProvince.map((item) => {
                     return (
-                      <Grid key={item.id} className="province">
+                      <Grid key={item.keyMap} className="province">
                         {language === LANGUAGES.VI
                           ? item.valueVi
                           : item.valueEn}
@@ -124,7 +116,7 @@ class HomeFooter extends Component {
                 {isExistArrayAndNotEmpty(listCountry) &&
                   listCountry.map((item) => {
                     return (
-                      <Grid key={item.id} className="country">
+                      <Grid key={item.keyMap} className="country">
                         {language === LANGUAGES.VI
                           ? item.valueVi
                           : item.valueEn}

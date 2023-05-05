@@ -1,45 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { FormattedMessage } from "react-intl";
 import "./ScheduleManagement.scss";
 import * as actions from "../../../store/actions";
 import {
-  CRUD_ACTIONS,
   LANGUAGES,
   ALLCODES,
-  emitter,
-  EMITTER_EVENTS,
   isExistArrayAndNotEmpty,
   USER_ROLE,
   NUMBER_MAX_VALUE,
-  DOLLAR_TO_VND,
   customReactSelectStyleSystem,
+  buildRestaurantReactSelect,
 } from "../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid, Button, Container } from "@material-ui/core";
 import Flatpickr from "react-flatpickr";
 import "flatpickr/dist/flatpickr.css";
 import { eachDayOfInterval } from "date-fns";
-import {
-  ValidatorForm,
-  TextValidator,
-  SelectValidator,
-} from "react-material-ui-form-validator";
 import { toast } from "react-toastify";
-import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import Select from "react-select";
 import { bulkCreateNewSchedule } from "../../../services/restaurantService";
 
@@ -65,9 +41,24 @@ class ScheduleManagement extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.listRestaurant !== this.props.listRestaurant) {
-      let dataSelect = this.buildDataInputSelect(this.props.listRestaurant);
+      this.getListRestaurantForReactSelect();
+    }
+    if (prevProps.language !== this.props.language) {
+      this.getListRestaurantForReactSelect();
+    }
+    if (
+      prevState.listRestaurant !== this.state.listRestaurant &&
+      this.state.restaurantSelected
+    ) {
+      let dataSelect = buildRestaurantReactSelect(
+        this.props.listRestaurant,
+        this.props.language
+      );
+      const newRestaurantSelected = dataSelect.find(
+        (item) => item.value === this.state.restaurantSelected.value
+      );
       this.setState({
-        listRestaurant: dataSelect,
+        restaurantSelected: newRestaurantSelected,
       });
     }
     if (prevProps.listTime !== this.props.listTime) {
@@ -86,24 +77,23 @@ class ScheduleManagement extends Component {
     this.props.getAllRestaurant(data, language);
   };
 
-  buildDataInputSelect = (listRestaurant) => {
-    const { language, userInfo } = this.props;
-    let result = [];
-
-    if (isExistArrayAndNotEmpty(listRestaurant)) {
-      listRestaurant.map((item) => {
-        let restaurant = {};
-
-        restaurant.label =
-          language === LANGUAGES.VI ? item.nameVi : item.nameEn;
-        restaurant.value = item.id;
-
-        result.push(restaurant);
-        return result;
+  getListRestaurantForReactSelect = () => {
+    const { listRestaurant, language, userInfo } = this.props;
+    let dataSelect = buildRestaurantReactSelect(
+      listRestaurant,
+      language,
+      userInfo
+    );
+    if (userInfo?.roleId === USER_ROLE.RESTAURANT_MANAGER) {
+      this.setState({
+        listRestaurant: dataSelect,
+        restaurantSelected: dataSelect[0],
+      });
+    } else {
+      this.setState({
+        listRestaurant: dataSelect,
       });
     }
-
-    return result;
   };
 
   handleChangeRestaurantSelected = (restaurantSelected) => {
@@ -229,7 +219,7 @@ class ScheduleManagement extends Component {
   };
 
   render() {
-    const { language } = this.props;
+    const { language, userInfo } = this.props;
     const { listRestaurant, restaurantSelected, listTime, isNoon, isEvening } =
       this.state;
 
@@ -252,6 +242,11 @@ class ScheduleManagement extends Component {
                     </span>
                   }
                   styles={customReactSelectStyleSystem}
+                  isDisabled={
+                    userInfo.roleId === USER_ROLE.RESTAURANT_MANAGER
+                      ? true
+                      : false
+                  }
                 />
               </Grid>
               <Grid item xs={4}>
@@ -336,7 +331,7 @@ class ScheduleManagement extends Component {
                   listTime.slice(0, 6).map((item) => {
                     return (
                       <Grid
-                        key={item.id}
+                        key={item.keyMap}
                         item
                         xs={1}
                         className="schedule-content"
@@ -357,7 +352,7 @@ class ScheduleManagement extends Component {
                   listTime.slice(6, 12).map((item) => {
                     return (
                       <Grid
-                        key={item.id}
+                        key={item.keyMap}
                         item
                         xs={1}
                         className="schedule-content"
@@ -400,6 +395,7 @@ class ScheduleManagement extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
     listRestaurant: state.restaurant.listRestaurant,
     listTime: state.allCode.listTime,
   };

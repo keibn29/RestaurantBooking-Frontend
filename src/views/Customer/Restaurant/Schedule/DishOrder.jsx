@@ -1,30 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions";
-import {
-  isExistArrayAndNotEmpty,
-  LANGUAGE,
-  LANGUAGES,
-} from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-  Dialog,
-} from "@material-ui/core";
+import { isExistArrayAndNotEmpty, LANGUAGES } from "../../../../utils";
+import { Grid, IconButton, Icon, Button, Dialog } from "@material-ui/core";
 import "./DishOrder.scss";
-import Flatpickr from "react-flatpickr";
-import "flatpickr/dist/flatpickr.css";
+import { FormattedMessage } from "react-intl";
 
 class DishOrder extends Component {
   constructor(props) {
@@ -58,7 +38,7 @@ class DishOrder extends Component {
         >
           <Grid className="dish-order-container">
             <Grid className="dish-order-header">
-              Danh sách món ăn dự định đặt
+              <FormattedMessage id="customer.restaurant.schedule.list-dish-will-order" />
               <IconButton
                 className="btn-close-dialog"
                 onClick={() => {
@@ -92,7 +72,7 @@ class DishOrder extends Component {
                                 : item.nameEn}
                             </Grid>
                             <Grid className="dish-order-price">
-                              Giá:{" "}
+                              <FormattedMessage id="customer.restaurant.menu.price" />{" "}
                               {language === LANGUAGES.VI ? (
                                 <>
                                   {Number(item.priceVi).toLocaleString()}
@@ -135,7 +115,7 @@ class DishOrder extends Component {
                   handleCloseDialog();
                 }}
               >
-                Xác nhận
+                <FormattedMessage id="customer.restaurant.schedule.confirm" />
               </Button>
             </Grid>
           </Grid>

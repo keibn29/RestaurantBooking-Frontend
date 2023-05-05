@@ -1,58 +1,155 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import HomeHeader from "../../Homepage/HomeHeader/HomeHeader";
-import HomeFooter from "../../Homepage/HomeFooter/HomeFooter";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import * as actions from "../../../../store/actions";
+import { Grid, Button, TextField, InputLabel } from "@material-ui/core";
 import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import "./Account.scss";
+import { USER_ROLE } from "../../../../utils";
+import { FormattedMessage } from "react-intl";
 
 class Account extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
       firstName: "",
       lastName: "",
       phone: "",
       address: "",
+      avatar: "",
+      avatarPreviewURL: "",
+      customerId: "",
+      roleId: USER_ROLE.CUSTOMER,
+      isSubmitDisabled: true,
     };
   }
 
-  componentDidMount() {}
+  componentDidMount() {
+    this.getCustomerInfo();
+    this.handleAddValidationRule();
+  }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {}
+  componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.customerInfo !== this.props.customerInfo) {
+      this.getCustomerInfo();
+    }
+  }
 
-  handleSubmitForm = () => {};
+  componentWillUnmount() {
+    ValidatorForm.removeValidationRule("isPhone");
+  }
+
+  handleAddValidationRule = () => {
+    ValidatorForm.addValidationRule("isPhone", (value) => {
+      let firstDigitStr = String(value)[0];
+      if (value.length !== 10 || Number(firstDigitStr) !== 0) {
+        return false;
+      }
+      return true;
+    });
+  };
+
+  getCustomerInfo = () => {
+    const { customerInfo } = this.props;
+    this.setState({
+      ...customerInfo,
+      customerId: customerInfo.id,
+      avatarPreviewURL: "",
+    });
+  };
+
+  handleChangeInput = (event) => {
+    let copyState = { ...this.state };
+    copyState[event.target.name] = event.target.value;
+    this.setState({
+      ...copyState,
+      isSubmitDisabled: false,
+    });
+  };
+
+  handleChangeAvatar = (event) => {
+    let image = event.target.files[0];
+    if (image) {
+      let avatarPreviewURL = URL.createObjectURL(image);
+      this.setState({
+        avatarPreviewURL: avatarPreviewURL,
+        avatar: image,
+        isSubmitDisabled: false,
+      });
+    }
+  };
+
+  handleSubmitForm = async () => {
+    const { firstName, lastName, phone, address, avatar, roleId, customerId } =
+      this.state;
+    let data = {
+      firstName,
+      lastName,
+      phone,
+      address,
+      roleId,
+      avatar,
+    };
+    this.props.editCustomerInfoById(customerId, data);
+  };
 
   render() {
-    const { email, firstName, lastName, phone, address } = this.state;
+    const { customerInfo } = this.props;
+    const {
+      firstName,
+      lastName,
+      phone,
+      address,
+      avatarPreviewURL,
+      isSubmitDisabled,
+    } = this.state;
 
     return (
       <>
         <Grid className="account-container">
-          <Grid className="customer-profile-title">Account</Grid>
+          <Grid className="customer-profile-title">
+            <FormattedMessage id="customer.homepage.home-header.account-information" />
+          </Grid>
           <Grid className="customer-infor mt-3">
             <Grid>
-              <Grid className="customer-avatar background-image-center-cover">
-                <Grid className="camera background-image-center-cover"></Grid>
+              <Grid className="avatar-container">
+                <Grid
+                  className="customer-avatar background-image-center-cover"
+                  style={
+                    customerInfo.avatar
+                      ? {
+                          backgroundImage: `url(${
+                            process.env.REACT_APP_BACKEND_URL +
+                            customerInfo.avatar
+                          })`,
+                        }
+                      : {}
+                  }
+                ></Grid>
+                <InputLabel
+                  htmlFor="upload-customer-avatar"
+                  className="upload-new-avatar background-image-center-cover"
+                  style={
+                    avatarPreviewURL
+                      ? {
+                          backgroundImage: `url(${avatarPreviewURL})`,
+                        }
+                      : {}
+                  }
+                ></InputLabel>
+                <TextField
+                  id="upload-customer-avatar"
+                  type="file"
+                  hidden
+                  onChange={(event) => {
+                    this.handleChangeAvatar(event);
+                  }}
+                />
               </Grid>
               <Grid className="mt-2">
-                <Grid className="customer-email-label">Email address</Grid>
-                <Grid>duclongbn2912@gmail.com</Grid>
+                <Grid className="customer-email-label">
+                  <FormattedMessage id="customer.profile.account.email-address" />
+                </Grid>
+                <Grid>{customerInfo.email}</Grid>
               </Grid>
             </Grid>
             <Grid className="mt-3">
@@ -64,7 +161,7 @@ class Account extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Họ
+                          <FormattedMessage id="customer.auth.last-name" />
                         </span>
                       }
                       onChange={(event) => {
@@ -85,7 +182,7 @@ class Account extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên
+                          <FormattedMessage id="customer.auth.first-name" />
                         </span>
                       }
                       onChange={(event) => {
@@ -106,7 +203,7 @@ class Account extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Số điện thoại
+                          <FormattedMessage id="customer.auth.phone" />
                         </span>
                       }
                       onChange={(event) => {
@@ -115,8 +212,11 @@ class Account extends Component {
                       type="number"
                       name="phone"
                       value={phone}
-                      validators={["required"]}
-                      errorMessages={["Vui lòng nhập số điện thoại"]}
+                      validators={["required", "isPhone"]}
+                      errorMessages={[
+                        "Vui lòng nhập số điện thoại",
+                        "Vui lòng nhập số điện thoại hợp lệ",
+                      ]}
                       variant="standard"
                       size="small"
                     />
@@ -127,7 +227,7 @@ class Account extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Địa chỉ
+                          <FormattedMessage id="customer.auth.address" />
                         </span>
                       }
                       onChange={(event) => {
@@ -144,8 +244,15 @@ class Account extends Component {
                   </Grid>
                 </Grid>
                 <Grid className="mt-5">
-                  <Button className="btn-save" variant="outlined" type="submit">
-                    Lưu thay đổi
+                  <Button
+                    className={
+                      isSubmitDisabled ? "btn-save submit-disable" : "btn-save"
+                    }
+                    variant="outlined"
+                    type="submit"
+                    disabled={isSubmitDisabled ? true : false}
+                  >
+                    <FormattedMessage id="customer.email.save-change" />
                   </Button>
                 </Grid>
               </ValidatorForm>
@@ -160,11 +267,15 @@ class Account extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    customerInfo: state.user.customerInfo,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    editCustomerInfoById: (customerId, data) =>
+      dispatch(actions.editCustomerInfoById(customerId, data)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);

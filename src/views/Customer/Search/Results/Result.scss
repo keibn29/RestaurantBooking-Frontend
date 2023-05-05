@@ -1,0 +1,204 @@
+@import "../../../../styles/variables";
+
+.result-container {
+    .result-text {
+        font-size: 15px;
+    }
+
+    .list-result {
+        min-height: 30vh;
+
+        .result-content {
+            background-color: white;
+            border-radius   : 10px;
+            box-shadow      : 0 1px 2px $color-box-shadow;
+            margin-bottom   : 1.5rem;
+
+            &:hover {
+                box-shadow: 0 5px 10px $color-box-shadow;
+            }
+
+            .content-name {
+                font-size  : 21px;
+                font-weight: 600;
+            }
+
+            &.restaurant {
+                .restaurant-left {
+                    gap   : 15px;
+                    cursor: pointer;
+
+                    .restaurant-avatar {
+                        width           : 230px;
+                        height          : 150px;
+                        background-image: url("../../../../assets/images/restaurant-default.png");
+                        border-radius   : 10px 0 0 10px;
+
+                        &.reset-border {
+                            border-radius: 10px 0 0 0;
+                        }
+                    }
+
+                    .restaurant-text {
+                        .restaurant-province-country {
+                            margin-top: 10px;
+                            font-size : 15px;
+                            color     : #545454;
+
+                            .icon {
+                                width: 15px;
+                            }
+                        }
+                    }
+                }
+
+                .restaurant-right {
+                    padding: 10px 0;
+                    cursor : pointer;
+
+                    .right-body {
+                        gap        : 5px;
+                        border-left: 1px solid #ddd;
+
+                        .score {
+                            color           : white;
+                            background-color: #3FAF6C;
+                            font-weight     : 600;
+                            padding         : 5px;
+                            border-radius   : 20px;
+                            width           : 55px;
+                            text-align      : center;
+
+                            span {
+                                font-size: 12px;
+                            }
+                        }
+
+                        .number-review {
+                            font-size: 14px;
+                            color    : #6e6e6e;
+                        }
+                    }
+                }
+
+                .restaurant-bottom {
+                    padding   : 20px;
+                    border-top: 1px solid #ddd;
+                    gap       : 7px 5px;
+
+                    .btn-time {
+                        padding      : 5px 12px;
+                        font-size    : 13px;
+                        border       : 1px solid #bbb;
+                        border-radius: 20px;
+                        cursor       : pointer;
+                    }
+                }
+            }
+
+            &.dish {
+                cursor : pointer;
+                display: flex;
+
+                .dish-left {
+                    gap: 15px;
+
+                    .dish-avatar {
+                        width           : 200px;
+                        height          : 175px;
+                        border-radius   : 10px 0 0 10px;
+                        background-image: url("../../../../assets/images/dish-default.jpg");
+                    }
+
+                    .dish-text {
+                        .dish-infor {
+                            margin-top: 10px;
+                            font-size : 15px;
+                            color     : #545454;
+
+                            .icon {
+                                width          : 20px;
+                                display        : flex;
+                                justify-content: center;
+                                font-size      : 16px;
+
+                                &.restaurant {
+                                    font-size: 20px;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                .dish-right {
+                    padding: 10px 0;
+
+                    .right-body {
+                        gap        : 5px;
+                        border-left: 1px solid #ddd;
+
+                        .dish-right-number {
+                            color      : #3FAF6C;
+                            font-weight: 700;
+                            font-size  : 30px;
+                        }
+
+                        .dish-right-text {
+                            font-size: 14px;
+                        }
+                    }
+                }
+            }
+
+            &.handbook {
+                display    : flex;
+                user-select: none;
+                cursor     : pointer;
+
+                .handbook-image {
+                    width           : 300px;
+                    height          : 175px;
+                    border-radius   : 10px 0 0 10px;
+                    background-image: url("../../../../assets/images/banner.avif");
+                }
+
+                .handbook-text {
+                    flex   : 1;
+                    padding: 10px 40px 10px 20px;
+
+                    .content-name {
+                        display           : -webkit-box;
+                        -webkit-line-clamp: 2;
+                        -webkit-box-orient: vertical;
+                        overflow          : hidden;
+                        text-overflow     : ellipsis;
+                    }
+
+                    .handbook-description {
+                        margin-top        : 10px;
+                        width             : 100%;
+                        display           : -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow          : hidden;
+                        text-overflow     : ellipsis;
+
+                        p {
+                            margin : 0;
+                            padding: 0;
+                        }
+
+                        strong {
+                            font-weight: normal;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .list-result-empty-text {
+        font-style: italic;
+        margin-top: 20px;
+    }
+}

@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { push } from "connected-react-router";
 import "./SystemLogin.scss";
-import { FormattedMessage } from "react-intl";
 import * as actions from "../../../store/actions";
 import { PAGE_LOGIN } from "../../../utils";
 
@@ -13,22 +12,68 @@ class SystemLogin extends Component {
       email: "",
       password: "",
       isShowPassword: false,
+      helperTextError: "",
+      isEmailError: false,
+      isPasswordError: false,
     };
   }
 
-  handleOnChangeUsername = (event) => {
-    this.setState({
-      email: event.target.value,
-    });
+  handleChangeInput = (event) => {
+    let copyState = { ...this.state };
+    copyState[event.target.name] = event.target.value;
+    this.setState(
+      {
+        ...copyState,
+      },
+      () => {
+        const { email, password } = this.state;
+        if (email) {
+          this.setState({
+            isEmailError: false,
+          });
+        }
+        if (password) {
+          this.setState({
+            isPasswordError: false,
+          });
+        }
+      }
+    );
   };
 
-  handleOnChangePassword = (event) => {
+  isValidForm = () => {
+    const { email, password } = this.state;
+    if (!email) {
+      this.setState({
+        helperTextError: "Vui lòng nhập email",
+        isEmailError: true,
+        isPasswordError: false,
+      });
+      return false;
+    }
+    if (!password) {
+      this.setState({
+        helperTextError: "Vui lòng nhập mật khẩu",
+        isPasswordError: true,
+        isEmailError: false,
+      });
+      return false;
+    }
+
     this.setState({
-      password: event.target.value,
+      helperTextError: "",
+      isEmailError: false,
+      isPasswordError: false,
     });
+    return true;
   };
 
   handleSystemLogin = () => {
+    const isValidForm = this.isValidForm();
+    if (!isValidForm) {
+      return;
+    }
+
     const { email, password } = this.state;
     let data = {
       email,
@@ -51,33 +96,51 @@ class SystemLogin extends Component {
   };
 
   render() {
+    const {
+      email,
+      password,
+      isShowPassword,
+      helperTextError,
+      isEmailError,
+      isPasswordError,
+    } = this.state;
+
     return (
       <div className="login-background">
-        <div className="login-container">
+        <div
+          className={
+            helperTextError ? "login-container error" : "login-container"
+          }
+        >
           <div className="login-content row">
-            <div className="col-12 login-text">System Login</div>
+            <div className="col-12 login-text">Đăng nhập hệ thống</div>
             <div className="col-12 form-group login-input">
-              <label>Username</label>
+              <label className="login-input-label">Email</label>
               <input
                 type="text"
+                name="email"
                 className="form-control"
-                placeholder="Enter your email"
-                value={this.state.email}
+                placeholder="Nhập email của bạn"
+                value={email}
                 onChange={(event) => {
-                  this.handleOnChangeUsername(event);
+                  this.handleChangeInput(event);
                 }}
               />
+              {isEmailError && (
+                <span className="helper-text">{helperTextError}</span>
+              )}
             </div>
             <div className="col-12 form-group login-input">
-              <label>Password</label>
+              <label className="login-input-label">Mật khẩu</label>
               <div className="custom-input-password">
                 <input
-                  type={this.state.isShowPassword ? "text" : "password"}
+                  type={isShowPassword ? "text" : "password"}
+                  name="password"
                   className="form-control"
-                  placeholder="Enter your password"
-                  value={this.state.password}
+                  placeholder="Nhập mật khẩu của bạn"
+                  value={password}
                   onChange={(event) => {
-                    this.handleOnChangePassword(event);
+                    this.handleChangeInput(event);
                   }}
                   onKeyDown={(event) => {
                     this.handleKeyDown(event);
@@ -90,36 +153,24 @@ class SystemLogin extends Component {
                 >
                   <i
                     className={
-                      this.state.isShowPassword
-                        ? "far fa-eye"
-                        : "far fa-eye-slash"
+                      isShowPassword ? "far fa-eye" : "far fa-eye-slash"
                     }
                   ></i>
                 </span>
+                {isPasswordError && (
+                  <span className="helper-text">{helperTextError}</span>
+                )}
               </div>
             </div>
-            <div className="col-12" style={{ color: "red" }}>
-              {this.state.errMessage}
-            </div>
-            <div className="col-12">
+            <div className="col-12 mt-4">
               <button
                 className="btn-login"
                 onClick={() => {
                   this.handleSystemLogin();
                 }}
               >
-                Login
+                Đăng nhập
               </button>
-            </div>
-            <div className="col-12 forgot-text">
-              <span className="forgot-password">Forgot your password?</span>
-            </div>
-            <div className="col-12 text-center mt-3">
-              <span className="text-other-login">Or Login with</span>
-            </div>
-            <div className="col-12 social-login">
-              <i className="fab fa-google google"></i>
-              <i className="fab fa-facebook-f facebook"></i>
             </div>
           </div>
         </div>

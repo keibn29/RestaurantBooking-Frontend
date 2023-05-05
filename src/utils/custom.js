@@ -1,3 +1,6 @@
+import { createMuiTheme } from "@material-ui/core/styles";
+import { createTheme } from "@mui/material/styles";
+
 export const customReactSelectStyleSystem = {
   option: (styles, state) => ({
     ...styles,
@@ -49,8 +52,54 @@ export const customReactSelectStyleBanner = {
     marginLeft: "10px",
     fontSize: "17px",
   }),
+  singleValue: (provided) => ({
+    ...provided,
+    marginLeft: "10px",
+    fontSize: "17px",
+  }),
   option: (provided, state) => ({
     ...provided,
+    paddingLeft: "18px",
     cursor: "pointer",
   }),
+};
+
+export const muiThemeV5 = createTheme({
+  palette: {
+    primary: {
+      main: "#7265EB",
+    },
+    secondary: {
+      main: "#617D8A",
+    },
+    colorhome: {
+      main: "#F8B333",
+      contrastText: "#fff",
+    },
+    colorpink: {
+      main: "#FF6571",
+      contrastText: "#fff",
+      dark: "#f94251",
+    },
+  },
+});
+
+export const muiThemeV4 = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#7265EB",
+    },
+    secondary: {
+      main: "#617D8A",
+    },
+  },
+});
+
+export const sliderSettings = {
+  dots: false,
+  infinite: false,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  arrows: true,
 };

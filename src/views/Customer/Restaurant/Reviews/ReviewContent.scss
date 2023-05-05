@@ -23,7 +23,6 @@
             margin-bottom: 15px;
 
             .btn-write-review {
-                text-transform: none !important;
 
                 .write-review-icon {
                     font-size   : 20px;
@@ -52,7 +51,7 @@
                             gap    : 15px;
 
                             .customer-information-left {
-                                background-image: url("../../../../assets/images/restaurant5.jpg");
+                                background-image: url("../../../../assets/images/customer-avatar-default.png");
                                 width           : 50px;
                                 height          : 50px;
                                 border-radius   : 50%;
@@ -71,13 +70,12 @@
                         }
 
                         .review-score {
-                            color              : white;
-                            background-color   : #3FAF6C;
-                            // font-weight     : 600;
-                            padding            : 5px;
-                            border-radius      : 20px;
-                            width              : 55px;
-                            text-align         : center;
+                            color           : white;
+                            background-color: #3FAF6C;
+                            padding         : 5px;
+                            border-radius   : 20px;
+                            width           : 55px;
+                            text-align      : center;
 
                             span {
                                 font-size: 12px;

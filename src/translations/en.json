@@ -1,9 +1,198 @@
 {
   "system": {
+    "header": {
+      "welcome": "Hello",
+      "user": "User",
+      "user-management": "User management",
+      "customer-support": "Customer support",
+      "restaurant": "Restaurant",
+      "restaurant-management": "Restaurant management",
+      "schedule-management": "Schedule management",
+      "dish-management": "Dish management",
+      "booking-management": "Reservation management",
+      "handbook": "Handbook",
+      "handbook-management": "Handbook management"
+    },
     "admin": {
-      "user": {
-        "user": "User",
-        "user-management": "Manage User"
+      "list-customer": "List customer",
+      "dish-type": "Type",
+      "dish-name": "Name",
+      "price": "Price",
+      "click-to-view-all-photo": "Click to view all photos",
+      "photo-normal": "photos",
+      "dish-information": "Description",
+      "add": "Add",
+      "edit": "Edit",
+      "clear": "Clear",
+      "list-dish": "List dish:",
+      "handbook-title": "Title",
+      "handbook-content": "Content",
+      "list-handbook": "List handbook:",
+      "row-per-page": "Row per page",
+      "in": "in",
+      "restaurant-name": "Name",
+      "province": "Province",
+      "manager": "Manager",
+      "number-table": "Table",
+      "restaurant-information": "Description",
+      "list-restaurant": "List restaurant:",
+      "list-user": "List user:",
+      "role": "Role"
+    }
+  },
+  "customer": {
+    "auth": {
+      "login": "Login",
+      "signup": "Signup",
+      "forgot-password": "Forgot password?",
+      "or-login-with": "Or login with",
+      "not-have-account": "Don't have account?",
+      "signup-now": "Signup now",
+      "required-information-note": "contains required information",
+      "have-account": "Already have an account?",
+      "login-now": "Login now",
+      "type-your-email": "Type your email",
+      "type-your-password": "Type your password",
+      "password": "Password",
+      "last-name": "Last name",
+      "first-name": "First name",
+      "phone": "Phone number",
+      "repeat-password": "Repeat password",
+      "address": "Address"
+    },
+    "email": {
+      "update-password": "Update password",
+      "type-new-password": "Type new password",
+      "save-change": "Save changes",
+      "continue-note": "To continue with the reservation process, please use PayPal to pay the deposit",
+      "success-note": "Congratulations on your successful payment and confirmation of your reservation",
+      "failed-note": "The reservation is confirmed or does not exist"
+    },
+    "handbook": {
+      "image-demo": "Food illustrations",
+      "other-handbook": "Other handbooks:"
+    },
+    "homepage": {
+      "chat-real-time": {
+        "chope-table-booking": "Chope - Table booking",
+        "reply-after-min": "Reply in a few minutes",
+        "no-customer-need-support": "No customers need support",
+        "hello": "Hello",
+        "we-can-help-you": "What can we do for you?"
+      },
+      "home-footer": {
+        "dev-name": "Long Nguyen Duc",
+        "computer-science": "Computer science",
+        "neu": "National Economics University"
+      },
+      "home-header": {
+        "find": "Find",
+        "login-or-signup": "Login or Signup",
+        "booking-history": "Reservations",
+        "account-information": "Account",
+        "logout": "Logout"
+      },
+      "home-sections": {
+        "dish-most-order-title": "Most ordered dishes",
+        "dish-most-order-text": "Summary of the most ordered dishes on Chope",
+        "number-order": "ordered",
+        "see-more-dish": "See more dishes",
+        "restaurant-in-hanoi-title": "Restaurants in Hanoi",
+        "restaurant-in-hanoi-text": "Summary of restaurants in Hanoi",
+        "see-more-restaurant": "See more restaurants",
+        "together-text": "Let's explore restaurants together",
+        "restaurant-most-score-title": "The restaurant with the highest score",
+        "restaurant-most-score-text": "Summary of the highest rated restaurants on Chope",
+        "food-handbook": "Culinary Handbook",
+        "new-handbook-text": "Summary of the latest handbooks",
+        "see-more-handbook": "See more handbooks"
+      }
+    },
+    "profile": {
+      "account": {
+        "email-address": "Email address"
+      },
+      "booking-history": {
+        "reservation": "Reservations",
+        "time": "Time:",
+        "dish": "Dishes:",
+        "part-dish": "dishes",
+        "cancel": "Cancel"
+      }
+    },
+    "restaurant": {
+      "about": {
+        "about": "About",
+        "next-7-day": "Operating time in the next 7 days",
+        "see-all-menu": "See all menu",
+        "see-more-photo": "See more photos",
+        "photo-empty-text": "The restaurant has not yet updated its photos.",
+        "see-all-review": "See all reviews"
+      },
+      "general": {
+        "average-price": "Average price:"
+      },
+      "menu": {
+        "menu": "Menu",
+        "price": "Price:",
+        "back": "Back",
+        "order": "Order",
+        "food": "Food",
+        "drink": "Drink",
+        "menu-empty-text": "The restaurant has not yet updated the menu on the system, sorry for the inconvenience.",
+        "menu-description": "Check out the menu at Restaurant #1 and discover the popular dishes people are craving! From appetizers to sweets, see what's in store for you, you can also check the price of dishes so you know which flavors are right for your budget. Check out the menu from Restaurant No. 01 and order now!"
+      },
+      "photos": {
+        "photo": "Photos",
+        "photo-description": "Take a look at the actual photos at the restaurant to see the space as well as the dish at the restaurant so you know what to expect on your next table reservation."
+      },
+      "reviews": {
+        "review": "Reviews",
+        "review-description": "Read people's reviews of the restaurant. All reviews are written by diners who have experienced the restaurant. With real reviews, you can see what other diners love about the Restaurant and book a table with confidence!",
+        "review-normal-one": "review",
+        "review-normal-many": "reviews",
+        "edit-review": "Edit your review",
+        "write-review": "Write a review",
+        "no-comment": "Customers leave no comments",
+        "review-empty-text": "This restaurant has no reviews yet",
+        "review-restaurant": "Review Restaurant",
+        "public-review-text": "The review will be open to everyone"
+      },
+      "schedule": {
+        "list-dish-will-order": "List of dishes to order",
+        "confirm": "Confirm",
+        "book-a-table": "Book a table",
+        "people": "people",
+        "choose-time": "Choose a time:",
+        "schedule-empty-text": "The restaurant does not have a reservation schedule for the day, please choose another date.",
+        "dish-order": "Dishes order:",
+        "no-dish-order": "No",
+        "book-now": "Book now",
+        "paypal-text": "Pay your deposit ($5) and book your table now with PayPal"
+      }
+    },
+    "search": {
+      "object": "Object",
+      "country": "Originated",
+      "price-range": "Price",
+      "average-score": "Average Score",
+      "restaurant-in": "Restaurant in",
+      "people-cap": "People",
+      "date": "Date",
+      "time": "Time",
+      "apply": "Apply",
+      "text-description-restaurant": "Looking for the best restaurants? We'll introduce you to the best places to eat out for breakfast, lunch, and dinner. Ready to discover the top restaurants? By the way, don't forget to book a table online. You risk not having a table if you don't make a reservation!",
+      "text-description-dish": "Looking for delicious dish? We will present you the most suitable dishes for breakfast, lunch and dinner. By the way, don't forget to book a table online. You risk not having a table if you don't make a reservation!",
+      "what-handbook": "Let's see what handbooks we have?",
+      "text-description-handbook": "Looking for articles, culinary handbook? We will introduce you to interesting and useful handbooks. By the way, don't forget to book a table online. You risk not having a table if you don't make a reservation!",
+      "hanoi": "Ha Noi",
+      "result": {
+        "result-one": "result",
+        "result-many": "results",
+        "most-order": "Most ordered",
+        "number-order-search": "ordered",
+        "no-result": "No matching results were found",
+        "most-score": "Most Score"
       }
     }
   }

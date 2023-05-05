@@ -1,7 +1,7 @@
 @import "../../../styles/variables";
 
 .restaurant-container {
-    background-color: #f7f8fa;
+    background-color: $color-page-background;
     min-height      : 100vh;
 
     .restaurant-nav {
@@ -39,7 +39,7 @@
         }
     }
 
-    #detail-restaurant-top {
+    #restaurant-nav-top {
         scroll-margin-top: calc(75px + 45px + 1.5rem);
     }
 
@@ -57,6 +57,7 @@
         .restaurant-content-title {
             font-size  : 19px;
             font-weight: 600;
+            user-select: none;
         }
 
         &.restaurant-general {
@@ -74,7 +75,13 @@
         &.restaurant-menu,
         &.restaurant-photo,
         &.restaurant-review {
-            min-height: calc(100vh - 75px);
+            min-height: 70vh;
+        }
+
+        .list-content-empty-text {
+            font-style : italic;
+            font-weight: 600;
+            margin-top : 20px;
         }
     }
 }

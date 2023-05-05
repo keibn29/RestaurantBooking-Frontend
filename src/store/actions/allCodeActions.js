@@ -103,3 +103,57 @@ export const getAllTimeFailed = (err) => {
     type: GET_ALL_TIME_FAILED,
   };
 };
+
+//get-dish-type
+export const GET_ALL_DISH_TYPE = "GET_ALL_DISH_TYPE";
+export const GET_ALL_DISH_TYPE_SUCCESS = "GET_ALL_DISH_TYPE_SUCCESS";
+export const GET_ALL_DISH_TYPE_FAILED = "GET_ALL_DISH_TYPE_FAILED";
+
+export const getAllDishType = (code) => {
+  return {
+    type: GET_ALL_DISH_TYPE,
+    code,
+  };
+};
+
+export const getAllDishTypeSuccess = (listCode) => {
+  return {
+    type: GET_ALL_DISH_TYPE_SUCCESS,
+    listCode,
+  };
+};
+
+export const getAllDishTypeFailed = (err) => {
+  toast.error(err);
+  return {
+    type: GET_ALL_DISH_TYPE_FAILED,
+  };
+};
+
+//get-all-photo-by-object
+export const GET_ALL_PHOTO_BY_OBJECT = "GET_ALL_PHOTO_BY_OBJECT";
+export const GET_ALL_PHOTO_BY_OBJECT_SUCCESS =
+  "GET_ALL_PHOTO_BY_OBJECT_SUCCESS";
+export const GET_ALL_PHOTO_BY_OBJECT_FAILED = "GET_ALL_PHOTO_BY_OBJECT_FAILED";
+
+export const getAllPhotoByObject = (objectId, idMap) => {
+  return {
+    type: GET_ALL_PHOTO_BY_OBJECT,
+    objectId,
+    idMap,
+  };
+};
+
+export const getAllPhotoByObjectSuccess = (listPhoto) => {
+  return {
+    type: GET_ALL_PHOTO_BY_OBJECT_SUCCESS,
+    listPhoto,
+  };
+};
+
+export const getAllPhotoByObjectFailed = (err) => {
+  toast.error(err);
+  return {
+    type: GET_ALL_PHOTO_BY_OBJECT_FAILED,
+  };
+};

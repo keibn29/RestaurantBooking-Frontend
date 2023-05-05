@@ -6,12 +6,14 @@ import RestaurantManagement from "../views/System/Admin/RestaurantManagement";
 import Header from "../views/System/Header/Header";
 import DishManagement from "../views/System/Admin/DishManagement";
 import ScheduleManagement from "../views/System/RestaurantManager/ScheduleManagement";
-import { SYSTEM_PATH } from "../utils";
+import { SYSTEM_PATH, USER_ROLE } from "../utils";
 import BookingManagement from "../views/System/RestaurantManager/BookingManagement";
+import CustomerSupport from "../views/System/Admin/CustomerSupport";
+import HandbookManagement from "../views/System/Admin/HandbookManagement";
 
 class System extends Component {
   render() {
-    const { systemMenuPath, isLoggedInSystem } = this.props;
+    const { isLoggedInSystem, userInfo } = this.props;
     return (
       <>
         {isLoggedInSystem && <Header />}
@@ -38,10 +40,22 @@ class System extends Component {
                 path={SYSTEM_PATH.BOOKING_MANAGEMENT}
                 component={BookingManagement}
               />
+              <Route
+                path={SYSTEM_PATH.CUSTOMER_SUPPORT}
+                component={CustomerSupport}
+              />
+              <Route
+                path={SYSTEM_PATH.HANDBOOK_MANAGEMENT}
+                component={HandbookManagement}
+              />
 
               <Route
                 component={() => {
-                  return <Redirect to={systemMenuPath} />;
+                  const redirectLink =
+                    userInfo.roleId === USER_ROLE.RESTAURANT_MANAGER
+                      ? SYSTEM_PATH.DISH_MANAGEMENT
+                      : SYSTEM_PATH.USER_MANAGEMENT;
+                  return <Redirect to={redirectLink} />;
                 }}
               />
             </Switch>
@@ -54,8 +68,8 @@ class System extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    systemMenuPath: state.app.systemMenuPath,
     isLoggedInSystem: state.user.isLoggedInSystem,
+    userInfo: state.user.userInfo,
   };
 };
 

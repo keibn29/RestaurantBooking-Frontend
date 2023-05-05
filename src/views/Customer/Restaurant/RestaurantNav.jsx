@@ -1,24 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../../store/actions";
-import { LANGUAGES, NAV_DETAIL_RESTAURANT } from "../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
-import ReviewContent from "./Reviews/ReviewContent";
-import MenuContent from "./Menu/MenuContent";
+import { NAV_DETAIL_RESTAURANT } from "../../../utils";
+import { withRouter } from "react-router";
+import { Grid } from "@material-ui/core";
+import { FormattedMessage } from "react-intl";
 
 class RestaurantNav extends Component {
   constructor(props) {
@@ -30,12 +15,16 @@ class RestaurantNav extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
 
-  handleChangeNavSelected = (navSelected) => {
-    this.props.handleChangeNavSelected(navSelected);
-    const element = document.getElementById("detail-restaurant-top");
-    element.scrollIntoView({
-      behavior: "smooth",
-    });
+  handleChangeNavSelected = async (navSelected) => {
+    if (this.props.history && this.props.restaurantId) {
+      await this.props.history.push({
+        pathname: `/restaurant/${this.props.restaurantId}`,
+        hash: navSelected,
+      });
+      document.getElementById("restaurant-nav-top").scrollIntoView({
+        behavior: "smooth",
+      });
+    }
   };
 
   render() {
@@ -58,7 +47,7 @@ class RestaurantNav extends Component {
               this.handleChangeNavSelected(NAV_DETAIL_RESTAURANT.ABOUT);
             }}
           >
-            About
+            <FormattedMessage id="customer.restaurant.about.about" />
             {navSelected === NAV_DETAIL_RESTAURANT.ABOUT && <hr />}
           </Grid>
           <Grid
@@ -71,7 +60,7 @@ class RestaurantNav extends Component {
               this.handleChangeNavSelected(NAV_DETAIL_RESTAURANT.MENU);
             }}
           >
-            Menu
+            <FormattedMessage id="customer.restaurant.menu.menu" />
             {navSelected === NAV_DETAIL_RESTAURANT.MENU && <hr />}
           </Grid>
           <Grid
@@ -84,7 +73,7 @@ class RestaurantNav extends Component {
               this.handleChangeNavSelected(NAV_DETAIL_RESTAURANT.PHOTOS);
             }}
           >
-            Photos
+            <FormattedMessage id="customer.restaurant.photos.photo" />
             {navSelected === NAV_DETAIL_RESTAURANT.PHOTOS && <hr />}
           </Grid>
           <Grid
@@ -97,7 +86,7 @@ class RestaurantNav extends Component {
               this.handleChangeNavSelected(NAV_DETAIL_RESTAURANT.REVIEWS);
             }}
           >
-            Reviews
+            <FormattedMessage id="customer.restaurant.reviews.review" />
             {navSelected === NAV_DETAIL_RESTAURANT.REVIEWS && <hr />}
           </Grid>
         </Grid>
@@ -114,4 +103,6 @@ const mapDispatchToProps = (dispatch) => {
   return {};
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RestaurantNav);
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(RestaurantNav)
+);

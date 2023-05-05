@@ -3,23 +3,8 @@ import { connect } from "react-redux";
 import { NAV_CUSTOMER_PROFILE, PATH } from "../../../utils";
 import * as actions from "../../../store/actions";
 import { withRouter } from "react-router";
-import HomeHeader from "../Homepage/HomeHeader/HomeHeader";
-import HomeFooter from "../Homepage/HomeFooter/HomeFooter";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid } from "@material-ui/core";
+import { FormattedMessage } from "react-intl";
 
 class CustomerNav extends Component {
   constructor(props) {
@@ -31,24 +16,46 @@ class CustomerNav extends Component {
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
 
-  handleChangeCustomerProfileNavSelected = (navSelected) => {
+  handleChangeCustomerProfileNavSelected = async (navSelected) => {
     if (this.props.history) {
-      this.props.history.push({
+      await this.props.history.push({
         pathname: PATH.BOOKING_HISTORY,
-        state: navSelected,
+        hash: navSelected,
       });
+      document.getElementById("customer-profile-top").scrollIntoView();
+    }
+  };
+
+  handleCustomerLogout = () => {
+    this.props.customerLogout();
+    if (this.props.history) {
+      this.props.history.push(PATH.HOMEPAGE);
     }
   };
 
   render() {
-    const { customerLogout, navSelected } = this.props;
+    const { navSelected, customerInfo } = this.props;
 
     return (
       <>
         <Grid className="customer-nav-container">
           <Grid className="nav-infor">
-            <Grid className="nav-infor-avatar background-image-center-cover"></Grid>
-            <Grid className="nav-infor-text">Welcome, Long</Grid>
+            <Grid
+              className="nav-infor-avatar background-image-center-cover"
+              style={
+                customerInfo.avatar
+                  ? {
+                      backgroundImage: `url(${
+                        process.env.REACT_APP_BACKEND_URL + customerInfo.avatar
+                      })`,
+                    }
+                  : {}
+              }
+            ></Grid>
+            <Grid className="nav-infor-text">
+              <FormattedMessage id="customer.homepage.chat-real-time.hello" />,{" "}
+              {customerInfo.firstName}
+            </Grid>
           </Grid>
           <Grid
             className={
@@ -65,7 +72,7 @@ class CustomerNav extends Component {
               );
             }}
           >
-            Reservations
+            <FormattedMessage id="customer.homepage.home-header.booking-history" />
           </Grid>
           <Grid
             className={
@@ -82,16 +89,20 @@ class CustomerNav extends Component {
               );
             }}
           >
-            Account
+            <FormattedMessage id="customer.homepage.home-header.account-information" />
           </Grid>
           <Grid
             className="nav-item logout"
-            onClick={customerLogout}
+            onClick={() => {
+              this.handleCustomerLogout();
+            }}
             container
             justify="space-between"
             alignItems="center"
           >
-            <span>Log out</span>
+            <span>
+              <FormattedMessage id="customer.homepage.home-header.logout" />
+            </span>
             <i className="fas fa-sign-out-alt"></i>
           </Grid>
         </Grid>
@@ -103,6 +114,7 @@ class CustomerNav extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    customerInfo: state.user.customerInfo,
   };
 };
 

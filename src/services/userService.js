@@ -27,7 +27,3 @@ export const editUserById = (userId, data) => {
 export const deleteUserById = (userId) => {
   return axios.delete(`/api/users/${userId}`);
 };
-
-export const getAllUserByRole = (role) => {
-  return axios.get(`/api/users/${role}`);
-};

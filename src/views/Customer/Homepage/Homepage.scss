@@ -47,7 +47,7 @@
                 .content-top {
                     height          : 160px;
                     border-radius   : 10px;
-                    background-image: url("../../../assets/images/restaurant1.avif");
+                    background-image: url("../../../assets/images/restaurant-default.png");
                 }
 
                 .content-bottom {
@@ -71,10 +71,6 @@
                                 color: #545454;
                                 width: 15px;
                             }
-
-                            .restaurant-province {}
-
-                            .restaurant-country {}
                         }
 
                         .restaurant-score {
@@ -90,15 +86,91 @@
                                 font-size: 12px;
                             }
                         }
+
+                        &.dish {
+                            padding-right: 5px;
+
+                            .dish-information {
+                                font-size: 15px;
+
+                                .icon {
+                                    margin-right   : 5px;
+                                    width          : 18px;
+                                    display        : flex;
+                                    justify-content: center;
+                                    color          : #545454;
+
+                                    &.restaurant {
+                                        font-size: 18px;
+                                    }
+                                }
+                            }
+
+                            .total-order-container {
+                                color: #3FAF6C;
+
+                                .number {
+                                    font-weight: 700;
+                                    font-size  : 30px;
+                                }
+
+                                .text {
+                                    font-size  : 13px;
+                                    margin-left: -3px;
+                                }
+                            }
+                        }
                     }
 
+                }
+
+                &.handbook {
+
+                    .content-left {
+                        height          : 200px;
+                        border-radius   : 10px;
+                        background-image: url("../../../assets/images/restaurant-default.png");
+                    }
+
+                    .content-right {
+                        padding: 5px 15px;
+
+                        .content-right-up {
+                            font-weight       : 600;
+                            font-size         : 22px;
+                            display           : -webkit-box;
+                            -webkit-line-clamp: 2;
+                            -webkit-box-orient: vertical;
+                            overflow          : hidden;
+                            text-overflow     : ellipsis;
+                        }
+
+                        .content-right-down {
+                            margin-top        : 10px;
+                            font-size         : 17px;
+                            display           : -webkit-box;
+                            -webkit-line-clamp: 4;
+                            -webkit-box-orient: vertical;
+                            overflow          : hidden;
+                            text-overflow     : ellipsis;
+
+                            p {
+                                margin : 0;
+                                padding: 0;
+                            }
+
+                            strong {
+                                font-weight: normal;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
     .section-footer {
-        margin-top: 10px;
+        margin-top: 15px;
 
         .btn-more {
             padding      : 8px 16px;
@@ -111,6 +183,14 @@
                 background-color: #FEF1D7;
                 border          : 1px solid $colorhome;
             }
+        }
+    }
+
+    &.handbook {
+
+        .slick-prev,
+        .slick-next {
+            top: 50% !important;
         }
     }
 }

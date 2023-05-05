@@ -1,36 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import * as actions from "../../../store/actions";
 import {
-  LANGUAGES,
-  TABLE_ITEMS,
+  TABLE_ITEM_NAME,
   emitter,
   EMITTER_EVENTS,
-  PAGE_SIZE_PAGINATION,
-  CRUD_ACTIONS,
+  TABLE_SIZE_PAGINATION,
 } from "../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-} from "@material-ui/core";
-import { Pagination } from "@mui/material";
+import { TablePagination } from "@material-ui/core";
 import MaterialTable from "material-table";
-import { searchUser } from "../../../services/userService";
-import { toast } from "react-toastify";
-import MaterialTableAction from "../../../components/MaterialTableAction";
 
 class MaterialTableData extends Component {
   constructor(props) {
     super(props);
     this.state = {
       listItem: [],
-      pageSize: PAGE_SIZE_PAGINATION,
+      pageSize: TABLE_SIZE_PAGINATION,
       pageIndex: 0,
       totalItem: 0,
     };
@@ -48,7 +33,7 @@ class MaterialTableData extends Component {
   };
 
   componentDidMount() {
-    if (this.props.itemName !== TABLE_ITEMS.DISH) {
+    if (this.props.itemName !== TABLE_ITEM_NAME.DISH) {
       this.updateTableData();
     }
   }
@@ -62,15 +47,17 @@ class MaterialTableData extends Component {
       totalRestaurant,
       listDish,
       totalDish,
+      listHandbook,
+      totalHandbook,
     } = this.props;
-    if (itemName === TABLE_ITEMS.USER && prevProps.listUser !== listUser) {
+    if (itemName === TABLE_ITEM_NAME.USER && prevProps.listUser !== listUser) {
       this.setState({
         listItem: listUser,
         totalItem: totalUser,
       });
     }
     if (
-      itemName === TABLE_ITEMS.RESTAURANT &&
+      itemName === TABLE_ITEM_NAME.RESTAURANT &&
       prevProps.listRestaurant !== listRestaurant
     ) {
       this.setState({
@@ -78,10 +65,19 @@ class MaterialTableData extends Component {
         totalItem: totalRestaurant,
       });
     }
-    if (itemName === TABLE_ITEMS.DISH && prevProps.listDish !== listDish) {
+    if (itemName === TABLE_ITEM_NAME.DISH && prevProps.listDish !== listDish) {
       this.setState({
         listItem: listDish,
         totalItem: totalDish,
+      });
+    }
+    if (
+      itemName === TABLE_ITEM_NAME.HANDBOOK &&
+      prevProps.listHandbook !== listHandbook
+    ) {
+      this.setState({
+        listItem: listHandbook,
+        totalItem: totalHandbook,
       });
     }
     if (prevProps.language !== this.props.language) {
@@ -126,6 +122,7 @@ class MaterialTableData extends Component {
     let columnsFromParent = columns.map((item) => {
       return { ...item };
     });
+    console.log("listItem", listItem);
 
     return (
       <>
@@ -157,9 +154,15 @@ class MaterialTableData extends Component {
         />
         <TablePagination
           component="div"
-          labelRowsPerPage={<span className="text-15">Số hàng mỗi trang</span>}
+          labelRowsPerPage={
+            <span className="text-15">
+              <FormattedMessage id="system.admin.row-per-page" />
+            </span>
+          }
           labelDisplayedRows={({ from, to, count }) => (
-            <span className="text-15">{`${from}-${to} trong ${count}`}</span>
+            <span className="text-15">
+              {from}-{to} <FormattedMessage id="system.admin.in" /> {count}
+            </span>
           )}
           SelectProps={{
             style: {
@@ -187,6 +190,8 @@ const mapStateToProps = (state) => {
     totalRestaurant: state.restaurant.totalRestaurant,
     listDish: state.dish.listDish,
     totalDish: state.dish.totalDish,
+    listHandbook: state.handbook.listHandbook,
+    totalHandbook: state.handbook.totalHandbook,
   };
 };
 

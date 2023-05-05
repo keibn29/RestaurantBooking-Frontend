@@ -12,9 +12,13 @@
     }
 }
 
-.detail-booking-dialog-container {
+.colormain {
+    background-color: $colormain !important;
+}
 
-    .detail-booking-header {
+.dialog-container {
+
+    .dialog-header {
         padding      : 10px 20px;
         border-bottom: 1px solid #ddd;
         user-select  : none;
@@ -72,6 +76,10 @@
 
                 .status-text {
                     color: #28A745;
+
+                    &.overdue {
+                        color: $colorpink;
+                    }
                 }
             }
 
@@ -86,6 +94,7 @@
                     .dish-order-avatar {
                         width           : 60px;
                         height          : 60px;
+                        border-radius   : 5px;
                         background-image: url("../../../assets/images/dish-default.jpg");
                     }
 
@@ -103,16 +112,18 @@
         }
     }
 
-    .detail-booking-footer {
+    .bill-email-body {
+        padding: 20px;
+    }
+
+    .dialog-footer {
         border-top: 1px solid #ddd;
         margin-top: 20px;
         padding   : 10px 20px;
+        gap       : 10px;
 
-        .btn-close {
-            background-color: $colormain;
-            border          : none;
-            color           : white;
-            font-size       : inherit;
+        .dialog-button {
+            font-size: inherit;
         }
     }
 }

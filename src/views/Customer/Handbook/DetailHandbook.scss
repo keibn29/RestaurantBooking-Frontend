@@ -1,0 +1,80 @@
+@import "../../../styles/variables";
+
+.handbook-container {
+    background-color: $color-page-background;
+
+    .handbook-body {
+
+        .handbook-content {
+            background-color: white;
+            border-radius   : 5px;
+
+            &.main-handbook {
+                min-height: calc(100vh - 250px);
+                padding   : 20px 30px;
+            }
+
+            .handbook-content-title {
+                font-size  : 22px;
+                font-weight: 600;
+            }
+
+            .handbook-image {
+                height          : 350px;
+                width           : 70%;
+                margin          : 0 auto;
+                background-image: url("../../../assets/images/restaurant-default.png");
+            }
+        }
+
+        .other-handbook-title {
+            font-size: 18px;
+        }
+
+        .list-other-handbook {
+            .handbook-content {
+                cursor     : pointer;
+                user-select: none;
+
+                &:hover {
+                    box-shadow: 0 5px 10px $color-box-shadow;
+                }
+
+                .other-handbook-content-left {
+                    height          : 110px;
+                    background-image: url("../../../assets/images/restaurant-default.png");
+                    border-radius   : 5px 0 0 5px;
+                }
+
+                .other-handbook-content-right {
+                    .other-handbook-content-title {
+                        font-size    : 17px;
+                        font-weight  : 600;
+                        white-space  : nowrap;
+                        overflow     : hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    .other-handbook-content-description {
+                        font-size         : 14px;
+                        margin-top        : 5px;
+                        display           : -webkit-box;
+                        -webkit-line-clamp: 3;
+                        -webkit-box-orient: vertical;
+                        overflow          : hidden;
+                        text-overflow     : ellipsis;
+
+                        p {
+                            margin : 0;
+                            padding: 0;
+                        }
+
+                        strong {
+                            font-weight: normal;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

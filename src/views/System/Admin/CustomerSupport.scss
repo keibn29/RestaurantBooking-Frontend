@@ -1,0 +1,116 @@
+@import "../../../styles/variables";
+
+.system-chat-box-container {
+    border       : 1px solid #ddd;
+    box-shadow   : 0 4px 8px $color-box-shadow;
+    border-radius: 10px;
+    height       : 80vh;
+
+    .chat-box-content-left {
+        border-right: 1px solid #ddd;
+
+        .content-left-header {
+            font-size    : 20px;
+            font-weight  : 600;
+            padding      : 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .list-customer {
+            padding: 5px;
+
+            .customer-content {
+                user-select: none;
+                padding    : 10px;
+                gap        : 10px;
+                cursor     : pointer;
+                position   : relative;
+
+                &.customer-selected {
+                    background-color: #EAF2FE;
+                    border-radius   : 10px;
+                }
+
+                &:hover {
+                    background-color: #eee;
+                }
+
+                .customer-content-avatar {
+                    width           : 55px;
+                    height          : 55px;
+                    border-radius   : 50%;
+                    background-image: url("../../../assets/images/customer-avatar-default.png");
+                }
+
+                .customer-content-text {
+                    white-space: nowrap;
+
+                    .customer-name {
+                        font-size  : 17px;
+                        font-weight: 600;
+
+                        &.no-seen {
+                            font-weight: 700;
+                        }
+                    }
+
+                    .customer-message-demo {
+                        font-size    : 14px;
+                        overflow     : hidden;
+                        text-overflow: ellipsis;
+
+                        &.no-seen {
+                            color      : #0084FF;
+                            font-weight: 600;
+                        }
+                    }
+                }
+
+                .time-distance {
+                    position : absolute;
+                    right    : 10px;
+                    top      : 15px;
+                    font-size: 14px;
+
+                    &.no-seen {
+                        font-weight: 600;
+                    }
+                }
+            }
+        }
+    }
+
+    .chat-box-content-right {
+        height: 100%;
+
+        .chat-box-content {
+            height: 100%;
+
+            .chat-box-header {
+                padding   : 10px;
+                box-shadow: 0 4px 8px $color-box-shadow;
+                gap       : 10px;
+                height    : 60px;
+
+                .header-avatar {
+                    width           : 40px;
+                    height          : 40px;
+                    border-radius   : 50%;
+                    background-image: url("../../../assets/images/customer-avatar-default.png");
+                }
+
+                .text {
+                    .name {
+                        font-weight: 600;
+                    }
+
+                    .status {
+                        font-size : 13px;
+                        margin-top: -4px;
+                        color     : #545454;
+                    }
+                }
+            }
+        }
+    }
+}

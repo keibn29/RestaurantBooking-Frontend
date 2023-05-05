@@ -1,129 +1,79 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FormattedMessage } from "react-intl";
-import { LANGUAGES, isExistArrayAndNotEmpty } from "../../../../utils";
+import { PAGE, PATH } from "../../../../utils";
 import { withRouter } from "react-router";
 import * as actions from "../../../../store/actions";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
-import Slider from "react-slick";
+import { Grid, Button, Container } from "@material-ui/core";
+import RestaurantSlider from "./RestaurantSlider";
+import { searchRestaurant } from "../../../../services/restaurantService";
+import { toast } from "react-toastify";
 
 class RestaurantHighScore extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      listRestaurant: [],
+      listRestaurantHighScore: [],
     };
   }
 
   componentDidMount() {
-    this.props.getListRestaurant(
+    this.fetchListRestaurantHighScore();
+  }
+
+  componentDidUpdate(prevProps, prevState, snapshot) {}
+
+  fetchListRestaurantHighScore = async () => {
+    const res = await searchRestaurant(
       {
         pageSize: process.env.REACT_APP_NUMBER_ITEM_SLIDE_HOMEPAGE,
         pageOrder: 1,
+        page: PAGE.HOMEPAGE,
       },
       this.props.language
     );
-  }
-
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.listRestaurant !== this.props.listRestaurant) {
+    if (res && res.errCode === 0) {
       this.setState({
-        listRestaurant: this.props.listRestaurant,
+        listRestaurantHighScore: res.listRestaurant,
       });
+    } else {
+      toast.error(res.errMessage);
     }
-  }
+  };
 
-  handleOpenRestaurantPage = (restaurant) => {
+  handleOpenSearchpage = async () => {
     if (this.props.history) {
-      this.props.history.push(`/restaurant/${restaurant.id}`);
+      this.props.history.push(PATH.SEARCHPAGE);
     }
   };
 
   render() {
-    const { language, settings } = this.props;
-    const { listRestaurant } = this.state;
+    const { listRestaurantHighScore } = this.state;
 
     return (
       <>
         <Container className="section-container">
           <Grid className="section-banner">
-            Hãy cùng nhau khám phá các nhà hàng
+            <FormattedMessage id="customer.homepage.home-sections.together-text" />
           </Grid>
           <Grid className="section-header home-container">
             <Grid className="section-header-title">
-              Nhà hàng có điểm cao nhất
+              <FormattedMessage id="customer.homepage.home-sections.restaurant-most-score-title" />
             </Grid>
             <Grid className="section-header-text">
-              Tổng hợp những nhà hàng được đánh giá cao nhất trên Chope
+              <FormattedMessage id="customer.homepage.home-sections.restaurant-most-score-text" />
             </Grid>
           </Grid>
-          <Grid className="section-body">
-            <Slider {...settings}>
-              {isExistArrayAndNotEmpty(listRestaurant) &&
-                listRestaurant.map((item) => {
-                  return (
-                    <Grid className="section-body-outer" key={item.id}>
-                      <Grid
-                        className="content"
-                        onClick={() => {
-                          this.handleOpenRestaurantPage(item);
-                        }}
-                      >
-                        <Grid
-                          className="content-top background-image-center-cover"
-                          style={{
-                            backgroundImage: `url(${
-                              process.env.REACT_APP_BACKEND_URL + item.avatar
-                            })`,
-                          }}
-                        ></Grid>
-                        <Grid className="content-bottom">
-                          <Grid className="content-bottom-up">
-                            {language === LANGUAGES.VI
-                              ? item.nameVi
-                              : item.nameEn}
-                          </Grid>
-                          <Grid className="content-bottom-down">
-                            <Grid className="restaurant-information">
-                              <Grid className="restaurant-province">
-                                <i className="icon fas fa-map-marker-alt"></i>{" "}
-                                {language === LANGUAGES.VI
-                                  ? item.provinceData.valueVi
-                                  : item.provinceData.valueEn}
-                              </Grid>
-                              <Grid className="restaurant-country">
-                                <i className="icon fas fa-utensils"></i> Nhật
-                                Bản
-                              </Grid>
-                            </Grid>
-                            <Grid className="restaurant-score">
-                              4.5/<span>5</span>
-                            </Grid>
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  );
-                })}
-            </Slider>
-          </Grid>
+          <RestaurantSlider listRestaurant={listRestaurantHighScore} />
           <Grid className="section-footer home-container">
-            <Button className="btn-more" variant="outlined">
-              More Restaurants
+            <Button
+              className="btn-more"
+              variant="outlined"
+              onClick={() => {
+                this.handleOpenSearchpage();
+              }}
+            >
+              <FormattedMessage id="customer.homepage.home-sections.see-more-restaurant" />
             </Button>
           </Grid>
         </Container>
@@ -135,7 +85,6 @@ class RestaurantHighScore extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
-    listRestaurant: state.restaurant.listRestaurant,
   };
 };
 

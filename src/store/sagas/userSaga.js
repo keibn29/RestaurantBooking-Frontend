@@ -1,6 +1,7 @@
 import { takeLatest, call, put } from "redux-saga/effects";
 import * as userService from "../../services/userService";
 import * as userActions from "../actions/userActions";
+import { db } from "../../firebase/config";
 
 function* systemLoginSaga(payload) {
   try {
@@ -41,16 +42,20 @@ function* getListUserSaga(payload) {
   }
 }
 
-function* getAllUserByRoleSaga(payload) {
+function* editUserByIdSaga(payload) {
   try {
-    const res = yield call(userService.getAllUserByRole, payload.role);
+    const res = yield call(
+      userService.editUserById,
+      payload.customerId,
+      payload.data
+    );
     if (res && res.errCode === 0) {
-      yield put(userActions.getAllUserByRoleSuccess(res.listUser));
+      yield put(userActions.editCustomerInfoByIdSuccess(res.userEdited));
     } else {
-      yield put(userActions.getAllUserByRoleFailed(res.errMessage));
+      yield put(userActions.editCustomerInfoByIdFailed(res.errMessage));
     }
   } catch (e) {
-    yield put(userActions.getAllUserByRoleFailed(e));
+    yield put(userActions.editCustomerInfoByIdFailed(e));
   }
 }
 
@@ -58,7 +63,7 @@ function* userSaga() {
   yield takeLatest(userActions.SYSTEM_LOGIN, systemLoginSaga);
   yield takeLatest(userActions.CUSTOMER_LOGIN, customerLoginSaga);
   yield takeLatest(userActions.GET_LIST_USER, getListUserSaga);
-  yield takeLatest(userActions.GET_ALL_USER_BY_ROLE, getAllUserByRoleSaga);
+  yield takeLatest(userActions.EDIT_CUSTOMER_INFO_BY_ID, editUserByIdSaga);
 }
 
 export default userSaga;

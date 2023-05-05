@@ -14,20 +14,17 @@ import {
   NUMBER_MAX_VALUE,
   DOLLAR_TO_VND,
   customReactSelectStyleSystem,
+  LIST_DISH_TYPE,
+  TABLE_ITEM_NAME,
+  OBJECT,
+  buildRestaurantReactSelect,
 } from "../../../utils";
 import {
   Grid,
-  IconButton,
-  Icon,
   Button,
-  InputAdornment,
-  Input,
-  TablePagination,
   MenuItem,
   TextField,
   InputLabel,
-  Box,
-  FormControl,
   Container,
 } from "@material-ui/core";
 import {
@@ -44,11 +41,6 @@ import ConfirmationDialog from "../../../components/ConfirmationDialog";
 import { CKEditor } from "@ckeditor/ckeditor5-react";
 import Select from "react-select";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
-import {
-  addNewRestaurant,
-  editRestaurantById,
-  deleteRestaurantById,
-} from "../../../services/restaurantService";
 import {
   addNewDish,
   deleteDishById,
@@ -69,6 +61,9 @@ class DishManagement extends Component {
       isDescriptionEnError: false,
       listRestaurant: [],
       restaurantSelected: "",
+      listDishType: [],
+      dishTypeSelected: "",
+      dishTypeSelectedToGetListDish: LIST_DISH_TYPE.FOOD,
       listCountry: [],
       countrySelected: "",
       avatar: "",
@@ -80,26 +75,52 @@ class DishManagement extends Component {
       listPhotoPreviewURL: [],
       dishId: "",
       isOpenConfirmationDialog: false,
+      keyAvatar: Date.now(),
+      keyListPhoto: Date.now(),
     };
   }
 
   componentDidMount() {
     this.props.getAllCountry(ALLCODES.COUNTRY);
+    this.props.getAllDishType(ALLCODES.DISH);
     this.fetchAllRestaurant();
-    // let dataSelect = this.buildDataInputSelect(this.props.AllDoctorsRedux);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (prevProps.listRestaurant !== this.props.listRestaurant) {
-      let dataSelect = this.buildDataInputSelect(this.props.listRestaurant);
+      this.getListRestaurantForReactSelect();
+    }
+    if (prevProps.language !== this.props.language) {
+      this.getListRestaurantForReactSelect();
+    }
+    if (
+      prevState.listRestaurant !== this.state.listRestaurant &&
+      this.state.restaurantSelected
+    ) {
+      let dataSelect = buildRestaurantReactSelect(
+        this.props.listRestaurant,
+        this.props.language
+      );
+      const newRestaurantSelected = dataSelect.find(
+        (item) => item.value === this.state.restaurantSelected.value
+      );
       this.setState({
-        listRestaurant: dataSelect,
+        restaurantSelected: newRestaurantSelected,
       });
     }
-    if (prevProps.listCountry !== this.props.listCountry)
+    if (prevProps.listCountry !== this.props.listCountry) {
       this.setState({
         listCountry: this.props.listCountry,
       });
+    }
+    if (prevProps.listDishType !== this.props.listDishType) {
+      this.setState({
+        listDishType: this.props.listDishType,
+      });
+    }
+    if (prevProps.listPhoto !== this.props.listPhoto) {
+      this.getListPhotoPreviewURL();
+    }
   }
 
   fetchAllRestaurant = () => {
@@ -111,24 +132,43 @@ class DishManagement extends Component {
     this.props.getAllRestaurant(data, language);
   };
 
-  buildDataInputSelect = (listRestaurant) => {
-    const { language, userInfo } = this.props;
-    let result = [];
-
-    if (isExistArrayAndNotEmpty(listRestaurant)) {
-      listRestaurant.map((item, index) => {
-        let restaurant = {};
-
-        restaurant.label =
-          language === LANGUAGES.VI ? item.nameVi : item.nameEn;
-        restaurant.value = item.id;
-
-        result.push(restaurant);
-        return result;
+  getListRestaurantForReactSelect = () => {
+    const { listRestaurant, language, userInfo } = this.props;
+    let dataSelect = buildRestaurantReactSelect(
+      listRestaurant,
+      language,
+      userInfo
+    );
+    if (userInfo?.roleId === USER_ROLE.RESTAURANT_MANAGER) {
+      this.setState(
+        {
+          listRestaurant: dataSelect,
+          restaurantSelected: dataSelect[0],
+        },
+        () => {
+          emitter.emit(EMITTER_EVENTS.FETCH_LIST_DISH_BY_RESTAURANT);
+        }
+      );
+    } else {
+      this.setState({
+        listRestaurant: dataSelect,
       });
     }
+  };
 
-    return result;
+  getListPhotoPreviewURL = () => {
+    const { listPhoto } = this.props;
+    let listPhotoPreviewURL = [];
+    if (isExistArrayAndNotEmpty(listPhoto)) {
+      listPhoto.map((item) => {
+        let photoPreviewURLItem = process.env.REACT_APP_BACKEND_URL + item.link;
+        listPhotoPreviewURL.push(photoPreviewURLItem);
+        return listPhotoPreviewURL;
+      });
+    }
+    this.setState({
+      listPhotoPreviewURL: listPhotoPreviewURL,
+    });
   };
 
   handleChangeRestaurantSelected = (restaurantSelected) => {
@@ -136,6 +176,7 @@ class DishManagement extends Component {
     this.setState(
       {
         restaurantSelected: restaurantSelected,
+        dishTypeSelectedToGetListDish: LIST_DISH_TYPE.FOOD,
       },
       () => {
         emitter.emit(EMITTER_EVENTS.FETCH_LIST_DISH_BY_RESTAURANT);
@@ -146,9 +187,16 @@ class DishManagement extends Component {
   handleChangeInput = (event) => {
     let copyState = { ...this.state };
     copyState[event.target.name] = event.target.value;
-    this.setState({
-      ...copyState,
-    });
+    this.setState(
+      {
+        ...copyState,
+      },
+      () => {
+        if (event.target.name === "dishTypeSelectedToGetListDish") {
+          emitter.emit(EMITTER_EVENTS.UPDATE_TABLE_DATA);
+        }
+      }
+    );
     if (event.target.name === "priceVi") {
       this.setState({
         priceEn: parseFloat(
@@ -167,8 +215,11 @@ class DishManagement extends Component {
     const { language } = this.props;
     const { restaurantSelected } = this.state;
 
-    data.restaurantId = restaurantSelected.value;
-    this.props.getListDishByRestaurant(data, language);
+    if (restaurantSelected.value) {
+      data.restaurantId = restaurantSelected.value;
+      data.dishType = this.state.dishTypeSelectedToGetListDish;
+      this.props.getListDishByRestaurant(data, language);
+    }
   };
 
   isValidCkEditor = () => {
@@ -205,6 +256,7 @@ class DishManagement extends Component {
       restaurantSelected,
       nameVi,
       nameEn,
+      dishTypeSelected,
       countrySelected,
       priceVi,
       priceEn,
@@ -215,25 +267,37 @@ class DishManagement extends Component {
       dishId,
     } = this.state;
 
-    let data = {
-      restaurantId: restaurantSelected.value,
-      nameVi,
-      nameEn,
-      countryId: countrySelected,
-      priceVi,
-      priceEn,
-      avatar,
-      listPhoto,
-      descriptionVi,
-      descriptionEn,
-    };
+    let isSendAvatar = false;
+    let listImage = [...listPhoto];
+    if (avatar) {
+      isSendAvatar = true;
+      listImage.unshift(avatar);
+    }
+    let formData = new FormData();
+    if (isExistArrayAndNotEmpty(listImage)) {
+      listImage.map((item) => {
+        formData.append("images", item);
+        return formData;
+      });
+    }
+    formData.append("isSendAvatar", isSendAvatar);
+    formData.append("restaurantId", restaurantSelected.value);
+    formData.append("nameVi", nameVi);
+    formData.append("nameEn", nameEn);
+    formData.append("dishType", dishTypeSelected);
+    formData.append("countryId", countrySelected);
+    formData.append("priceVi", priceVi);
+    formData.append("priceEn", priceEn);
+    formData.append("descriptionVi", descriptionVi);
+    formData.append("descriptionEn", descriptionEn);
+
     let isValidCkEditor = this.isValidCkEditor();
 
     if (isValidCkEditor) {
       if (!dishId) {
-        this.callApiAddNewDish(data);
+        this.callApiAddNewDish(formData);
       } else {
-        this.callApiEditDishById(dishId, data);
+        this.callApiEditDishById(dishId, formData);
       }
     }
   };
@@ -269,6 +333,7 @@ class DishManagement extends Component {
       avatar: "",
       priceVi: "",
       priceEn: "",
+      dishTypeSelected: "",
       countrySelected: "",
       isOpenAvatarLightbox: false,
       avatarPreviewURL: "",
@@ -277,8 +342,9 @@ class DishManagement extends Component {
       isOpenPhotosLightbox: false,
       listPhotoPreviewURL: [],
       dishId: "",
+      keyAvatar: Date.now(),
+      keyListPhoto: Date.now(),
     });
-    // window.location.reload(false);
   };
 
   handleChangeAvatar = (event) => {
@@ -318,8 +384,8 @@ class DishManagement extends Component {
   };
 
   handleShowHidePhotosLightbox = (action) => {
-    const { listPhoto } = this.state;
-    if (action === "open" && listPhoto.length === 0) {
+    const { listPhotoPreviewURL } = this.state;
+    if (action === "open" && listPhotoPreviewURL.length === 0) {
       return;
     }
     this.setState({
@@ -336,12 +402,20 @@ class DishManagement extends Component {
   };
 
   handleEditRestaurant = (dishData) => {
+    this.props.getAllPhotoByDish(OBJECT.DISH, dishData.id);
     this.setState({
       ...dishData,
       avatarPreviewURL: process.env.REACT_APP_BACKEND_URL + dishData.avatar,
+      dishTypeSelected: dishData.dishType,
       countrySelected: dishData.countryId,
       avatar: "",
+      listPhoto: [],
       dishId: dishData.id,
+    });
+
+    document.querySelector(".title").scrollIntoView({
+      behavior: "smooth",
+      block: "end",
     });
   };
 
@@ -371,6 +445,7 @@ class DishManagement extends Component {
   };
 
   render() {
+    const { language, userInfo } = this.props;
     const {
       nameVi,
       nameEn,
@@ -381,46 +456,56 @@ class DishManagement extends Component {
       isDescriptionViError,
       isDescriptionEnError,
       listCountry,
+      listDishType,
       listRestaurant,
       restaurantSelected,
       countrySelected,
+      dishTypeSelected,
+      dishTypeSelectedToGetListDish,
       dishId,
-      listPhoto,
       photoIndex,
       isOpenPhotosLightbox,
       listPhotoPreviewURL,
       avatarPreviewURL,
       isOpenAvatarLightbox,
       isOpenConfirmationDialog,
+      keyAvatar,
+      keyListPhoto,
     } = this.state;
-    const { language } = this.props;
     const columns = [
       {
-        title: "STT",
+        title: language === LANGUAGES.VI ? "STT" : "NO",
+        field: "no",
         width: "100",
         sorting: false,
-        render: (rowData) => rowData.tableData.id + 1,
       },
       {
-        title: "Tên nhà hàng",
+        title: language === LANGUAGES.VI ? "Tên nhà hàng" : "Restaurant's name",
         field:
           language === LANGUAGES.VI
             ? "restaurantData.nameVi"
             : "restaurantData.nameEn",
       },
       {
-        title: "Tên món ăn",
+        title: language === LANGUAGES.VI ? "Loại" : "Type",
+        field:
+          language === LANGUAGES.VI
+            ? "dishTypeData.valueVi"
+            : "dishTypeData.valueEn",
+      },
+      {
+        title: language === LANGUAGES.VI ? "Tên món ăn" : "Dish's name",
         field: language === LANGUAGES.VI ? "nameVi" : "nameEn",
       },
       {
-        title: "Quốc gia",
+        title: language === LANGUAGES.VI ? "Xuất sứ" : "Originated",
         field:
           language === LANGUAGES.VI
             ? "countryData.valueVi"
             : "countryData.valueEn",
       },
       {
-        title: "Đơn giá",
+        title: language === LANGUAGES.VI ? "Đơn giá" : "Price",
         field: language === LANGUAGES.VI ? "priceVi" : "priceEn",
       },
       {
@@ -448,11 +533,23 @@ class DishManagement extends Component {
       },
     ];
 
+    const localizationVi = !restaurantSelected.value
+      ? "Vui lòng chọn nhà hàng để xem danh sách món ăn"
+      : "Nhà hàng chưa có món ăn nào";
+    const localizationEn = !restaurantSelected.value
+      ? "Please select a restaurant to see the list of dishes"
+      : "The restaurant has no dishes yet";
+    const localization =
+      language === LANGUAGES.VI ? localizationVi : localizationEn;
+
     return (
       <>
         <Container className="mt-3">
           <Grid>
-            <Grid className="title mb-3">Quản lý món ăn</Grid>
+            <Grid className="title mb-3">
+              {" "}
+              <FormattedMessage id="system.header.dish-management" />
+            </Grid>
             <Grid>
               <ValidatorForm ref="form" onSubmit={this.handleSubmitForm}>
                 <Grid container spacing={2}>
@@ -465,11 +562,48 @@ class DishManagement extends Component {
                       placeholder={
                         <span>
                           <span className="red-color"> * </span>
-                          Nhà hàng
+                          <FormattedMessage id="system.header.restaurant" />
                         </span>
                       }
                       styles={customReactSelectStyleSystem}
+                      isDisabled={
+                        userInfo?.roleId === USER_ROLE.RESTAURANT_MANAGER
+                          ? true
+                          : false
+                      }
                     />
+                  </Grid>
+                  <Grid item xs={4}>
+                    <SelectValidator
+                      className="w-100"
+                      label={
+                        <span>
+                          <span className="red-color"> * </span>
+                          <FormattedMessage id="system.admin.dish-type" />
+                        </span>
+                      }
+                      onChange={(event) => {
+                        this.handleChangeInput(event);
+                      }}
+                      name="dishTypeSelected"
+                      value={dishTypeSelected}
+                      validators={["required"]}
+                      errorMessages={["Vui lòng chọn loại món ăn"]}
+                      variant="outlined"
+                      size="small"
+                      disabled={restaurantSelected.value ? false : true}
+                    >
+                      {isExistArrayAndNotEmpty(listDishType) &&
+                        listDishType.map((item) => {
+                          return (
+                            <MenuItem key={item.keyMap} value={item.keyMap}>
+                              {language === LANGUAGES.VI
+                                ? item.valueVi
+                                : item.valueEn}
+                            </MenuItem>
+                          );
+                        })}
+                    </SelectValidator>
                   </Grid>
                   <Grid item xs={4}>
                     <TextValidator
@@ -477,7 +611,7 @@ class DishManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên món ăn (VI)
+                          <FormattedMessage id="system.admin.dish-name" /> (VI)
                         </span>
                       }
                       onChange={(event) => {
@@ -499,7 +633,7 @@ class DishManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Tên món ăn (EN)
+                          <FormattedMessage id="system.admin.dish-name" /> (EN)
                         </span>
                       }
                       onChange={(event) => {
@@ -521,7 +655,7 @@ class DishManagement extends Component {
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Quốc gia
+                          <FormattedMessage id="customer.search.country" />
                         </span>
                       }
                       onChange={(event) => {
@@ -538,7 +672,7 @@ class DishManagement extends Component {
                       {isExistArrayAndNotEmpty(listCountry) &&
                         listCountry.map((item) => {
                           return (
-                            <MenuItem key={item.id} value={item.keyMap}>
+                            <MenuItem key={item.keyMap} value={item.keyMap}>
                               {language === LANGUAGES.VI
                                 ? item.valueVi
                                 : item.valueEn}
@@ -547,13 +681,13 @@ class DishManagement extends Component {
                         })}
                     </SelectValidator>
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={2}>
                     <TextValidator
                       className="w-100"
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Đơn giá (VND)
+                          <FormattedMessage id="system.admin.price" /> (VND)
                         </span>
                       }
                       onChange={(event) => {
@@ -573,13 +707,13 @@ class DishManagement extends Component {
                       }
                     />
                   </Grid>
-                  <Grid item xs={4}>
+                  <Grid item xs={2}>
                     <TextValidator
                       className="w-100"
                       label={
                         <span>
                           <span className="red-color"> * </span>
-                          Đơn giá ($)
+                          <FormattedMessage id="system.admin.price" /> ($)
                         </span>
                       }
                       onChange={(event) => {
@@ -601,6 +735,7 @@ class DishManagement extends Component {
                   </Grid>
                   <Grid item xs={2}>
                     <TextField
+                      key={keyAvatar}
                       id="avatar"
                       name="avatar"
                       type="file"
@@ -642,6 +777,7 @@ class DishManagement extends Component {
                   >
                     <Grid item>
                       <TextField
+                        key={keyListPhoto}
                         id="listPhoto"
                         name="listPhoto"
                         type="file"
@@ -664,7 +800,7 @@ class DishManagement extends Component {
                         variant="standard"
                         disabled={restaurantSelected.value ? false : true}
                       >
-                        Photos
+                        <FormattedMessage id="customer.restaurant.photos.photo" />
                         <i className="fas fa-upload"></i>
                       </InputLabel>
                     </Grid>
@@ -676,15 +812,19 @@ class DishManagement extends Component {
                         }}
                       >
                         <span className="number">
-                          {listPhoto.length} photos
+                          {listPhotoPreviewURL.length}{" "}
+                          <FormattedMessage id="system.admin.photo-normal" />
                         </span>
-                        <span className="text">Click to view all photos</span>
+                        <span className="text">
+                          <FormattedMessage id="system.admin.click-to-view-all-photo" />
+                        </span>
                       </Grid>
                     </Grid>
                   </Grid>
                   <Grid item xs={6} className="ckeditor-container">
-                    <InputLabel htmlFor="descriptionVi">
-                      Thông tin món ăn (VI)
+                    <InputLabel htmlFor="descriptionVi" className="mb-2">
+                      <FormattedMessage id="system.admin.dish-information" />{" "}
+                      (VI)
                     </InputLabel>
                     <CKEditor
                       editor={ClassicEditor}
@@ -707,8 +847,9 @@ class DishManagement extends Component {
                     )}
                   </Grid>
                   <Grid item xs={6} className="ckeditor-container">
-                    <InputLabel htmlFor="descriptionEn">
-                      Thông tin món ăn (EN)
+                    <InputLabel htmlFor="descriptionEn" className="mb-2">
+                      <FormattedMessage id="system.admin.dish-information" />{" "}
+                      (EN)
                     </InputLabel>
                     <CKEditor
                       editor={ClassicEditor}
@@ -742,7 +883,11 @@ class DishManagement extends Component {
                         this.isValidCkEditor();
                       }}
                     >
-                      {!dishId ? "Thêm" : "Sửa"}
+                      {!dishId ? (
+                        <FormattedMessage id="system.admin.add" />
+                      ) : (
+                        <FormattedMessage id="system.admin.edit" />
+                      )}
                     </Button>
                   </Grid>
                   <Grid item>
@@ -754,7 +899,7 @@ class DishManagement extends Component {
                         this.handleClearForm();
                       }}
                     >
-                      Clear
+                      <FormattedMessage id="system.admin.clear" />
                     </Button>
                   </Grid>
                 </Grid>
@@ -773,17 +918,44 @@ class DishManagement extends Component {
                 />
               )}
             </Grid>
-            <Grid className="material-table">
-              <MaterialTableData
-                itemName="dish"
-                columns={columns}
-                getListItem={this.fetchListDishByRestaurant}
-                localization={
-                  !restaurantSelected.value
-                    ? "Vui lòng chọn nhà hàng để xem danh sách món ăn"
-                    : "Nhà hàng chưa có món ăn nào"
-                }
-              />
+            <Grid className="material-table mt-5" container spacing={2}>
+              <Grid item xs={12} className="list-item-title">
+                <FormattedMessage id="system.admin.list-dish" />
+              </Grid>
+              <Grid item xs={4}>
+                <TextField
+                  select
+                  className="w-100"
+                  label={<FormattedMessage id="system.admin.dish-type" />}
+                  onChange={(event) => {
+                    this.handleChangeInput(event);
+                  }}
+                  name="dishTypeSelectedToGetListDish"
+                  value={dishTypeSelectedToGetListDish}
+                  variant="outlined"
+                  size="small"
+                  disabled={restaurantSelected.value ? false : true}
+                >
+                  {isExistArrayAndNotEmpty(listDishType) &&
+                    listDishType.map((item) => {
+                      return (
+                        <MenuItem key={item.keyMap} value={item.keyMap}>
+                          {language === LANGUAGES.VI
+                            ? item.valueVi
+                            : item.valueEn}
+                        </MenuItem>
+                      );
+                    })}
+                </TextField>
+              </Grid>
+              <Grid item xs={12}>
+                <MaterialTableData
+                  itemName={TABLE_ITEM_NAME.DISH}
+                  columns={columns}
+                  getListItem={this.fetchListDishByRestaurant}
+                  localization={localization}
+                />
+              </Grid>
             </Grid>
           </Grid>
         </Container>
@@ -832,8 +1004,11 @@ class DishManagement extends Component {
 const mapStateToProps = (state) => {
   return {
     language: state.app.language,
+    userInfo: state.user.userInfo,
     listRestaurant: state.restaurant.listRestaurant,
     listCountry: state.allCode.listCountry,
+    listDishType: state.allCode.listDishType,
+    listPhoto: state.allCode.listPhoto,
   };
 };
 
@@ -842,8 +1017,11 @@ const mapDispatchToProps = (dispatch) => {
     getAllRestaurant: (data, language) =>
       dispatch(actions.getListRestaurant(data, language)),
     getAllCountry: (code) => dispatch(actions.getAllCountry(code)),
+    getAllDishType: (code) => dispatch(actions.getAllDishType(code)),
     getListDishByRestaurant: (data, language) =>
       dispatch(actions.getListDish(data, language)),
+    getAllPhotoByDish: (objectId, dishId) =>
+      dispatch(actions.getAllPhotoByObject(objectId, dishId)),
   };
 };
 

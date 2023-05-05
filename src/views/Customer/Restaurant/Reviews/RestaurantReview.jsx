@@ -1,47 +1,37 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../../../store/actions";
-import { LANGUAGE, LANGUAGES } from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { PAGE_SIZE_PAGINATION } from "../../../../utils";
+import { Grid } from "@material-ui/core";
 import ReviewContent from "./ReviewContent";
+import { FormattedMessage } from "react-intl";
 
 class RestaurantReview extends Component {
   render() {
-    const { language } = this.props;
+    const { restaurantId, totalReview } = this.props;
 
     return (
       <>
-        <Grid className="restaurant-content-title">Reviews (369)</Grid>
-        <Grid className="restaurant-review-description mt-3 text-justify">
-          Read what people think about Il Cucciolo Restaurant. All restaurant
-          reviews are written by verified Quandoo diners. Learn more about Il
-          Cucciolo Restaurant before you go by getting tips and ratings from
-          other restaurant-goers. With real-life reviews, you can see what other
-          diners loved about Il Cucciolo Restaurant and book a table with
-          confidence!
+        <Grid className="restaurant-content-title">
+          <FormattedMessage id="customer.restaurant.reviews.review" /> (
+          {totalReview})
         </Grid>
-        <ReviewContent />
+        <Grid className="restaurant-review-description mt-3 text-justify">
+          <FormattedMessage id="customer.restaurant.reviews.review-description" />
+        </Grid>
+        <ReviewContent
+          restaurantId={restaurantId}
+          pageSize={PAGE_SIZE_PAGINATION}
+        />
       </>
     );
   }
 }
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    language: state.app.language,
+    totalReview: state.restaurant.totalReview,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

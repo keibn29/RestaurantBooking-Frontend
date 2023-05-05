@@ -53,7 +53,10 @@
     text-transform: capitalize !important;
 }
 
-.input-label {
-    background-color: white;
-    padding         : 1px;
+.colorpink {
+    background-color: $colorpink !important;
+}
+
+.colorhome {
+    background-color: $colorhome !important;
 }

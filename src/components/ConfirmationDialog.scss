@@ -1,14 +1,18 @@
-.dialog-title {
-    font-weight: bold;
-}
+.confirmation-dialog-container {
+    .confirmation-dialog-header {
+        font-weight  : 600;
+        font-size    : 25px;
+        padding      : 10px 20px;
+        border-bottom: 1px solid #ddd;
+    }
 
-.dialog-action {
-    display        : flex;
-    justify-content: flex-end;
-    padding-right  : 10px;
-    gap            : 7px;
+    .confirmation-dialog-body {
+        padding: 10px 20px;
+    }
 
-    .dialog-button {
-        text-transform: capitalize;
+    .confirmation-dialog-footer {
+        padding   : 10px 20px;
+        border-top: 1px solid #ddd;
+        gap       : 10px;
     }
 }

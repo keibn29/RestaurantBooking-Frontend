@@ -2,16 +2,25 @@
 
 .account-container {
     .customer-infor {
-        .customer-avatar {
-            width           : 70px;
-            height          : 70px;
-            background-image: url("../../../../assets/images/customer-avatar-default.png");
-            border-radius   : 50%;
+        .avatar-container {
+            position: relative;
 
-            .camera {
-                width           : 100%;
-                height          : 100%;
+            .customer-avatar {
+                width           : 70px;
+                height          : 70px;
+                border-radius   : 50%;
+                background-image: url("../../../../assets/images/customer-avatar-default.png");
+                filter          : brightness(50%);
+            }
+
+            .upload-new-avatar {
+                position        : absolute;
+                top             : 0;
+                width           : 70px;
+                height          : 70px;
+                border-radius   : 50%;
                 background-image: url("../../../../assets/images/camera.svg");
+                cursor          : pointer;
             }
         }
 
@@ -27,6 +36,10 @@
             font-size       : inherit;
             font-weight     : 600;
             border-radius   : 7px;
+
+            &.submit-disable {
+                background-color: #CBD4E1;
+            }
         }
     }
 }

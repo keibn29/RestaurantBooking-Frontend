@@ -1,28 +1,18 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions";
-import { isExistArrayAndNotEmpty, LANGUAGES } from "../../../../utils";
 import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
-import { Bar } from "react-chartjs-2";
-import ChartDataLabels from "chartjs-plugin-datalabels";
+  isExistArrayAndNotEmpty,
+  LANGUAGES,
+  LIST_DISH_TYPE,
+} from "../../../../utils";
+import { Grid, Button } from "@material-ui/core";
+import { Skeleton } from "@mui/material";
 import "./MenuContent.scss";
 import DetailDish from "./DetailDish";
 import CustomerLogin from "../../Auth/CustomerLogin";
 import { toast } from "react-toastify";
+import { FormattedMessage } from "react-intl";
 
 class MenuContent extends Component {
   constructor(props) {
@@ -31,8 +21,11 @@ class MenuContent extends Component {
       isOpenDetailDishDialog: false,
       isOpenCustomerLoginDialog: false,
       listDish: [],
+      listFood: [],
+      listDrink: [],
       dishIndex: 1,
       dishSelected: {},
+      isLoadingDish: true,
     };
   }
 
@@ -44,15 +37,38 @@ class MenuContent extends Component {
       this.props.isOpenCustomerLoginDialog
     ) {
       this.setState({
-        isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
+        isOpenCustomerLoginDialog: false,
       });
     }
     if (prevProps.listDish !== this.props.listDish) {
+      this.getListFoodAndListDrink();
       this.setState({
         listDish: this.props.listDish,
       });
     }
+    if (prevProps.isLoadingDish !== this.props.isLoadingDish) {
+      this.setState({
+        isLoadingDish: this.props.isLoadingDish,
+      });
+    }
   }
+
+  getListFoodAndListDrink = () => {
+    const { listDish } = this.props;
+    if (isExistArrayAndNotEmpty(listDish)) {
+      let listFood = listDish.filter(
+        (item) => item.dishType === LIST_DISH_TYPE.FOOD
+      );
+      let listDrink = listDish.filter(
+        (item) => item.dishType === LIST_DISH_TYPE.DRINK
+      );
+
+      this.setState({
+        listFood: listFood,
+        listDrink: listDrink,
+      });
+    }
+  };
 
   handleViewDetailDish = (dishData, index) => {
     this.setState({
@@ -76,8 +92,9 @@ class MenuContent extends Component {
         isOpenCustomerLoginDialog: true,
       });
     } else {
-      delete dish.avatarBase64;
-      this.props.addDishOrder(dish);
+      let copyDish = { ...dish };
+      delete copyDish.avatarBase64;
+      this.props.addDishOrder(copyDish);
     }
   };
 
@@ -88,92 +105,259 @@ class MenuContent extends Component {
   };
 
   render() {
-    const { language } = this.props;
+    const { language, limit } = this.props;
     const {
       isOpenDetailDishDialog,
       isOpenCustomerLoginDialog,
-      listDish,
+      listFood,
+      listDrink,
       dishIndex,
       dishSelected,
+      isLoadingDish,
     } = this.state;
 
     return (
       <>
-        <Grid className="menu-content-container">
-          <Grid className="list-dish">
-            {isExistArrayAndNotEmpty(listDish) &&
-              listDish.map((item, index) => {
-                return (
-                  <Grid key={item.id} className="dish-content">
-                    <Grid
-                      className="dish-content-left"
-                      onClick={() => {
-                        this.handleViewDetailDish(item, index);
-                      }}
-                    >
-                      <Grid
-                        className="dish-avatar background-image-center-cover"
-                        style={{
-                          backgroundImage: `url(${item.avatarBase64})`,
-                        }}
-                      ></Grid>
-                      <Grid className="dish-information ml-3">
-                        <Grid className="dish-name">
-                          {language === LANGUAGES.VI
-                            ? item.nameVi
-                            : item.nameEn}
+        {isLoadingDish ? (
+          <>
+            {!limit && (
+              <Skeleton
+                variant="text"
+                width={100}
+                sx={{
+                  fontSize: "35px",
+                  marginTop: "5px",
+                }}
+              />
+            )}
+            <Grid className="mt-3 px-3" container>
+              <Grid>
+                <Skeleton variant="rounded" width={80} height={80} />
+              </Grid>
+              <Grid item xs className="ml-3">
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    fontSize: "30px",
+                    marginTop: "-5px",
+                  }}
+                />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+              </Grid>
+            </Grid>
+            <Grid className="mt-3 px-3" container>
+              <Grid>
+                <Skeleton variant="rounded" width={80} height={80} />
+              </Grid>
+              <Grid item xs className="ml-3">
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    fontSize: "30px",
+                    marginTop: "-5px",
+                  }}
+                />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+              </Grid>
+            </Grid>
+            <Grid className="mt-3 px-3" container>
+              <Grid>
+                <Skeleton variant="rounded" width={80} height={80} />
+              </Grid>
+              <Grid item xs className="ml-3">
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    fontSize: "30px",
+                    marginTop: "-5px",
+                  }}
+                />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+              </Grid>
+            </Grid>
+            <Grid className="mt-3 px-3" container>
+              <Grid>
+                <Skeleton variant="rounded" width={80} height={80} />
+              </Grid>
+              <Grid item xs className="ml-3">
+                <Skeleton
+                  variant="text"
+                  sx={{
+                    fontSize: "30px",
+                    marginTop: "-5px",
+                  }}
+                />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+                <Skeleton variant="text" sx={{ fontSize: "13px" }} />
+              </Grid>
+            </Grid>
+          </>
+        ) : (
+          <Grid className="menu-content-container">
+            {isExistArrayAndNotEmpty(listFood) ? (
+              <>
+                {!limit && (
+                  <Grid className="dish-type-title">
+                    <FormattedMessage id="customer.restaurant.menu.food" />
+                  </Grid>
+                )}
+                <Grid className="list-dish">
+                  {listFood.map((item, index) => {
+                    return (
+                      <Grid key={item.id} className="dish-content">
+                        <Grid
+                          className="dish-content-left"
+                          onClick={() => {
+                            this.handleViewDetailDish(item, index);
+                          }}
+                        >
+                          <Grid
+                            className="dish-avatar background-image-center-cover"
+                            style={{
+                              backgroundImage: `url(${item.avatarBase64})`,
+                            }}
+                          ></Grid>
+                          <Grid className="dish-information ml-3">
+                            <Grid className="dish-name">
+                              {language === LANGUAGES.VI
+                                ? item.nameVi
+                                : item.nameEn}
+                            </Grid>
+                            <Grid className="dish-price">
+                              <FormattedMessage id="customer.restaurant.menu.price" />{" "}
+                              {language === LANGUAGES.VI ? (
+                                <>
+                                  {Number(item.priceVi).toLocaleString()}
+                                  <sup>đ</sup>
+                                </>
+                              ) : (
+                                <>
+                                  <span>&#36;</span>
+                                  {Number(item.priceEn).toLocaleString()}
+                                </>
+                              )}
+                            </Grid>
+                            <Grid className="dish-country">
+                              {language === LANGUAGES.VI
+                                ? item.countryData.valueVi
+                                : item.countryData.valueEn}
+                            </Grid>
+                          </Grid>
                         </Grid>
-                        <Grid className="dish-price">
-                          Giá:{" "}
-                          {language === LANGUAGES.VI ? (
-                            <>
-                              {Number(item.priceVi).toLocaleString()}
-                              <sup>đ</sup>
-                            </>
-                          ) : (
-                            <>
-                              <span>&#36;</span>
-                              {Number(item.priceEn).toLocaleString()}
-                            </>
-                          )}
-                        </Grid>
-                        <Grid className="dish-country">
-                          {language === LANGUAGES.VI
-                            ? item.countryData.valueVi
-                            : item.countryData.valueEn}
+                        <Grid className="dish-content-right">
+                          <Button
+                            className="w-100 btn-order"
+                            variant="outlined"
+                            onClick={() => {
+                              this.handleOrderDish(item);
+                            }}
+                          >
+                            <FormattedMessage id="customer.restaurant.menu.order" />
+                          </Button>
                         </Grid>
                       </Grid>
+                    );
+                  })}
+                </Grid>
+              </>
+            ) : (
+              <Grid className="list-content-empty-text">
+                <FormattedMessage id="customer.restaurant.menu.menu-empty-text" />
+              </Grid>
+            )}
+            {!limit && isExistArrayAndNotEmpty(listFood) && (
+              <Grid>
+                {isExistArrayAndNotEmpty(listDrink) && (
+                  <>
+                    <Grid className="dish-type-title">
+                      <FormattedMessage id="customer.restaurant.menu.drink" />
                     </Grid>
-                    <Grid className="dish-content-right">
-                      <Button
-                        className="w-100 btn-order"
-                        variant="outlined"
-                        onClick={() => {
-                          this.handleOrderDish(item);
-                        }}
-                      >
-                        Đặt món
-                      </Button>
+                    <Grid className="list-dish">
+                      {listDrink.map((item, index) => {
+                        return (
+                          <Grid key={item.id} className="dish-content">
+                            <Grid
+                              className="dish-content-left"
+                              onClick={() => {
+                                this.handleViewDetailDish(item, index);
+                              }}
+                            >
+                              <Grid
+                                className="dish-avatar background-image-center-cover"
+                                style={
+                                  item.avatarBase64
+                                    ? {
+                                        backgroundImage: `url(${item.avatarBase64})`,
+                                      }
+                                    : {}
+                                }
+                              ></Grid>
+                              <Grid className="dish-information ml-3">
+                                <Grid className="dish-name">
+                                  {language === LANGUAGES.VI
+                                    ? item.nameVi
+                                    : item.nameEn}
+                                </Grid>
+                                <Grid className="dish-price">
+                                  <FormattedMessage id="customer.restaurant.menu.price" />{" "}
+                                  {language === LANGUAGES.VI ? (
+                                    <>
+                                      {Number(item.priceVi).toLocaleString()}
+                                      <sup>đ</sup>
+                                    </>
+                                  ) : (
+                                    <>
+                                      <span>&#36;</span>
+                                      {Number(item.priceEn).toLocaleString()}
+                                    </>
+                                  )}
+                                </Grid>
+                                <Grid className="dish-country">
+                                  {language === LANGUAGES.VI
+                                    ? item.countryData.valueVi
+                                    : item.countryData.valueEn}
+                                </Grid>
+                              </Grid>
+                            </Grid>
+                            <Grid className="dish-content-right">
+                              <Button
+                                className="w-100 btn-order"
+                                variant="outlined"
+                                onClick={() => {
+                                  this.handleOrderDish(item);
+                                }}
+                              >
+                                <FormattedMessage id="customer.restaurant.menu.order" />
+                              </Button>
+                            </Grid>
+                          </Grid>
+                        );
+                      })}
                     </Grid>
-                  </Grid>
-                );
-              })}
+                  </>
+                )}
+              </Grid>
+            )}
+            {isOpenDetailDishDialog && (
+              <DetailDish
+                isOpen={isOpenDetailDishDialog}
+                handleCloseDialog={this.handleCloseDetailDishDialog}
+                dishIndex={dishIndex}
+                dishData={dishSelected}
+                orderDish={this.handleOrderDish}
+              />
+            )}
+            {isOpenCustomerLoginDialog && (
+              <CustomerLogin
+                isOpen={isOpenCustomerLoginDialog}
+                handleCloseDialog={this.handleCloseCustomerLoginDialog}
+              />
+            )}
           </Grid>
-          {isOpenDetailDishDialog && (
-            <DetailDish
-              isOpen={isOpenDetailDishDialog}
-              handleCloseDialog={this.handleCloseDetailDishDialog}
-              dishIndex={dishIndex}
-              dishData={dishSelected}
-            />
-          )}
-          {isOpenCustomerLoginDialog && (
-            <CustomerLogin
-              isOpen={isOpenCustomerLoginDialog}
-              handleCloseDialog={this.handleCloseCustomerLoginDialog}
-            />
-          )}
-        </Grid>
+        )}
       </>
     );
   }
@@ -185,6 +369,7 @@ const mapStateToProps = (state) => {
     customerInfo: state.user.customerInfo,
     isOpenCustomerLoginDialog: state.user.isOpenCustomerLoginDialog,
     listDish: state.dish.listDish,
+    isLoadingDish: state.dish.isLoadingDish,
   };
 };
 

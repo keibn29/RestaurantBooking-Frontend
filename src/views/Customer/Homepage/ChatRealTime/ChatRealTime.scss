@@ -1,0 +1,73 @@
+@import "../../../../styles/variables";
+
+.chat-real-time-container {
+    .chat-box-icon {
+        position        : fixed;
+        z-index         : 999;
+        bottom          : 50px;
+        right           : 50px;
+        width           : 75px;
+        height          : 75px;
+        border-radius   : 50%;
+        background-image: url("../../../../assets/images/messenger.svg");
+        cursor          : pointer;
+        box-shadow      : 0 4px 8px $color-box-shadow;
+        user-select     : none;
+    }
+
+    .chat-box-content {
+        position        : fixed;
+        z-index         : 999;
+        bottom          : 150px;
+        right           : 50px;
+        width           : 375px;
+        height          : 550px;
+        border-radius   : 10px;
+        background-color: white;
+        box-shadow      : 0 5px 10px $color-box-shadow;
+
+        .chat-box-header {
+            padding   : 10px;
+            position  : relative;
+            box-shadow: 0 4px 8px $color-box-shadow;
+            gap       : 10px;
+            height    : 60px;
+
+            .header-avatar {
+                width           : 40px;
+                height          : 40px;
+                border-radius   : 50%;
+                background-image: url("../../../../assets/images/restaurant-default.png");
+            }
+
+            .text {
+                .name {
+                    font-weight: 600;
+                }
+
+                .status {
+                    font-size : 13px;
+                    margin-top: -4px;
+                    color     : #545454;
+                }
+            }
+
+            .close-icon {
+                position        : absolute;
+                top             : 0;
+                bottom          : 0;
+                right           : 10px;
+                margin          : auto;
+                border-radius   : 50%;
+                background-color: #eee;
+                font-size       : 30px;
+                padding         : 5px;
+                cursor          : pointer;
+
+                &:hover {
+                    background-color: #ddd;
+                }
+            }
+        }
+    }
+}

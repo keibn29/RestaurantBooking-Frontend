@@ -1,45 +1,53 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions";
-import { LANGUAGE, LANGUAGES } from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { OBJECT, isExistArrayAndNotEmpty } from "../../../../utils";
+import { Grid } from "@material-ui/core";
 import "./RestaurantPhoto.scss";
+import { FormattedMessage } from "react-intl";
 
 class RestaurantPhoto extends Component {
+  componentDidMount() {
+    this.props.getAllPhotoByRestaurant(
+      OBJECT.RESTAURANT,
+      this.props.restaurantId
+    );
+  }
+
   render() {
-    const { language } = this.props;
+    const { listPhoto } = this.props;
 
     return (
       <>
         <Grid className="restaurant-photo-container">
-          <Grid className="restaurant-content-title">Photos (5)</Grid>
+          <Grid className="restaurant-content-title">
+            <FormattedMessage id="customer.restaurant.photos.photo" /> (
+            {listPhoto.length})
+          </Grid>
           <Grid className="restaurant-photo-description mt-3 text-justify">
-            Looking for pictures of the dish and vibe at Il Cucciolo Restaurant?
-            Take a peek at these real-life photos and images of the atmosphere
-            and dishes at Il Cucciolo Restaurant so you know what to expect for
-            your next reservation.
+            <FormattedMessage id="customer.restaurant.photos.photo-description" />
           </Grid>
-          <Grid className="list-photo">
-            <Grid className="photo-content w-100 background-image-center-cover"></Grid>
-            <Grid className="photo-content w-100 background-image-center-cover"></Grid>
-            <Grid className="photo-content w-100 background-image-center-cover"></Grid>
-            <Grid className="photo-content w-100 background-image-center-cover"></Grid>
-            <Grid className="photo-content w-100 background-image-center-cover"></Grid>
-          </Grid>
+          {isExistArrayAndNotEmpty(listPhoto) ? (
+            <Grid className="list-photo">
+              {listPhoto.map((item) => {
+                return (
+                  <Grid
+                    key={item.id}
+                    className="photo-content w-100 background-image-center-cover"
+                    style={{
+                      backgroundImage: `url(${
+                        process.env.REACT_APP_BACKEND_URL + item.link
+                      })`,
+                    }}
+                  ></Grid>
+                );
+              })}
+            </Grid>
+          ) : (
+            <Grid className="list-content-empty-text">
+              <FormattedMessage id="customer.restaurant.about.photo-empty-text" />
+            </Grid>
+          )}
         </Grid>
       </>
     );
@@ -47,11 +55,17 @@ class RestaurantPhoto extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    language: state.app.language,
+    listPhoto: state.allCode.listPhoto,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
-  return {};
+  return {
+    getAllPhotoByRestaurant: (objectId, restaurantId) =>
+      dispatch(actions.getAllPhotoByObject(objectId, restaurantId)),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(RestaurantPhoto);

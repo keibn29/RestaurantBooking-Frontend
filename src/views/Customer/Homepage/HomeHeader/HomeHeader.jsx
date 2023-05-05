@@ -6,28 +6,14 @@ import {
   ALLCODES,
   customReactSelectStyleBanner,
   customReactSelectStyleHeader,
-  isExistArrayAndNotEmpty,
   LANGUAGES,
   PATH,
   NAV_CUSTOMER_PROFILE,
+  buildProvinceReactSelect,
 } from "../../../../utils";
 import * as actions from "../../../../store/actions";
 import { withRouter } from "react-router";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { Grid, Icon, Button, Container } from "@material-ui/core";
 import Select from "react-select";
 import CustomerLogin from "../../Auth/CustomerLogin";
 
@@ -48,6 +34,8 @@ class HomeHeader extends Component {
   componentDidMount() {
     document.addEventListener("mousedown", this.handleClickOutside);
     this.props.getAllProvince(ALLCODES.PROVINCE);
+    this.getKeywordInSearchPageHeader();
+    this.getProvinceSelectedInSearchPageHeader();
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
@@ -56,13 +44,38 @@ class HomeHeader extends Component {
       this.props.isOpenCustomerLoginDialog
     ) {
       this.setState({
-        isOpenCustomerLoginDialog: this.props.isOpenCustomerLoginDialog,
+        isOpenCustomerLoginDialog: false,
       });
     }
+
     if (prevProps.listProvince !== this.props.listProvince) {
-      let dataSelect = this.buildDataInputSelect(this.props.listProvince);
+      this.getListProvinceForReactSelect();
+    }
+
+    if (prevProps.language !== this.props.language) {
+      this.getListProvinceForReactSelect();
+    }
+
+    if (prevState.listProvince !== this.state.listProvince) {
+      const { listProvince, provinceSelected } = this.state;
+      let newProvinceSelected = listProvince.find(
+        (item) => item.value === provinceSelected.value
+      );
       this.setState({
-        listProvince: dataSelect,
+        provinceSelected: newProvinceSelected,
+      });
+    }
+
+    if (
+      !prevState.provinceSelected &&
+      prevProps.listProvince !== this.props.listProvince
+    ) {
+      let dataSelect = buildProvinceReactSelect(
+        this.props.listProvince,
+        this.props.language
+      );
+      this.setState({
+        provinceSelected: dataSelect[0],
       });
     }
   }
@@ -71,24 +84,38 @@ class HomeHeader extends Component {
     document.removeEventListener("mousedown", this.handleClickOutside);
   }
 
-  buildDataInputSelect = (listProvince) => {
-    const { language, userInfo } = this.props;
-    let result = [];
+  getListProvinceForReactSelect = () => {
+    let dataSelect = buildProvinceReactSelect(
+      this.props.listProvince,
+      this.props.language
+    );
+    this.setState({
+      listProvince: dataSelect,
+    });
+  };
 
-    if (isExistArrayAndNotEmpty(listProvince)) {
-      listProvince.map((item, index) => {
-        let restaurant = {};
-
-        restaurant.label =
-          language === LANGUAGES.VI ? item.valueVi : item.valueEn;
-        restaurant.value = item.keyMap;
-
-        result.push(restaurant);
-        return result;
+  getKeywordInSearchPageHeader = () => {
+    if (
+      this.props.location &&
+      this.props.location.state &&
+      this.props.location.state.keyword
+    ) {
+      this.setState({
+        keyword: this.props.location.state.keyword.trim(),
       });
     }
+  };
 
-    return result;
+  getProvinceSelectedInSearchPageHeader = () => {
+    if (
+      this.props.location &&
+      this.props.location.state &&
+      this.props.location.state.province
+    ) {
+      this.setState({
+        provinceSelected: this.props.location.state.province,
+      });
+    }
   };
 
   changeLanguage = (language) => {
@@ -109,9 +136,18 @@ class HomeHeader extends Component {
     });
   };
 
-  handleBackToHomepage = () => {
+  handleClearKeyword = () => {
+    this.setState({
+      keyword: "",
+    });
+  };
+
+  handleBackToHomepage = async () => {
     if (this.props.history) {
-      this.props.history.push(`/home`);
+      await this.props.history.push(PATH.HOMEPAGE);
+      document.getElementById("homepage-top").scrollIntoView({
+        block: "end",
+      });
     }
   };
 
@@ -141,23 +177,46 @@ class HomeHeader extends Component {
     }
   }
 
-  handleOpenCustomerProfile = (navSelected) => {
+  handleOpenCustomerProfile = async (navSelected) => {
     if (this.props.history) {
-      this.props.history.push({
+      await this.props.history.push({
         pathname: PATH.BOOKING_HISTORY,
-        state: navSelected,
+        hash: navSelected,
+      });
+      document.getElementById("customer-profile-top").scrollIntoView();
+    }
+  };
+
+  handleCustomerLogout = () => {
+    this.props.customerLogout();
+    this.handleBackToHomepage();
+  };
+
+  handleOpenSearchpage = async () => {
+    const { keyword, provinceSelected } = this.state;
+    if (this.props.history) {
+      await this.props.history.push({
+        pathname: PATH.SEARCHPAGE,
+        state: {
+          keyword,
+          province: provinceSelected,
+        },
+      });
+      document.getElementById("searchpage-top").scrollIntoView({
+        block: "end",
       });
     }
   };
 
+  handleKeyDown = (event) => {
+    if (event.key === "Enter" || event.keyCode === 13) {
+      this.handleOpenSearchpage();
+    }
+  };
+
   render() {
-    const {
-      language,
-      isShowBanner,
-      isShowHeaderSearch,
-      customerInfo,
-      customerLogout,
-    } = this.props;
+    const { language, isShowBanner, isShowHeaderSearch, customerInfo } =
+      this.props;
     const {
       keyword,
       provinceSelected,
@@ -178,26 +237,55 @@ class HomeHeader extends Component {
             ></Grid>
             {isShowHeaderSearch && (
               <Grid className="home-header-search">
-                <input
-                  className="left-input"
-                  type="text"
-                  name="keyword"
-                  value={keyword}
-                  placeholder="Tìm kiếm nhà hàng hoặc món ăn"
-                  variant="outlined"
-                  onChange={(event) => {
-                    this.handleChangeInput(event);
-                  }}
-                />
+                <Grid className="w-50 left-input-container">
+                  <input
+                    spellCheck="false"
+                    className="w-100 left-input"
+                    type="text"
+                    name="keyword"
+                    value={keyword}
+                    placeholder={
+                      language === LANGUAGES.VI
+                        ? "Tìm kiếm nhà hàng, món ăn hoặc cẩm nang"
+                        : "Search restaurants, dishes or handbooks"
+                    }
+                    variant="outlined"
+                    onChange={(event) => {
+                      this.handleChangeInput(event);
+                    }}
+                    onKeyDown={(event) => {
+                      this.handleKeyDown(event);
+                    }}
+                  />
+                  {keyword && (
+                    <Icon
+                      className="icon-clear-input"
+                      onClick={() => {
+                        this.handleClearKeyword();
+                      }}
+                    >
+                      clear
+                    </Icon>
+                  )}
+                </Grid>
                 <Select
                   className="react-select center-select"
                   value={provinceSelected}
                   onChange={this.handleChangeProvinceSelected}
                   options={listProvince}
-                  placeholder="Tỉnh thành"
+                  placeholder={
+                    language === LANGUAGES.VI ? "Tỉnh thành" : "Province"
+                  }
                   styles={customReactSelectStyleHeader}
                 />
-                <Button className="right-button">Tìm</Button>
+                <Button
+                  className="right-button"
+                  onClick={() => {
+                    this.handleOpenSearchpage();
+                  }}
+                >
+                  <FormattedMessage id="customer.homepage.home-header.find" />
+                </Button>
               </Grid>
             )}
           </Grid>
@@ -211,7 +299,7 @@ class HomeHeader extends Component {
                     this.handleOpenCustomerLoginDialog();
                   }}
                 >
-                  Login or Signup
+                  <FormattedMessage id="customer.homepage.home-header.login-or-signup" />
                 </Button>
               </Grid>
             ) : (
@@ -248,7 +336,7 @@ class HomeHeader extends Component {
                         );
                       }}
                     >
-                      Lịch sử đặt bàn
+                      <FormattedMessage id="customer.homepage.home-header.booking-history" />
                     </Grid>
                     <Grid
                       className="profile-action-content"
@@ -260,16 +348,20 @@ class HomeHeader extends Component {
                         );
                       }}
                     >
-                      Thông tin tài khoản
+                      <FormattedMessage id="customer.homepage.home-header.account-information" />
                     </Grid>
                     <Grid
                       className="profile-action-content logout"
-                      onClick={customerLogout}
+                      onClick={() => {
+                        this.handleCustomerLogout();
+                      }}
                       container
                       justify="space-between"
                       alignItems="center"
                     >
-                      <span>Log out</span>
+                      <span>
+                        <FormattedMessage id="customer.homepage.home-header.logout" />
+                      </span>
                       <i className="fas fa-sign-out-alt"></i>
                     </Grid>
                   </Grid>
@@ -315,7 +407,7 @@ class HomeHeader extends Component {
             <Grid className="banner-background background-image-center-cover">
               <Container>
                 <Grid className="banner-text home-container">
-                  <Grid className="banner-text-top">
+                  <Grid className="banner-text-top" id="homepage-top">
                     It's time to treat yourself.
                   </Grid>
                   <Grid className="banner-text-bottom">
@@ -329,15 +421,33 @@ class HomeHeader extends Component {
                 >
                   <Grid item xs={6} className="banner-search-left">
                     <input
+                      spellCheck="false"
                       className="w-100 left-input"
                       type="text"
                       name="keyword"
                       value={keyword}
-                      placeholder="Tìm kiếm nhà hàng hoặc món ăn"
+                      placeholder={
+                        language === LANGUAGES.VI
+                          ? "Tìm kiếm nhà hàng, món ăn hoặc cẩm nang"
+                          : "Search restaurants, dishes or handbooks"
+                      }
                       onChange={(event) => {
                         this.handleChangeInput(event);
                       }}
+                      onKeyDown={(event) => {
+                        this.handleKeyDown(event);
+                      }}
                     />
+                    {keyword && (
+                      <Icon
+                        className="icon-clear-input-banner"
+                        onClick={() => {
+                          this.handleClearKeyword();
+                        }}
+                      >
+                        clear
+                      </Icon>
+                    )}
                   </Grid>
                   <Grid item xs={4} className="banner-search-center">
                     <Select
@@ -345,13 +455,20 @@ class HomeHeader extends Component {
                       value={provinceSelected}
                       onChange={this.handleChangeProvinceSelected}
                       options={listProvince}
-                      placeholder="Tỉnh thành"
+                      placeholder={
+                        language === LANGUAGES.VI ? "Tỉnh thành" : "Province"
+                      }
                       styles={customReactSelectStyleBanner}
                     />
                   </Grid>
                   <Grid item xs={2} className="banner-search-right">
-                    <Button className="h-100 right-button" variant="contained">
-                      Tìm
+                    <Button
+                      className="h-100 right-button"
+                      onClick={() => {
+                        this.handleOpenSearchpage();
+                      }}
+                    >
+                      <FormattedMessage id="customer.homepage.home-header.find" />
                     </Button>
                   </Grid>
                 </Grid>

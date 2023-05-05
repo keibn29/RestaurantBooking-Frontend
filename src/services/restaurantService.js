@@ -24,22 +24,50 @@ export const deleteRestaurantById = (restaurantId) => {
   return axios.delete(`/api/restaurants/${restaurantId}`);
 };
 
+export const getRestaurantById = (restaurantId) => {
+  return axios.get(`/api/restaurants/${restaurantId}`);
+};
+
 export const bulkCreateNewSchedule = (data) => {
   return axios.post(`/api/schedules`, data);
 };
 
-export const getScheduleByDate = (restaurantId, date) => {
-  return axios.get(`/api/schedules?restaurantId=${restaurantId}&date=${date}`);
+export const getScheduleByDate = (data) => {
+  return axios.post(`/api/schedules/search`, data);
 };
 
 export const getListTableBooking = (data) => {
   return axios.post(`/api/bookings/search`, data);
 };
 
-export const confirmOrDoneBookingTable = (bookingId, statusId) => {
-  return axios.put(`/api/bookings/confirm/${bookingId}?statusId=${statusId}`);
+export const confirmBookingTable = (bookingId) => {
+  return axios.put(`/api/bookings/confirm/${bookingId}`);
+};
+
+export const doneBookingTable = (bookingId, data) => {
+  return axios.put(`/api/bookings/done/${bookingId}`, data);
 };
 
 export const cancelBookingTable = (bookingId) => {
   return axios.delete(`/api/bookings/${bookingId}`);
+};
+
+export const addNewReview = (data) => {
+  return axios.post(`/api/reviews`, data);
+};
+
+export const searchReview = (data) => {
+  return axios.post(`/api/reviews/search`, data);
+};
+
+export const getReviewByCustomerAndRestaurant = (restaurantId, customerId) => {
+  return axios.get(`/api/reviews/${restaurantId}/${customerId}`);
+};
+
+export const editReviewById = (reviewId, data) => {
+  return axios.put(`/api/reviews/${reviewId}`, data);
+};
+
+export const getListRestaurantScore = (restaurantId) => {
+  return axios.get(`/api/score/${restaurantId}`);
 };

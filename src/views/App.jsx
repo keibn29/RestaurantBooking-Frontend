@@ -15,24 +15,22 @@ import Home from "../routes/Home";
 import SystemLogin from "./System/Auth/SystemLogin";
 import System from "../routes/System";
 import CustomScrollbars from "../components/CustomScrollbars";
-import { createMuiTheme, MuiThemeProvider } from "@material-ui/core/styles";
+import { MuiThemeProvider } from "@material-ui/core/styles";
+import { ThemeProvider } from "@mui/material/styles";
+import { muiThemeV4, muiThemeV5 } from "../utils";
 import Homepage from "./Customer/Homepage/Homepage";
 import DetailRestaurant from "./Customer/Restaurant/DetailRestaurant";
 import EmailVerify from "./Customer/Email/EmailVerify";
 import CustomerProfile from "./Customer/Profile/CustomerProfile";
-
-const muiTheme = createMuiTheme({
-  palette: {
-    primary: {
-      main: "#7265EB",
-    },
-    secondary: {
-      main: "#617D8A",
-    },
-  },
-});
+import Searchpage from "./Customer/Search/Searchpage";
+import DetailHandbook from "./Customer/Handbook/DetailHandbook";
+import EmailForgotPassword from "./Customer/Email/EmailForgotPassword";
 
 class App extends Component {
+  componentDidMount() {
+    this.handlePersistorState();
+  }
+
   handlePersistorState = () => {
     const { persistor } = this.props;
     const { bootstrapped } = persistor.getState();
@@ -47,44 +45,47 @@ class App extends Component {
     }
   };
 
-  componentDidMount() {
-    this.handlePersistorState();
-  }
-
   render() {
     return (
       <Fragment>
-        <MuiThemeProvider theme={muiTheme}>
-          <Router history={history}>
-            <div className="main-container">
-              <div className="content-container">
-                <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
-                  <Switch>
-                    <Route path={PATH.HOME} exact component={Home} />
-                    <Route path={PATH.HOMEPAGE} component={Homepage} />
-                    <Route
-                      path={PATH.SYSTEM_LOGIN}
-                      component={userIsNotAuthenticated(SystemLogin)}
-                    />
-                    <Route
-                      path={PATH.SYSTEM}
-                      component={userIsAuthenticated(System)}
-                    />
-                    <Route
-                      path={PATH.DETAIL_RESTAURANT}
-                      component={DetailRestaurant}
-                    />
-                    <Route
-                      path={PATH.VERIFY_BOOKING_TABLE}
-                      component={EmailVerify}
-                    />
-                    <Route
-                      path={PATH.BOOKING_HISTORY}
-                      component={CustomerProfile}
-                    />
-                  </Switch>
-                </CustomScrollbars>
-              </div>
+        <ThemeProvider theme={muiThemeV5}>
+          <MuiThemeProvider theme={muiThemeV4}>
+            <Router history={history}>
+              <CustomScrollbars style={{ height: "100vh", width: "100%" }}>
+                <Switch>
+                  <Route path={PATH.HOME} exact component={Home} />
+                  <Route path={PATH.HOMEPAGE} component={Homepage} />
+                  <Route
+                    path={PATH.SYSTEM_LOGIN}
+                    component={userIsNotAuthenticated(SystemLogin)}
+                  />
+                  <Route
+                    path={PATH.SYSTEM}
+                    component={userIsAuthenticated(System)}
+                  />
+                  <Route
+                    path={PATH.DETAIL_RESTAURANT}
+                    component={DetailRestaurant}
+                  />
+                  <Route
+                    path={PATH.VERIFY_BOOKING_TABLE}
+                    component={EmailVerify}
+                  />
+                  <Route
+                    path={PATH.BOOKING_HISTORY}
+                    component={CustomerProfile}
+                  />
+                  <Route path={PATH.SEARCHPAGE} component={Searchpage} />
+                  <Route
+                    path={PATH.DETAIL_HANDBOOK}
+                    component={DetailHandbook}
+                  />
+                  <Route
+                    path={PATH.UPDATE_PASSWORD}
+                    component={EmailForgotPassword}
+                  />
+                </Switch>
+              </CustomScrollbars>
               <ToastContainer
                 position="top-right"
                 autoClose={3000}
@@ -97,9 +98,9 @@ class App extends Component {
                 pauseOnHover
                 theme="colored"
               />
-            </div>
-          </Router>
-        </MuiThemeProvider>
+            </Router>
+          </MuiThemeProvider>
+        </ThemeProvider>
       </Fragment>
     );
   }

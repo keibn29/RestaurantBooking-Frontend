@@ -1,23 +1,10 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import * as actions from "../../../../store/actions";
-import { LANGUAGE, LANGUAGES, NUMBER_MAX_VALUE } from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
+import { NUMBER_MAX_VALUE } from "../../../../utils";
+import { Grid } from "@material-ui/core";
 import MenuContent from "./MenuContent";
+import { FormattedMessage } from "react-intl";
 
 class RestaurantMenu extends Component {
   constructor(props) {
@@ -26,7 +13,9 @@ class RestaurantMenu extends Component {
   }
 
   componentDidMount() {
-    this.fetchListDishByRestaurant();
+    setTimeout(() => {
+      this.fetchListDishByRestaurant();
+    }, 300);
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {}
@@ -42,19 +31,13 @@ class RestaurantMenu extends Component {
   };
 
   render() {
-    const { language } = this.props;
-
     return (
       <>
-        <Grid className="restaurant-content-title">Menu</Grid>
+        <Grid className="restaurant-content-title">
+          <FormattedMessage id="customer.restaurant.menu.menu" />
+        </Grid>
         <Grid className="restaurant-menu-description mt-3 text-justify">
-          Check out the menu at Il Cucciolo Restaurant and explore the popular
-          dishes people are craving! From appetizers to something sweet, take a
-          look at what’s in store for you when you book a table at Il Cucciolo
-          Restaurant. You can even check out the prices so you know what to
-          expect, besides the flavours.Browse the menu highlights from Il
-          Cucciolo Restaurant and when your mouth starts to water, so you can
-          get in on the flavour action. Mmmm we’re getting hungry already…
+          <FormattedMessage id="customer.restaurant.menu.menu-description" />
         </Grid>
         <MenuContent />
       </>

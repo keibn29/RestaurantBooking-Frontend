@@ -1,36 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import HomeHeader from "../Homepage/HomeHeader/HomeHeader";
-// import HomeFooter from "./HomeFooter";
 import "./CustomerLogin.scss";
-import { NAV_DETAIL_RESTAURANT, PAGE_LOGIN, USER_ROLE } from "../../../utils";
+import { PAGE_LOGIN, USER_ROLE } from "../../../utils";
 import * as actions from "../../../store/actions";
 import {
   Grid,
   IconButton,
   Icon,
   Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
   InputLabel,
-  Box,
-  FormControl,
-  Container,
   Dialog,
-  DialogActions,
-  DialogTitle,
-  DialogContent,
 } from "@material-ui/core";
-import {
-  ValidatorForm,
-  TextValidator,
-  SelectValidator,
-} from "react-material-ui-form-validator";
+import { ValidatorForm, TextValidator } from "react-material-ui-form-validator";
 import { addNewUser } from "../../../services/userService";
 import { toast } from "react-toastify";
+import { forgotPassword } from "../../../services/customerService";
+import { FormattedMessage } from "react-intl";
 
 class CustomerLogin extends Component {
   constructor(props) {
@@ -149,6 +134,25 @@ class CustomerLogin extends Component {
     }
   };
 
+  handleForgotPassword = async () => {
+    const { language } = this.props;
+    const { email } = this.state;
+    if (!email) {
+      toast.error("Bạn cần nhập email trước khi yêu cầu cập nhật mật khẩu mới");
+      return;
+    }
+
+    const res = await forgotPassword({
+      email,
+      language,
+    });
+    if (res && res.errCode === 0) {
+      toast.info("Vui lòng kiểm tra email để xác nhận cập nhật mật khẩu");
+    } else {
+      toast.error(res.errMessage);
+    }
+  };
+
   render() {
     const { language, isOpen, handleCloseDialog } = this.props;
     const {
@@ -175,7 +179,11 @@ class CustomerLogin extends Component {
           >
             <Grid>
               <Grid className="customer-login-header">
-                {!isCustomerSignup ? "Login" : "Sign Up"}
+                {!isCustomerSignup ? (
+                  <FormattedMessage id="customer.auth.login" />
+                ) : (
+                  <FormattedMessage id="customer.auth.signup" />
+                )}
                 <IconButton
                   className="btn-close-dialog"
                   onClick={() => {
@@ -200,7 +208,13 @@ class CustomerLogin extends Component {
                         </InputLabel>
                         <TextValidator
                           className="w-100"
-                          label={!email ? "Type your email" : " "}
+                          label={
+                            !email ? (
+                              <FormattedMessage id="customer.auth.type-your-email" />
+                            ) : (
+                              " "
+                            )
+                          }
                           InputLabelProps={{
                             style: {
                               paddingLeft: "36px",
@@ -243,12 +257,18 @@ class CustomerLogin extends Component {
                             <i className="far fa-eye-slash"></i>
                           )}
                         </Grid>
-                        <InputLabel htmlFor="email" className="input-label">
-                          Password
+                        <InputLabel htmlFor="password" className="input-label">
+                          <FormattedMessage id="customer.auth.password" />
                         </InputLabel>
                         <TextValidator
                           className="w-100"
-                          label={!password ? "Type your password" : " "}
+                          label={
+                            !password ? (
+                              <FormattedMessage id="customer.auth.type-your-password" />
+                            ) : (
+                              " "
+                            )
+                          }
                           InputLabelProps={{
                             style: {
                               paddingLeft: "36px",
@@ -264,25 +284,34 @@ class CustomerLogin extends Component {
                           onChange={(event) => {
                             this.handleChangeInput(event);
                           }}
+                          id="password"
                           type={isShowPassword ? "text" : "password"}
                           name="password"
                           value={password}
                           validators={["required"]}
-                          errorMessages={["Vui lòng nhập password"]}
+                          errorMessages={["Vui lòng nhập mật khẩu"]}
                           variant="standard"
                           size="small"
                         />
                       </Grid>
                       <Grid item xs={12} className="forgot-password">
-                        Forgot password?
+                        <span
+                          onClick={() => {
+                            this.handleForgotPassword();
+                          }}
+                        >
+                          <FormattedMessage id="customer.auth.forgot-password" />
+                        </span>
                       </Grid>
                       <Grid item xs={12} className="submit-button">
                         <Button className="w-100 btn-submit-form" type="submit">
-                          Login
+                          <FormattedMessage id="customer.auth.login" />
                         </Button>
                       </Grid>
                       <Grid item xs={12} className="social-login">
-                        <Grid className="social-login-text">Or Login with</Grid>
+                        <Grid className="social-login-text">
+                          <FormattedMessage id="customer.auth.or-login-with" />
+                        </Grid>
                         <Grid className="social-login-icon">
                           <i className="fab fa-google google"></i>
                           <i className="fab fa-facebook-f facebook"></i>
@@ -299,7 +328,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Họ
+                              <FormattedMessage id="customer.auth.last-name" />
                             </span>
                           }
                           onChange={(event) => {
@@ -320,7 +349,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Tên
+                              <FormattedMessage id="customer.auth.first-name" />
                             </span>
                           }
                           onChange={(event) => {
@@ -341,7 +370,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Số điện thoại
+                              <FormattedMessage id="customer.auth.phone" />
                             </span>
                           }
                           onChange={(event) => {
@@ -389,7 +418,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Password
+                              <FormattedMessage id="customer.auth.password" />
                             </span>
                           }
                           onChange={(event) => {
@@ -399,7 +428,7 @@ class CustomerLogin extends Component {
                           name="password"
                           value={password}
                           validators={["required"]}
-                          errorMessages={["Vui lòng nhập password"]}
+                          errorMessages={["Vui lòng nhập mật khẩu"]}
                           variant="standard"
                           size="small"
                         />
@@ -410,7 +439,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Repeat Password
+                              <FormattedMessage id="customer.auth.repeat-password" />
                             </span>
                           }
                           onChange={(event) => {
@@ -421,7 +450,7 @@ class CustomerLogin extends Component {
                           value={repeatPassword}
                           validators={["required", "isMatchPassword"]}
                           errorMessages={[
-                            "Vui lòng nhập lại password",
+                            "Vui lòng nhập lại mật khẩu",
                             "Mật khẩu không trùng khớp",
                           ]}
                           variant="standard"
@@ -434,7 +463,7 @@ class CustomerLogin extends Component {
                           label={
                             <span>
                               <span className="red-color"> * </span>
-                              Địa chỉ
+                              <FormattedMessage id="customer.auth.address" />
                             </span>
                           }
                           onChange={(event) => {
@@ -450,12 +479,12 @@ class CustomerLogin extends Component {
                         />
                       </Grid>
                       <Grid item xs={12} className="note">
-                        (<span className="red-color">*</span>) chứa những thông
-                        tin bắt buộc
+                        (<span className="red-color">*</span>){" "}
+                        <FormattedMessage id="customer.auth.required-information-note" />
                       </Grid>
                       <Grid item xs={12} className="submit-button">
                         <Button className="w-100 btn-submit-form" type="submit">
-                          Sign Up
+                          <FormattedMessage id="customer.auth.signup" />
                         </Button>
                       </Grid>
                     </Grid>
@@ -466,24 +495,24 @@ class CustomerLogin extends Component {
             <Grid className="customer-login-footer">
               {!isCustomerSignup ? (
                 <>
-                  Don't have account?{" "}
+                  <FormattedMessage id="customer.auth.not-have-account" />{" "}
                   <span
                     onClick={() => {
                       this.handleOpenSignUpForm();
                     }}
                   >
-                    Signup now
+                    <FormattedMessage id="customer.auth.signup-now" />
                   </span>
                 </>
               ) : (
                 <>
-                  Already have an account?{" "}
+                  <FormattedMessage id="customer.auth.have-account" />{" "}
                   <span
                     onClick={() => {
                       this.handleCloseSignUpForm();
                     }}
                   >
-                    Login now
+                    <FormattedMessage id="customer.auth.login-now" />
                   </span>
                 </>
               )}
@@ -496,7 +525,9 @@ class CustomerLogin extends Component {
 }
 
 const mapStateToProps = (state) => {
-  return {};
+  return {
+    language: state.app.language,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

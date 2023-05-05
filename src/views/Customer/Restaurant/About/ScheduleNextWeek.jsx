@@ -1,33 +1,12 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import * as actions from "../../../../store/actions";
 import {
   isExistArrayAndNotEmpty,
-  LANGUAGE,
   LANGUAGES,
-  NAV_DETAIL_RESTAURANT,
   TIMETYPE,
   WORK_TIME_OF_DAY,
 } from "../../../../utils";
-import {
-  Grid,
-  IconButton,
-  Icon,
-  Button,
-  InputAdornment,
-  Input,
-  TablePagination,
-  MenuItem,
-  TextField,
-  InputLabel,
-  Box,
-  FormControl,
-  Container,
-} from "@material-ui/core";
-import moment from "moment";
-import "moment/locale/vi";
-import ReviewContent from "../Reviews/ReviewContent";
-import MenuContent from "../Menu/MenuContent";
+import { Skeleton } from "@mui/material";
 import { getScheduleByDate } from "../../../../services/restaurantService";
 
 class ScheduleNextWeek extends Component {
@@ -37,6 +16,7 @@ class ScheduleNextWeek extends Component {
       listScheduleByDay: [],
       workTimeOfDayVi: WORK_TIME_OF_DAY.CLOSE_VI,
       workTimeOfDayEn: WORK_TIME_OF_DAY.CLOSE_EN,
+      isLoading: true,
     };
   }
 
@@ -55,10 +35,11 @@ class ScheduleNextWeek extends Component {
 
   fetchListScheduleByDate = async () => {
     const { restaurantId, date } = this.props;
-    const res = await getScheduleByDate(restaurantId, date);
+    const res = await getScheduleByDate({ restaurantId, date });
     if (res && res.errCode === 0) {
       this.setState({
         listScheduleByDay: res.listSchedule,
+        isLoading: false,
       });
     }
   };
@@ -84,10 +65,20 @@ class ScheduleNextWeek extends Component {
   };
 
   render() {
-    const { language, restaurantId } = this.props;
-    const { workTimeOfDayVi, workTimeOfDayEn } = this.state;
+    const { language } = this.props;
+    const { workTimeOfDayVi, workTimeOfDayEn, isLoading } = this.state;
 
-    return <>{language === LANGUAGES.VI ? workTimeOfDayVi : workTimeOfDayEn}</>;
+    return (
+      <>
+        {isLoading ? (
+          <>
+            <Skeleton variant="text" />
+          </>
+        ) : (
+          <>{language === LANGUAGES.VI ? workTimeOfDayVi : workTimeOfDayEn}</>
+        )}
+      </>
+    );
   }
 }
 

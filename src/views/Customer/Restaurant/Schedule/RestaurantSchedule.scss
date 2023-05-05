@@ -20,7 +20,7 @@
             position: relative;
 
             .people-show-option-bottom {
-                box-shadow      : 0 1px 2px $box-shadow-color;
+                box-shadow      : 0 3px 8px $color-box-shadow;
                 border          : 1px solid #ddd;
                 padding         : 15px;
                 background-color: white;
@@ -60,14 +60,14 @@
             align-items: center;
 
             .date-left {
-
                 .flatpickr-input {
-                    border     : none !important;
+                    border     : none;
                     width      : calc(100% - 34px - 16px);
-                    padding    : 0 !important;
-                    outline    : none !important;
+                    padding    : 0;
+                    outline    : none;
                     color      : $colorpink;
                     font-weight: 600;
+                    font-size  : 18px;
                 }
             }
         }
@@ -78,7 +78,8 @@
             font-weight: 600;
 
             .text {
-                color: $colorpink;
+                color    : $colorpink;
+                font-size: 18px;
             }
 
             .drop-down,
@@ -95,15 +96,10 @@
 
                 .schedule-content {
                     border       : 1px solid #ddd;
-                    box-shadow   : 0px 1px 2px $box-shadow-color;
-                    text-align   : center;
+                    box-shadow   : 0px 1px 2px $color-box-shadow;
                     padding      : 7px;
                     border-radius: 5px;
                     cursor       : pointer;
-
-                    &:hover {
-                        background-color: #f7f8fa;
-                    }
 
                     &.time-active {
                         background-color: $colorpink;
@@ -129,8 +125,8 @@
 
                 .schedule-dish-order-content {
                     font-size    : 15px;
-                    border       : 1px solid $colorpink;
-                    box-shadow   : 0px 1px 2px $box-shadow-color;
+                    border       : 1px solid $colorhome;
+                    box-shadow   : 0px 1px 2px $color-box-shadow;
                     padding      : 0 30px 0 15px;
                     border-radius: 15px;
                     position     : relative;
@@ -152,6 +148,7 @@
                     }
 
                     &.more {
+                        border          : none;
                         padding         : 0 10px;
                         background-color: $colorpink;
                         color           : white;
@@ -168,17 +165,22 @@
 
     .restaurant-schedule-book {
         .btn-book {
-            text-align      : center;
+            cursor          : pointer;
             background-color: $colorpink;
             color           : white;
-            padding         : 8px;
-            cursor          : pointer;
-            border-radius   : 5px;
             font-size       : inherit;
+            border-radius   : 5px;
+            height          : 44px;
+            margin-bottom   : 6px;
 
             &:hover {
                 background-color: $colorpink-hover;
             }
+        }
+
+        .book-note {
+            font-size : 14px;
+            font-style: italic;
         }
     }
 }

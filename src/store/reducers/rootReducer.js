@@ -10,6 +10,7 @@ import { persistReducer } from "redux-persist";
 import allCodeReducer from "./allCodeReducer";
 import restaurantReducer from "./restaurantReducer";
 import dishReducer from "./dishReducer";
+import handbookReducer from "./handbookReducer";
 
 const persistCommonConfig = {
   storage: storage,
@@ -36,6 +37,7 @@ const rootReducer = (history) =>
     allCode: allCodeReducer,
     restaurant: restaurantReducer,
     dish: dishReducer,
+    handbook: handbookReducer,
   });
 
 export default rootReducer;
